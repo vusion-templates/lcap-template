@@ -8,7 +8,7 @@ import { AuthPlugin, DataTypesPlugin, LogicsPlugin, RouterPlugin, ServicesPlugin
 import { getTitleGuard, initRouter, microFrontend } from '@/router';
 import { filterRoutes, parsePath } from '@lcap/base-core/utils/route';
 import { getBasePath } from '@lcap/base-core/utils/encodeUrl';
-import { filterAuthResources, findNoAuthView } from '@/router/guards/auth';
+import { filterAuthResources, findNoAuthView } from '@lcap/base-core/router/guards/auth';
 import { instance } from '@/utils/create/errHandles';
 import VueI18n from 'vue-i18n';
 import App from './App.vue';

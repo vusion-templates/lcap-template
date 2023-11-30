@@ -6,17 +6,17 @@ import { VanToast as Toast } from '@lcap/mobile-ui';
 import MEmitter from 'cloud-ui.vusion/src/components/m-emitter.vue';
 import MPubSub from 'cloud-ui.vusion/src/components/m-pub-sub.vue';
 
-import filters from '@/filters';
+import filters from '@lcap/base-core/filters';
 import { AuthPlugin, DataTypesPlugin, LogicsPlugin, RouterPlugin, ServicesPlugin, UtilsPlugin } from '@/plugins';
 import { getTitleGuard, initRouter } from '@/router';
-import { filterRoutes, parsePath } from '@/utils/route';
-import { getBasePath } from '@/utils/encodeUrl';
-import { filterAuthResources, findNoAuthView } from '@/router/guards/auth';
+import { filterRoutes, parsePath } from '@lcap/base-core/utils/route';
+import { getBasePath } from '@lcap/base-core/utils/encodeUrl';
+import { filterAuthResources, findNoAuthView } from '@lcap/base-core/router/guards/auth';
 import VueI18n from 'vue-i18n';
 import App from './App.vue';
 
 import '@/assets/css/index.css';
-import '@lcap/base-core';
+
 const fnList = ['afterRouter'];
 const evalWrap = function(metaData, fnName) {
     // eslint-disable-next-line no-eval

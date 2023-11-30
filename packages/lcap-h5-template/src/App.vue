@@ -9,7 +9,7 @@
 <script>
 import SFreesassLogin from '@/components/s-freesass-login';
 import SFreesassTransfer from '@/components/s-freesass-transfer';
-import { localCacheVariableMixin } from '@/mixins/localCacheVariableMixin';
+import { localCacheVariableMixin } from '@lcap/base-core/mixins/localCacheVariableMixin';
 
 const newDomain = location.host.split('.').includes('163');
 const serviceMap = {

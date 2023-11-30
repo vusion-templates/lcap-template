@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import cookie from '@/utils/cookie';
+import cookie from '@lcap/base-core/utils/cookie';
 
 export default {
     name: 's-freesass-login',

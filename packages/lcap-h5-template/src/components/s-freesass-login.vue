@@ -28,8 +28,8 @@
 </template>
 
 <script>
-import auth from '@/apis/auth';
-import cookie from '@/utils/cookie';
+import auth from '@lcap/base-core/apis/auth';
+import cookie from '@lcap/base-core/utils/cookie';
 
 export default {
     name: 's-freesass-login',

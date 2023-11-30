@@ -46,7 +46,6 @@ if (isDesigner) {
 }
 const vueConfig = {
     ...baseConfig,
-    parallel: false,
     pages,
     chainWebpack(config) {
         if (isDesigner) {

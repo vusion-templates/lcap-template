@@ -1,10 +1,10 @@
 import axios from 'axios';
 import Service from 'request-pre';
 import { stringify } from 'qs';
-import cookie from '@/utils/cookie';
+import cookie from '@lcap/base-core/utils/cookie';
 import { addConfigs, shortResponse } from './add.configs';
-import { getFilenameFromContentDispositionHeader } from './tools';
-import paramsSerializer from './paramsSerializer';
+import { getFilenameFromContentDispositionHeader } from '@lcap/base-core/utils/create/tools';
+import paramsSerializer from '@lcap/base-core/utils/create/paramsSerializer';
 import { VanToast as Toast } from '@lcap/mobile-ui';
 
 const formatContentType = function (contentType, data) {
@@ -62,18 +62,7 @@ function download(url) {
         timeout,
     }).then((res) => {
         // 包含 content-disposition， 从中解析名字，不包含 content-disposition 的获取请求地址的后缀
-        let effectiveFileName = res.request.getAllResponseHeaders().includes('content-disposition') ? getFilenameFromContentDispositionHeader(res.request.getResponseHeader('content-disposition')) : res.request.responseURL.split('/').pop();
-        effectiveFileName = decodeURIComponent(effectiveFileName);
-        const { data, status, statusText } = res;
-        // 如果没有size长度
-        if (data && data.size === 0) {
-            return Promise.resolve({
-                data: {
-                    code: status,
-                    msg: statusText,
-                },
-            });
-        }
+        const effectiveFileName = res.request.getAllResponseHeaders().includes('content-disposition') ? getFilenameFromContentDispositionHeader(res.request.getResponseHeader('content-disposition')) : res.request.responseURL.split('/').pop();
         const downloadUrl = window.URL.createObjectURL(new Blob([data]));
         const link = document.createElement('a');
         link.href = downloadUrl;

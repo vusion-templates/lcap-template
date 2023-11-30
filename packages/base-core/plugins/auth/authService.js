@@ -1,8 +1,8 @@
 import Vue from 'vue';
-import { initService as authInitService } from '@lcap/base-core/apis/auth';
-import { initService as lowauthInitService } from '@lcap/base-core/apis/lowauth';
-import cookie from '@lcap/base-core/utils/cookie';
-import { getBasePath } from '@lcap/base-core/utils/encodeUrl';
+import { initService as authInitService } from '@/apis/auth';
+import { initService as lowauthInitService } from '@/apis/lowauth';
+import cookie from '@/utils/cookie';
+import { getBasePath } from '@/utils/encodeUrl';
 import queryString from 'query-string';
 
 const getBaseHeaders = () => {

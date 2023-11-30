@@ -16,6 +16,7 @@ import VueI18n from 'vue-i18n';
 import App from './App.vue';
 
 import '@/assets/css/index.css';
+import '@lcap/base-core';
 const fnList = ['afterRouter'];
 const evalWrap = function(metaData, fnName) {
     // eslint-disable-next-line no-eval

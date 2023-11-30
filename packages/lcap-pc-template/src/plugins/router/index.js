@@ -1,7 +1,6 @@
-import encodeUrl from '@/utils/encodeUrl';
-
+import encodeUrl from '@lcap/base-core/utils/encodeUrl';
 import processService from './processService';
-import { formatMicroFrontUrl, formatMicroFrontRouterPath } from './microFrontUrl';
+import { formatMicroFrontUrl, formatMicroFrontRouterPath } from '@lcap/base-core/plugins/router/microFrontUrl';
 
 function downloadClick(realUrl, target) {
     const a = document.createElement('a');
@@ -30,28 +29,20 @@ export default {
                 if (url.startsWith('http'))
                     location.href = encodeUrl(url);
                 else {
-                    /* 判断是否在小程序当中 */
-                    if (window.__wxjs_environment === 'miniprogram') {
-                        navigateTo({ url });
-                    } else {
-                        // 处理同页面锚点跳转无效的问题
-                        const beforeHashUrl = url.slice(0, url.indexOf('#'));
-                        if (url.indexOf('#') !== -1 && beforeHashUrl.indexOf(location.pathname) !== -1) {
-                            const hash = url.slice(url.indexOf('#'))?.replace('#', '');
-                            if (document.getElementById(hash)) {
-                                document.getElementById(hash).scrollIntoView();
-                            }
-                            this.$router.push(url);
+                    // 处理同页面锚点跳转无效的问题
+                    const beforeHashUrl = url.slice(0, url.indexOf('#'));
+                    if (url.indexOf('#') !== -1 && beforeHashUrl.indexOf(location.pathname) !== -1) {
+                        const hash = url.slice(url.indexOf('#'))?.replace('#', '');
+                        if (document.getElementById(hash)) {
+                            document.getElementById(hash).scrollIntoView();
                         }
                         this.$router.push(url);
                     }
+
+                    this.$router.push(url);
                 }
             } else {
-                if (window.__wxjs_environment === 'miniprogram') {
-                    navigateTo({ url });
-                } else {
-                    downloadClick(url, target);
-                }
+                downloadClick(url, target);
             }
         };
 

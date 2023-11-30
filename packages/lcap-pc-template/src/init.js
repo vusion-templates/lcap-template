@@ -3,11 +3,11 @@ import { installOptions, installDirectives, installFilters, installComponents } 
 import * as CloudUI from 'cloud-ui.vusion';
 import * as Components from '@/components';
 
-import filters from '@/filters';
+import filters from '@lcap/base-core/filters';
 import { AuthPlugin, DataTypesPlugin, LogicsPlugin, RouterPlugin, ServicesPlugin, UtilsPlugin } from '@/plugins';
 import { getTitleGuard, initRouter, microFrontend } from '@/router';
-import { filterRoutes, parsePath } from '@/utils/route';
-import { getBasePath } from '@/utils/encodeUrl';
+import { filterRoutes, parsePath } from '@lcap/base-core/utils/route';
+import { getBasePath } from '@lcap/base-core/utils/encodeUrl';
 import { filterAuthResources, findNoAuthView } from '@/router/guards/auth';
 import { instance } from '@/utils/create/errHandles';
 import VueI18n from 'vue-i18n';
@@ -77,8 +77,8 @@ const init = (appConfig, platformConfig, routes, metaData) => {
     Vue.use(RouterPlugin);
     Vue.use(ServicesPlugin, metaData);
     Vue.use(AuthPlugin);
-    Vue.use(UtilsPlugin, metaData);
     Vue.use(DataTypesPlugin, { ...metaData, i18nInfo: appConfig.i18nInfo });
+    Vue.use(UtilsPlugin, metaData);
 
     // 已经获取过权限接口
     Vue.prototype.hasLoadedAuth = false;

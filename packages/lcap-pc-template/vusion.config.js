@@ -15,5 +15,6 @@ module.exports = {
         '@': path.resolve(__dirname, 'src'),
         'cloud-ui.vusion$': path.resolve(__dirname, 'node_modules/cloud-ui.vusion/dist-raw/index.js'),
         'cloud-ui.vusion.css$': path.resolve(__dirname, 'node_modules/cloud-ui.vusion/dist-raw/index.css'),
+        '@lcap/base-core': path.resolve(__dirname, '../base-core'),
     },
 };

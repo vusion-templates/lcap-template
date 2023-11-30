@@ -1,11 +1,11 @@
 import axios from 'axios';
 import Service from 'request-pre';
 import { stringify } from 'qs';
-import cookie from '@/utils/cookie';
-import { addConfigs, shortResponse } from './add.configs';
-import { getFilenameFromContentDispositionHeader } from './tools';
-import paramsSerializer from './paramsSerializer';
-import { formatMicroFrontUrl } from '@/plugins/router/microFrontUrl';
+import cookie from '@lcap/base-core/utils/cookie';
+import { addConfigs, shortResponse } from '@lcap/base-core/utils/create/add.configs';
+import { getFilenameFromContentDispositionHeader } from '@lcap/base-core/utils/create/tools';
+import paramsSerializer from '@lcap/base-core/utils/create/paramsSerializer';
+import { formatMicroFrontUrl } from '@lcap/base-core/plugins/router/microFrontUrl';
 import { instance } from './errHandles';
 
 const formatContentType = function (contentType, data) {

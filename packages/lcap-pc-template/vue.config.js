@@ -16,6 +16,7 @@ const webpackHtml = require('./webpack/html');
 const webpackOptimization = require('./webpack/optimization');
 const isDesigner = process.env.BUILD_LIB_ENV === 'designer';
 
+const path = require('path')
 const assetsDir = 'public';
 const baseConfig = {
     publicPath: publicPathPrefix,
@@ -42,6 +43,8 @@ const vueConfig = {
             webpackDll.chain(config, publicPathPrefix, isDevelopment);
         }
         webpackOptimization.chain(config, isDevelopment);
+        // config.resolve.alias
+        // .set('@lcap/base-core', path.resolve(__dirname, '../base-core'))
 
         webpackCloudUI.chain(config);
         webpackStyle.chain(config);
@@ -54,3 +57,5 @@ const vueConfig = {
 };
 
 module.exports = vueConfig;
+
+console.debug(path.resolve(__dirname, '../base-core'))

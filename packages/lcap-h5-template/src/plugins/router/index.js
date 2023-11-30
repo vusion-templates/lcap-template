@@ -1,5 +1,4 @@
-import encodeUrl from '@/utils/encodeUrl';
-
+import encodeUrl from '@lcap/base-core/utils/encodeUrl';
 import processService from './processService';
 
 function downloadClick(realUrl, target) {

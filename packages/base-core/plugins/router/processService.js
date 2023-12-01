@@ -1,4 +1,4 @@
-import { initService as processInitService } from '@lcap/base-core/apis/process';
+import { initService as processInitService } from '../../apis/process';
 
 export const processPorts = {
     async getProcessDefinitionList(query) {

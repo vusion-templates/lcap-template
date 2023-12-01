@@ -1,4 +1,4 @@
-import { getBasePath } from '@/utils/encodeUrl';
+import { getBasePath } from '@lcap/base-core/utils/encodeUrl';
 // `${getBasePath()}/login`
 // `${getBasePath()}/noAuth`
 // `${getBasePath()}/notFound`

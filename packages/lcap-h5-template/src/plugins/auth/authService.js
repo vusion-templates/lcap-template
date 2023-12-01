@@ -225,7 +225,7 @@ export default {
      * 是否有权限
      * @param {*} authPath 权限路径，如 /dashboard/entity/list
      */
-    has(authPath) {
+    has(authPath, domainName) {
         return (this._map && this._map.has(authPath)) || false;
     },
 };

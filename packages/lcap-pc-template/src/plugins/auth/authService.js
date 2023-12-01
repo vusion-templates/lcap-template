@@ -3,7 +3,6 @@ import { initService as authInitService } from '@lcap/base-core/apis/auth';
 import { initService as lowauthInitService } from '@lcap/base-core/apis/lowauth';
 import cookie from '@lcap/base-core/utils/cookie';
 import { getBasePath } from '@lcap/base-core/utils/encodeUrl';
-import queryString from 'query-string';
 
 const getBaseHeaders = () => {
     const headers = {
@@ -173,26 +172,6 @@ export default {
             }
         }
     },
-    loginH5(data) {
-        return this.authService.LoginH5({
-            headers: getBaseHeaders(),
-            ...data,
-        });
-    },
-    getNuims(query) {
-        return this.authService.GetNuims({
-            headers: getBaseHeaders(),
-            query,
-        });
-    },
-    getConfig() {
-        return this.authService.GetConfig({
-            headers: getBaseHeaders(),
-        });
-    },
-    // 处理数据的参数转化
-    parse: queryString.parse,
-    stringify: queryString.stringify,
     /**
      * 权限服务是否初始化
      */
@@ -212,8 +191,4 @@ export default {
     has(authPath) {
         return (this._map && this._map.has(authPath)) || false;
     },
-};
-
-export const runAhead = function (domainName) {
-    authInitService().init(domainName);
 };

@@ -1,5 +1,4 @@
 import Vue from 'vue';
-
 import { filterRoutes, parsePath } from '@lcap/base-core/utils/route';
 import { getBasePath } from '@lcap/base-core/utils/encodeUrl';
 

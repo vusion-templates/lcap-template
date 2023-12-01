@@ -9,6 +9,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vusion-templates/lcap-template.git"
+  },
   "dependencies": {
     "inquirer": "^6.2.2",
     "moment": "^2.29.4",

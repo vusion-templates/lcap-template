@@ -1,4 +1,4 @@
-import { filterAuthResources } from '@/router/guards/auth';
+import { filterAuthResources } from '@lcap/base-core/router/guards/auth';
 
 describe('filterAuthResources', () => {
     window.appInfo = { basePath: '/m' };

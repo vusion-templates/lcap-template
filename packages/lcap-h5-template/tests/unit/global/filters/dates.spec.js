@@ -1,4 +1,4 @@
-import Dates from '@/filters/dates';
+import Dates from '@lcap/base-core/filters/dates';
 
 describe('global/filters/dates', () => {
     test('dateFormat', () => {

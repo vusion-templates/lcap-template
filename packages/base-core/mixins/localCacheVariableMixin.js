@@ -1,4 +1,4 @@
-import storage from '@lcap/base-core/utils/storage/localStorage';
+import storage from '../utils/storage/localStorage';
 import isEmpty from 'lodash/isEmpty';
 
 const ACTION_LOCAL_CACHE_VARIABLE_TYPE = {

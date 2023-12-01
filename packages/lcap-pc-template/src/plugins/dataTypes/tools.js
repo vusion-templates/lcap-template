@@ -1,6 +1,6 @@
 
 import { UToast } from 'cloud-ui.vusion';
-import { fromStringBase } from '@lcap/base-core/plugins/datatypes/tools'
+import { fromStringBase } from '@lcap/base-core/plugins/dataTypes/tools'
 
 export const fromString = (variable, typeKey) => {
     fromStringBase(variable, typeKey);

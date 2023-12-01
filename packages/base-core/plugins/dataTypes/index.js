@@ -1,8 +1,8 @@
 import { Decimal } from 'decimal.js';
 import CryptoJS from 'crypto-js';
-import { initService as configurationInitService } from '@lcap/base-core/apis/configuration';
-import { initService as lowauthInitService } from '@lcap/base-core/apis/lowauth';
-import { initService as ioInitService } from '@lcap/base-core/apis/io';
+import { initService as configurationInitService } from '../../apis/configuration';
+import { initService as lowauthInitService } from '../../apis/lowauth';
+import { initService as ioInitService } from '../../apis/io';
 
 const aesKey = ';Z#^$;8+yhO!AhGo';
 

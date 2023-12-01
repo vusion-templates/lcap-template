@@ -2,7 +2,7 @@ import AuthPlugin from '@lcap/base-core/apis/auth';
 import DataTypesPlugin from './dataTypes';
 import LogicsPlugin from './logic';
 import RouterPlugin from './router';
-import ServicesPlugin from '@lcap/base-core/plugins/service';
+import ServicesPlugin from './service';
 import UtilsPlugin from './utils';
 
 export {

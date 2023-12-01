@@ -1,47 +1,53 @@
 import axios from 'axios';
 import Service from 'request-pre';
 import { stringify } from 'qs';
-import cookie from '@lcap/base-core/utils/cookie';
-import { addConfigs, shortResponse } from './add.configs';
-import { getFilenameFromContentDispositionHeader } from '@lcap/base-core/utils/create/tools';
-import paramsSerializer from '@lcap/base-core/utils/create/paramsSerializer';
-import { VanToast as Toast } from '@lcap/mobile-ui';
+
+import cookie from "../cookie";
+import { addConfigs, shortResponse } from "./add.configs";
+import { getFilenameFromContentDispositionHeader } from "./tools";
+import paramsSerializer from "./paramsSerializer";
+import { formatMicroFrontUrl } from "../../plugins/router/microFrontUrl"; // 微前端路由方法
+
+import Config from '../config';
+
 
 const formatContentType = function (contentType, data) {
-    const map = {
-        'application/x-www-form-urlencoded'(data) {
-            return stringify(data);
-        },
-    };
-    return map[contentType] ? map[contentType](data) : data;
+  const map = {
+    "application/x-www-form-urlencoded"(data) {
+      return stringify(data);
+    },
+  };
+  return map[contentType] ? map[contentType](data) : data;
 };
+
 const parseCookie = (str) =>
-    str
-        .split(';')
-        .map((v) => v.split('='))
-        .reduce((acc, v) => {
-            acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
-            return acc;
-        }, {});
+  str
+    .split(";")
+    .map((v) => v.split("="))
+    .reduce((acc, v) => {
+      acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
+      return acc;
+    }, {});
+
 const foramtCookie = (cookieStr) => {
-    const result = {};
-    if (document.cookie.length <= 0) {
-        return result;
-    }
-    const obj = parseCookie(cookieStr);
-    Object.keys(obj).forEach((key) => {
-        result[key] = {
-            name: key,
-            value: obj[key],
-            domain: '', // 前端只能拿到k v 其他字段补齐即可
-            cookiePath: '',
-            sameSite: '',
-            httpOnly: '',
-            secure: '',
-            maxAge: '',
-        };
-    });
+  const result = {};
+  if (document.cookie.length <= 0) {
     return result;
+  }
+  const obj = parseCookie(cookieStr);
+  Object.keys(obj).forEach((key) => {
+    result[key] = {
+      name: key,
+      value: obj[key],
+      domain: "", // 前端只能拿到k v 其他字段补齐即可
+      cookiePath: "",
+      sameSite: "",
+      httpOnly: "",
+      secure: "",
+      maxAge: "",
+    };
+  });
+  return result;
 };
 
 /**
@@ -62,7 +68,20 @@ function download(url) {
         timeout,
     }).then((res) => {
         // 包含 content-disposition， 从中解析名字，不包含 content-disposition 的获取请求地址的后缀
-        const effectiveFileName = res.request.getAllResponseHeaders().includes('content-disposition') ? getFilenameFromContentDispositionHeader(res.request.getResponseHeader('content-disposition')) : res.request.responseURL.split('/').pop();
+        let effectiveFileName = res.request.getAllResponseHeaders().includes('content-disposition') ? getFilenameFromContentDispositionHeader(res.request.getResponseHeader('content-disposition')) : res.request.responseURL.split('/').pop();
+        const { data, status, statusText } = res;
+        // 如果没有size长度 PC端独有👇
+        effectiveFileName = decodeURIComponent(effectiveFileName);
+        if (data && data.size === 0) {
+            return Promise.resolve({
+                data: {
+                    code: status,
+                    msg: statusText,
+                },
+            });
+        }
+        // 👆
+
         const downloadUrl = window.URL.createObjectURL(new Blob([data]));
         const link = document.createElement('a');
         link.href = downloadUrl;
@@ -87,52 +106,63 @@ function download(url) {
 }
 
 const requester = function (requestInfo) {
-    const { url, config = {} } = requestInfo;
-    const { path, method, body = {}, headers = {}, query = {} } = url;
-    const baseURL = config.baseURL ? config.baseURL : '';
-    headers['Content-Type'] = headers['Content-Type'] || 'application/json';
-    if (!headers.Authorization && cookie.get('authorization')) {
-        headers.Authorization = cookie.get('authorization');
-    }
-    headers.DomainName = window.appInfo?.domainName;
-    if (window.appInfo?.frontendName)
-        headers['LCAP-FRONTEND'] = window.appInfo?.frontendName;
+  const { url, config = {} } = requestInfo;
+  const { method, body = {}, headers = {}, query = {} } = url;
+  const path = formatMicroFrontUrl(url.path);
 
-    // 用户本地时区信息，传递给后端
-    headers.TimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const baseURL = config.baseURL ? config.baseURL : "";
+  headers["Content-Type"] = headers["Content-Type"] || "application/json";
+  if (!headers.Authorization && cookie.get("authorization")) {
+    headers.Authorization = cookie.get("authorization");
+  }
+  headers.DomainName = window.appInfo?.domainName;
+  if (window.appInfo?.frontendName)
+    headers["LCAP-FRONTEND"] = window.appInfo?.frontendName;
+  // 用户本地时区信息，传递给后端
+  headers.TimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-    if (config.download) {
-        return download(url);
-    }
-    let data;
-    const method2 = method.toUpperCase();
-    if (Array.isArray(body) || Object.keys(body).length || ['PUT', 'POST', 'PATCH', 'DELETE'].includes(method2)) {
-        data = formatContentType(headers['Content-Type'], body);
-    }
-    // eslint-disable-next-line prefer-arrow-callback
-    axios.interceptors.response.use(function (response) {
-        if (response.headers.authorization) {
-            response.data.authorization = response.headers.authorization;
-        }
-        return response;
-        // eslint-disable-next-line prefer-arrow-callback
-    }, function (error) {
-        return Promise.reject(error);
-    });
-    const req = axios({
-        params: query,
-        paramsSerializer,
-        baseURL,
-        method: method2,
-        url: path,
-        data,
-        headers,
-        withCredentials: !baseURL,
-        xsrfCookieName: 'csrfToken',
-        xsrfHeaderName: 'x-csrf-token',
+  if (config.download) {
+    return download(url);
+  }
+  let data;
+  const method2 = method.toUpperCase();
+  if (
+    Array.isArray(body) ||
+    Object.keys(body).length ||
+    ["PUT", "POST", "PATCH", "DELETE"].includes(method2)
+  ) {
+    data = formatContentType(headers["Content-Type"], body);
+  }
 
-    });
-    return req;
+  //  H5端独有 👇
+  // eslint-disable-next-line prefer-arrow-callback
+  axios.interceptors.response.use(
+    function (response) {
+      if (response.headers.authorization) {
+        response.data.authorization = response.headers.authorization;
+      }
+      return response;
+      // eslint-disable-next-line prefer-arrow-callback
+    },
+    function (error) {
+      return Promise.reject(error);
+    }
+  );
+  // 👆
+
+  const req = axios({
+    params: query,
+    paramsSerializer,
+    baseURL,
+    method: method2,
+    url: path,
+    data,
+    headers,
+    withCredentials: !baseURL,
+    xsrfCookieName: "csrfToken",
+    xsrfHeaderName: "x-csrf-token",
+  });
+  return req;
 };
 const service = new Service(requester);
 
@@ -235,10 +265,8 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
                 }
                 if (!err.response) {
                     if (!config.noErrorTip) {
-                        Toast({
-                            message: '系统错误，请查看日志！',
-                            position: 'top',
-                        });
+                        // instance.show('系统错误，请查看日志！');
+                        Config.Toast.show('系统错误，请查看日志！');
                         return;
                     }
                 }
@@ -292,6 +320,5 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
     };
     serviceConfig.config.lcapLocation = true;
     service.postConfig.set('shortResponse', shortResponse);
-
     return service.generator(newApiSchemaMap, dynamicServices, serviceConfig);
 };

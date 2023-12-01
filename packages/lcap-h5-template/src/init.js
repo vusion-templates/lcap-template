@@ -7,25 +7,27 @@ import MEmitter from 'cloud-ui.vusion/src/components/m-emitter.vue';
 import MPubSub from 'cloud-ui.vusion/src/components/m-pub-sub.vue';
 
 import filters from '@lcap/base-core/filters';
-import { AuthPlugin, DataTypesPlugin, LogicsPlugin, RouterPlugin, ServicesPlugin, UtilsPlugin } from '@/plugins';
-import { getTitleGuard, initRouter } from '@/router';
+// import { AuthPlugin, DataTypesPlugin, LogicsPlugin, RouterPlugin, ServicesPlugin, UtilsPlugin } from '@/plugins';
+import { AuthPlugin, DataTypesPlugin, LogicsPlugin, RouterPlugin, ServicesPlugin, UtilsPlugin } from '@lcap/base-core/plugins';
 import { filterRoutes, parsePath } from '@lcap/base-core/utils/route';
 import { getBasePath } from '@lcap/base-core/utils/encodeUrl';
 import { filterAuthResources, findNoAuthView } from '@lcap/base-core/router/guards/auth';
+
+import { getTitleGuard, initRouter } from '@/router';
 import VueI18n from 'vue-i18n';
 import App from './App.vue';
 
 import '@/assets/css/index.css';
 
 const fnList = ['afterRouter'];
-const evalWrap = function(metaData, fnName) {
+const evalWrap = function (metaData, fnName) {
     // eslint-disable-next-line no-eval
     metaData && fnName && metaData?.frontendEvents[fnName] && eval(metaData.frontendEvents[fnName]);
 };
 /* 👇CloudUI中入口逻辑 */
 Vue.prototype.$env = Vue.prototype.$env || {};
 Vue.prototype.$env.VUE_APP_DESIGNER = String(process.env.VUE_APP_DESIGNER) === 'true';
-Vue.prototype.$at2 = function(obj, propertyPath) {
+Vue.prototype.$at2 = function (obj, propertyPath) {
     if (propertyPath === '' && !this.$env.VUE_APP_DESIGNER) return obj;
     return this.$at(obj, propertyPath);
 };
@@ -188,7 +190,8 @@ const init = (appConfig, platformConfig, routes, metaData) => {
     }
     const afterRouter = Vue.prototype.afterRouter;
 
-    afterRouter && router.afterEach(async (to, from, next) => {
+    afterRouter &&
+        router.afterEach(async (to, from, next) => {
             try {
                 if (afterRouter) {
                     await afterRouter(to, from);

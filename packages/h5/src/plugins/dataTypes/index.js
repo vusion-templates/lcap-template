@@ -1,4 +1,4 @@
-import { cookie, storage, authService, genSortedTypeKey, getBasePath } from '@lcap/template-core';
+import { cookie, storage, authService, genSortedTypeKey, getBasePath, genInitData } from '@lcap/template-core';
 import { navigateToUserInfoPage } from '../common/wx';
 
 export function getFrontendVariables(options) {
@@ -9,7 +9,7 @@ export function getFrontendVariables(options) {
         options.frontendVariables.forEach((frontendVariable) => {
             const { name, typeAnnotation, defaultValue, localCache } = frontendVariable;
             localCache && localCacheVariableSet.add(name); // 本地存储的全局变量集合
-            frontendVariables[name] = genInitFromSchema(genSortedTypeKey(typeAnnotation), defaultValue);
+            frontendVariables[name] = genInitData(genSortedTypeKey(typeAnnotation), defaultValue);
         });
     }
 

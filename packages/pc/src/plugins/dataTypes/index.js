@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import cookie, { authService } from '@lcap/template-core';
+import cookie, { authService } from '@lcap/core-template';
 
 export default {
     hasAuth({ string: authPath }) {

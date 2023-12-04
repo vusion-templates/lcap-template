@@ -5,14 +5,14 @@ import * as Components from '@/components';
 
 import './setConfig';
 
-import filters from '@lcap/template-core';
+import filters from '@lcap/core-template';
 
-// import { AuthPlugin, DataTypesPlugin, LogicsPlugin, RouterPlugin, ServicesPlugin, UtilsPlugin } from '@lcap/template-core';
-// import { getTitleGuard, initRouter, microFrontend } from '@lcap/template-core';
-// import { filterRoutes, parsePath } from '@lcap/template-core';
-// import { getBasePath } from '@lcap/template-core';
-// import { filterAuthResources, findNoAuthView } from '@lcap/template-core';
-// import { instance } from '@lcap/template-core';
+// import { AuthPlugin, DataTypesPlugin, LogicsPlugin, RouterPlugin, ServicesPlugin, UtilsPlugin } from '@lcap/core-template';
+// import { getTitleGuard, initRouter, microFrontend } from '@lcap/core-template';
+// import { filterRoutes, parsePath } from '@lcap/core-template';
+// import { getBasePath } from '@lcap/core-template';
+// import { filterAuthResources, findNoAuthView } from '@lcap/core-template';
+// import { instance } from '@lcap/core-template';
 import { 
     AuthPlugin, DataTypesPlugin, LogicsPlugin, RouterPlugin, ServicesPlugin, UtilsPlugin,
     getTitleGuard, initRouter, microFrontend,
@@ -20,7 +20,7 @@ import {
     getBasePath,
     filterAuthResources, findNoAuthView,
     instance
-} from '@lcap/template-core';
+} from '@lcap/core-template';
 import VueI18n from 'vue-i18n';
 import App from './App.vue';
 

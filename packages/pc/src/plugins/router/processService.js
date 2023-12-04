@@ -1,4 +1,4 @@
-import { processInitService } from '@lcap/template-core';
+import { processInitService } from '@lcap/core-template';
 import authService from '../auth/authService';
 
 let user;

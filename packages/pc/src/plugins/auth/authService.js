@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import { authInitService, lowauthInitService  } from '@lcap/template-core';
-import cookie from '@lcap/template-core';
+import { authInitService, lowauthInitService  } from '@lcap/core-template';
+import cookie from '@lcap/core-template';
 
 const getBaseHeaders = () => {
     const headers = {

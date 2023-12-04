@@ -44,7 +44,7 @@ const vueConfig = {
         }
         webpackOptimization.chain(config, isDevelopment);
         // config.resolve.alias
-        // .set('@lcap/template-core', path.resolve(__dirname, '../base-core'))
+        // .set('@lcap/core-template', path.resolve(__dirname, '../base-core'))
 
         webpackCloudUI.chain(config);
         webpackStyle.chain(config);

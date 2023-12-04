@@ -1,5 +1,5 @@
-// import encodeUrl from '@lcap/template-core';
-import {  encodeUrl } from '@lcap/template-core';
+// import encodeUrl from '@lcap/core-template';
+import {  encodeUrl } from '@lcap/core-template';
 
 export function $destination (url, target = '_self') {
     if (target === '_self') {

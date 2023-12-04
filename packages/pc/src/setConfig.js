@@ -4,7 +4,7 @@ import axios from 'axios';
 import { 
     setConfig, 
     genInitFromSchema, genSortedTypeKey
-} from '@lcap/template-core';
+} from '@lcap/core-template';
 import { destination } from './plugins/router';
 import pluginsAuthService from './plugins/auth/authService';
 import $globalUtils from './plugins/dataTypes/index'

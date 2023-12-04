@@ -1,6 +1,10 @@
 // 差异性配置，由H5\PC端启动时 传入覆盖
-
 const Config = {
+  pluginsAuthService: {
+    _map: undefined,
+    getUserInfo: () => void 0,
+    getUserResources: (DomainName) => void 0,
+  },
   $global: {},
   Toast: {
     show: (message, stack) => void 0,
@@ -14,6 +18,7 @@ const Config = {
   },
   destination: () => void 0,
   createRouter: ({ routes, VueRouter }) => void 0,
+  routerProcessService: {},
   getTitleGuard: (appConfig) => (to, from, next) => void 0,
 };
 

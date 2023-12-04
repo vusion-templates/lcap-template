@@ -13,16 +13,13 @@ import Config from '../../config'
 window.CryptoJS = CryptoJS;
 const aesKey = ";Z#^$;8+yhO!AhGo";
 
-// 差异点 globals、frontendVariables 处理
+export const genInitFromSchema = (typeKey, defaultValue, level) => genInitData(typeKey, defaultValue, level);
+
 export default {
   install(Vue, options) {
     const dataTypesMap = options.dataTypesMap || {}; // TODO 统一为  dataTypesMap
     const i18nInfo = options.i18nInfo || {};
     initApplicationConstructor(dataTypesMap, Vue);
-
-    const genInitFromSchema = (typeKey, defaultValue, level) =>
-      genInitData(typeKey, defaultValue, level);
-
     /**
      * read datatypes from template, then parse schema
      * @param {*} schema 是前端用的 refSchema

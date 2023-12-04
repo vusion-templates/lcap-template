@@ -1,4 +1,9 @@
 import { initService as processInitService } from '../../apis/process';
+import Config from '../../config';
+
+export default {
+  ...Config.routerProcessService
+};
 
 export const processPorts = {
     async getProcessDefinitionList(query) {

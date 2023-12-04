@@ -71,17 +71,18 @@ function download(url) {
         let effectiveFileName = res.request.getAllResponseHeaders().includes('content-disposition') ? getFilenameFromContentDispositionHeader(res.request.getResponseHeader('content-disposition')) : res.request.responseURL.split('/').pop();
         const { data, status, statusText } = res;
         // 如果没有size长度 PC端独有👇
-        effectiveFileName = decodeURIComponent(effectiveFileName);
-        if (data && data.size === 0) {
-            return Promise.resolve({
-                data: {
-                    code: status,
-                    msg: statusText,
-                },
-            });
-        }
-        // 👆
-
+        // effectiveFileName = decodeURIComponent(effectiveFileName);
+        // if (data && data.size === 0) {
+        //     return Promise.resolve({
+        //         data: {
+        //             code: status,
+        //             msg: statusText,
+        //         },
+        //     });
+        // }
+        // // 👆
+        Config.utils.decodeDownloadName(effectiveFileName);
+        // Config.utils.downloadUrlDiff(data, status, statusText)
         const downloadUrl = window.URL.createObjectURL(new Blob([data]));
         const link = document.createElement('a');
         link.href = downloadUrl;
@@ -136,18 +137,19 @@ const requester = function (requestInfo) {
 
   //  H5端独有 👇
   // eslint-disable-next-line prefer-arrow-callback
-  axios.interceptors.response.use(
-    function (response) {
-      if (response.headers.authorization) {
-        response.data.authorization = response.headers.authorization;
-      }
-      return response;
-      // eslint-disable-next-line prefer-arrow-callback
-    },
-    function (error) {
-      return Promise.reject(error);
-    }
-  );
+//   axios.interceptors.response.use(
+//     function (response) {
+//       if (response.headers.authorization) {
+//         response.data.authorization = response.headers.authorization;
+//       }
+//       return response;
+//       // eslint-disable-next-line prefer-arrow-callback
+//     },
+//     function (error) {
+//       return Promise.reject(error);
+//     }
+//   );
+   Config.utils.axiosInterceptors();
   // 👆
 
   const req = axios({

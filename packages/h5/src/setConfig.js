@@ -1,23 +1,30 @@
 import { setConfig } from '@lcap/template-core';
+import { VanToast as Toast } from '@lcap/mobile-ui';
 
 import { destination } from './plugins/router';
+import { getFrontendVariables, $global } from './plugins/dataTypes';
+import { createRouter } from './router';
+import { getTitleGuard } from './router';
 
 // 设置core config
 setConfig({
-    $global: {
-
-    },
-    Toast: {
-        show: (message, stack) => void 0,
-        error: (message, stack) => void 0,
-    },
-    getFrontendVariables: () => {
-        return {
-            frontendVariables: {},
-            localCacheVariableSet: new Set(),
-        };
-    },
+    $global,
+    getFrontendVariables,
     destination,
-    createRouter: (routes) => void 0,
-    getTitleGuard: (appConfig) => (to, from, next) => void 0,
+    createRouter,
+    getTitleGuard,
+    Toast: {
+        show: (message, stack) => {
+            Toast({
+                message,
+                position: 'top',
+            });
+        },
+        error: (message, stack) => {
+            Toast.fail({
+                message,
+                position: 'top',
+            });
+        },
+    },
 });

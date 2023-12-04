@@ -29,17 +29,18 @@ export { initService as initProcessService } from "./process";
 |-- 方法名 --|-- PC --|-- H5 --|
 |:--:|:--:|:--:|
 | compareKeyboardInput | ✅ |  |
+| getIsMiniApp |  | ✅ |
 | getWeChatOpenid |  | ✅ |
 | getWeChatHeadImg |  | ✅ |
 | getWeChatNickName |  | ✅ |
 | navigateToUserInfo |  | ✅ |
 | logout | ⚠️ | ⚠️ |
 | setI18nLocale | ⚠️ | ⚠️ |
-｜getI18nList | ⚠️ | ⚠️ |
-｜hasAuth | ⚠️ | ⚠️ |
+| getI18nList | ⚠️ | ⚠️ |
+| hasAuth | ⚠️ | ⚠️ |
 | downloadFile | ✅ |  |
 | downloadFiles | ✅ |  |
-｜getUserList | ✅ |  |
+| getUserList | ✅ |  |
 
 ```js
 // config.js

@@ -5,8 +5,6 @@ import RouterPlugin from './router';
 import ServicesPlugin from './service';
 import UtilsPlugin from './utils';
 
-export { downloadClick } from './router'
-
 export {
     AuthPlugin,
     DataTypesPlugin,

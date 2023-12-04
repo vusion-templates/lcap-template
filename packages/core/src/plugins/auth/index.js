@@ -1,4 +1,4 @@
-import authService from './authService';
+import authService, { runAhead } from './authService';
 
 export default {
     install(Vue, options = {}) {
@@ -121,3 +121,7 @@ export default {
     },
 };
 
+export {
+  authService,
+  runAhead
+}

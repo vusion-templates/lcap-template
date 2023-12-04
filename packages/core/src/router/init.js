@@ -6,7 +6,7 @@ import Config from '../config'
 export function initRouter(routes) {
     Vue.use(VueRouter);
 
-    const router = Config.createRouter(routes);
+    const router = Config.createRouter({ routes, VueRouter });
     
     return router;
 }

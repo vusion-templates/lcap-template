@@ -8,5 +8,9 @@ export * from './router';
 export * from './utils';
 
 export {
-  filters
+  filters,
 }
+
+export { downloadClick } from "./plugins/router";
+export { authService, runAhead } from "./plugins/auth";
+export * from './plugins/dataTypes/tools';

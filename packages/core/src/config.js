@@ -13,7 +13,7 @@ const Config = {
     };
   },
   destination: () => void 0,
-  createRouter: (routes) => void 0,
+  createRouter: ({ routes, VueRouter }) => void 0,
   getTitleGuard: (appConfig) => (to, from, next) => void 0,
 };
 

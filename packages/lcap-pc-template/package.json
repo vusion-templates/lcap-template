@@ -1,5 +1,5 @@
 {
-  "name": "lcap-pc-template",
+  "name": "@lcap/pc-template",
   "version": "3.5.0",
   "description": "base on vue cloud-ui.vusion",
   "scripts": {

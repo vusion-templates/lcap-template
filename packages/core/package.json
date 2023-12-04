@@ -1,5 +1,5 @@
 {
-  "name": "@lcap/template-core",
+  "name": "@lcap/core-template",
   "version": "3.5.0",
   "description": "",
   "module": "index.js",

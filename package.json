@@ -2,7 +2,9 @@
   "name": "root",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

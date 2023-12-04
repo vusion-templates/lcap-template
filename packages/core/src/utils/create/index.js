@@ -8,7 +8,7 @@ import { getFilenameFromContentDispositionHeader } from "./tools";
 import paramsSerializer from "./paramsSerializer";
 import { formatMicroFrontUrl } from "../../plugins/router/microFrontUrl"; // 微前端路由方法
 
-import Config from '../config';
+import Config from '../../config';
 
 
 const formatContentType = function (contentType, data) {

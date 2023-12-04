@@ -2,7 +2,7 @@ import processService from './processService';
 import { formatMicroFrontUrl, formatMicroFrontRouterPath } from './microFrontUrl';
 import Config from "../../config";
 
-function downloadClick(realUrl, target) {
+export function downloadClick(realUrl, target) {
     const a = document.createElement('a');
     a.setAttribute('href', realUrl);
     a.setAttribute('target', target);

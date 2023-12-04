@@ -24,5 +24,3 @@ export function setConfig(newConfig) {
 export function getConfig() {
   return Config;
 }
-
-export default Config;

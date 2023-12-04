@@ -86,7 +86,7 @@ const encode = function (str) {
     return encodeURIComponent(str).replace(encodeReserveRE, encodeReserveReplacer).replace(commaRE, ',');
 };
 
-const encodeUrl = function (url) {
+export const encodeUrl = function (url) {
     if (!url) {
         return url;
     }
@@ -103,8 +103,8 @@ const encodeUrl = function (url) {
     }
 };
 
-export default encodeUrl;
-
 export function getBasePath() {
     return window.appInfo && window.appInfo.basePath ? window.appInfo.basePath : '';
 }
+
+export default encodeUrl;

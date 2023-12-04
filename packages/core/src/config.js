@@ -17,9 +17,10 @@ const Config = {
     };
   },
   destination: () => void 0,
-  createRouter: ({ routes, VueRouter }) => void 0,
   routerProcessService: {},
+  createRouter: ({ routes, VueRouter }) => void 0,
   getTitleGuard: (appConfig) => (to, from, next) => void 0,
+  utils: {}
 };
 
 export function setConfig(newConfig) {

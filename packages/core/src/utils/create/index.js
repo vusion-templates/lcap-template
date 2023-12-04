@@ -81,7 +81,7 @@ function download(url) {
         //     });
         // }
         // // 👆
-        Config.utils.decodeDownloadName(effectiveFileName);
+        Config.utils?.decodeDownloadName(effectiveFileName);
         // Config.utils.downloadUrlDiff(data, status, statusText)
         const downloadUrl = window.URL.createObjectURL(new Blob([data]));
         const link = document.createElement('a');
@@ -149,7 +149,7 @@ const requester = function (requestInfo) {
 //       return Promise.reject(error);
 //     }
 //   );
-   Config.utils.axiosInterceptors();
+   Config.utils?.axiosInterceptors();
   // 👆
 
   const req = axios({

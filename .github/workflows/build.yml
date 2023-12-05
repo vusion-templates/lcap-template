@@ -30,17 +30,14 @@ jobs:
         run: echo "BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_ENV
 
       - name: Get version from branch name
-        run: echo "VERSION=$(echo ${{ env.BRANCH_NAME }} | cut -d'/' -f2)" >> $GITHUB_ENV
+        # 从分支名中获取版本号release/v1.0.0 => 1.0.0
+        run: echo "VERSION=$(echo $BRANCH_NAME | sed 's/release\/v//g')" >> $GITHUB_ENV
 
       - name: Build
-        run: npm run build:designer
-
-      # 创建一个临时目录
-      - name: Create temp dir
-        run: mkdir temp && cp -r ./public ./temp
+        run: npm run build && node ./scripts/build-assets.js --version ${{ env.VERSION }}
 
       - name: Upload
         uses: actions/upload-artifact@v3
         with:
-          name: 'mobile-template@${{ env.VERSION }}'
+          name: 'lcap-template@${{ env.VERSION }}'
           path: temp

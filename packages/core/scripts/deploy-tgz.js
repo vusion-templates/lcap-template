@@ -5,35 +5,15 @@ const path = require('path');
 const argv = require('minimist')(process.argv.slice(2));
 
 const pkg = require('../package.json');
-
 const root = path.resolve(__dirname, '../');
+const version = argv.version || pkg.version;
 
-const tgz = `lcap-core-template-${pkg.version}.tgz`;
-const tgzPath = path.resolve(root, tgz);
-
-// tgz 是否存在
-if (!fs.existsSync(tgzPath)) {
-  vusion.cli.error(`${tgzPath} not found`);
-  process.exit(1);
-}
+// 重命名zip.tgz
+require('./rename-tgz');
 
 const source = "zip.tgz";
-const sourcePath = path.resolve(root, source);
-
-// zip.tgz 是否存在
-if (fs.existsSync(sourcePath)) {
-  fs.unlinkSync(sourcePath);
-}
-
-// 复制tgz到zip.tgz
-fs.copyFileSync(tgzPath, sourcePath);
-
-if (!fs.existsSync(sourcePath)) {
-  console.error(`Cannot find source: ${sourcePath}`);
-  process.exit(1);
-}
-
-const prefix = `packages/${pkg.name}@${pkg.version}`;
+// 开始上传流程
+const prefix = `packages/${pkg.name}@${version}`;
 let formFiles = [source];
 
 if (!formFiles.length) {
@@ -53,12 +33,9 @@ formFiles = formFiles.map((filePath) => {
 upload(formFiles, {
   platform: argv.platform,
 }).then(() => {
-  vusion.cli.done(`上传成功 ${tgz}`);
+  vusion.cli.done(`上传成功`);
 }).catch(() => {
-  vusion.cli.error(`上传失败 ${tgz}`);
-}).finally(() => {
-  // 删除zip.tgz
-  fs.unlinkSync("zip.tgz");
-});
+  vusion.cli.error(`上传失败`);
+})
 
 // http://minio-api.codewave-dev.163yun.com/lowcode-static/packages/@lcap/template-core@3.5.0/zip.tgz

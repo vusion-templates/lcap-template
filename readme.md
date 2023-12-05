@@ -14,7 +14,7 @@
 
 根目录下
 ```
-npm run build
+npm run build:designer-local
 
 npm run deploy:dev
 ```

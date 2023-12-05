@@ -1,7 +1,7 @@
 import VueRouter from 'vue-router';
 import { setConfig } from '@lcap/core-template';
 
-import { $globalUtils, getFrontendVariables } from './plugins/dataTypes/index';
+import { $globalUtils, getFrontendVariables, setGlobal } from './plugins/dataTypes/index';
 import { destination } from './plugins/router';
 import { getTitleGuard } from './router/guards/title';
 
@@ -13,9 +13,7 @@ setConfig({
         show: UToast?.show,
         error: UToast?.error,
     },
-    $global: {
-        ...$globalUtils,
-    },
+    setGlobal,
     getFrontendVariables,
     destination,
     createRouter: (routes) => {

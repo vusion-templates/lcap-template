@@ -33,32 +33,32 @@ if (!fs.existsSync(sourcePath)) {
   process.exit(1);
 }
 
-const prefix = `packages/${pkg.name}@${pkg.version}`;
-let formFiles = [source];
+// const prefix = `packages/${pkg.name}@${pkg.version}`;
+// let formFiles = [source];
 
-if (!formFiles.length) {
-  cli.warn("No files found!");
-  process.exit(0);
-}
+// if (!formFiles.length) {
+//   cli.warn("No files found!");
+//   process.exit(0);
+// }
 
-formFiles = formFiles.map((filePath) => {
-  let relativePath = path
-    .relative(root, filePath)
-    .replace(/^public[\\/]/, "")
-    .replace(/\\/g, "/");
-  relativePath = path.posix.join(prefix, relativePath);
-  return { name: relativePath, path: filePath };
-});
+// formFiles = formFiles.map((filePath) => {
+//   let relativePath = path
+//     .relative(root, filePath)
+//     .replace(/^public[\\/]/, "")
+//     .replace(/\\/g, "/");
+//   relativePath = path.posix.join(prefix, relativePath);
+//   return { name: relativePath, path: filePath };
+// });
 
-upload(formFiles, {
-  platform: argv.platform,
-}).then(() => {
-  vusion.cli.done(`上传成功 ${tgz}`);
-}).catch(() => {
-  vusion.cli.error(`上传失败 ${tgz}`);
-}).finally(() => {
-  // 删除zip.tgz
-  fs.unlinkSync("zip.tgz");
-});
+// upload(formFiles, {
+//   platform: argv.platform,
+// }).then(() => {
+//   vusion.cli.done(`上传成功 ${tgz}`);
+// }).catch(() => {
+//   vusion.cli.error(`上传失败 ${tgz}`);
+// }).finally(() => {
+//   // 删除zip.tgz
+//   fs.unlinkSync("zip.tgz");
+// });
 
 // http://minio-api.codewave-dev.163yun.com/lowcode-static/packages/@lcap/template-core@3.5.0/zip.tgz

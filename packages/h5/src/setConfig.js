@@ -13,18 +13,14 @@ setConfig({
     createRouter,
     getTitleGuard,
     Toast: {
-        show: (message, stack) => {
-            Toast({
-                message,
-                position: 'top',
-            });
-        },
-        error: (message, stack) => {
-            Toast.fail({
-                message,
-                position: 'top',
-            });
-        },
+        show: (message, stack) => Toast({
+            message,
+            position: 'top',
+        }),
+        error: (message, stack) => Toast.fail({
+            message,
+            position: 'top',
+        }),
     },
     utils: {
         axiosInterceptors: [

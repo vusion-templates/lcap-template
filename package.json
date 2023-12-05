@@ -3,17 +3,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    
+    "build": "lerna run build:designer-local"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "lerna": "^8.0.0",
-    "inquirer": "^6.2.2",
-    "semver": "^7.5.4"
-  },
-  "dependencies": {
-    "query-string": "^6.13.1"
+    "minimist": "^1.2.8"
   }
 }

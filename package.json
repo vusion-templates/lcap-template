@@ -1,27 +1,19 @@
 {
-  "name": "lcap-template",
-  "version": "1.0.0",
+  "name": "root",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/vusion-templates/lcap-template.git"
+  "devDependencies": {
+    "lerna": "^8.0.0",
+    "inquirer": "^6.2.2",
+    "semver": "^7.5.4"
   },
   "dependencies": {
-    "inquirer": "^6.2.2",
-    "moment": "^2.29.4",
-    "query-string": "^6.13.1",
-    "semver": "^7.5.4",
-    "vusion-loader": "^0.5.1",
-    "css-sprite-loader": "^0.3.4",
-    "svg-classic-sprite-loader": "^0.2.5",
-    "icon-font-loader": "^3.0.2",
-    "postcss-loader": "^3.0.0"
+    "query-string": "^6.13.1"
   }
 }

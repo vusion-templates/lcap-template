@@ -1,12 +1,10 @@
-import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { 
-    setConfig, 
-    genInitFromSchema, genSortedTypeKey
+    setConfig
 } from '@lcap/core-template';
 import { destination } from './plugins/router';
 import pluginsAuthService from './plugins/auth/authService';
-import { $globalUtils, setFrontendVariables } from './plugins/dataTypes/index'
+import { $global, setFrontendVariables } from './plugins/dataTypes/index'
 import routerProcessService from './plugins/router/processService'
 import { getTitleGuard } from './router/guards/title'
 
@@ -23,7 +21,7 @@ setConfig({
         error: UToast?.error
     },
     $global: {
-        ...$globalUtils
+        ...$global
     },
     getFrontendVariables: (options) => {
         return {

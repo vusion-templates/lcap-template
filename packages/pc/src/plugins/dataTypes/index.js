@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { cookie, authService } from '@lcap/core-template';
+import { cookie, authService, genInitFromSchema, genSortedTypeKey } from '@lcap/core-template';
 
 export function setFrontendVariables(options) {
     const frontendVariables = {};
@@ -21,7 +21,7 @@ export function setFrontendVariables(options) {
     }
 }
 
-export const $globalUtils = {
+export const $global = {
     hasAuth({ string: authPath }) {
         return authService.has(authPath);
     },

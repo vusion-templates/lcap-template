@@ -32,7 +32,7 @@ export default {
       localCacheVariableSet 
     } = Config.getFrontendVariables(options);
 
-    const $global = {
+    const $g = {
       // 用户信息
       userInfo: {},
       // 国际化信息
@@ -200,9 +200,8 @@ export default {
       getUserLanguage() {
         return navigator.language || navigator.userLanguage;
       },
-
-      ...Config.$global,
     };
+    const $global = Config.setGlobal($g);
 
     Object.keys(porcessPorts).forEach((service) => {
       $global[service] = porcessPorts[service];

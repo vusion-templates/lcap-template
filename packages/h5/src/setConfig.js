@@ -1,13 +1,13 @@
 import { setConfig } from '@lcap/core-template';
 import { VanToast as Toast } from '@lcap/mobile-ui';
 
-import { getFrontendVariables, $global } from './plugins/dataTypes';
+import { getFrontendVariables, setGlobal } from './plugins/dataTypes';
 import { destination } from './plugins/router';
 import { createRouter, getTitleGuard } from './router';
 
 // 设置core config
 setConfig({
-    $global,
+    setGlobal,
     getFrontendVariables,
     destination,
     createRouter,

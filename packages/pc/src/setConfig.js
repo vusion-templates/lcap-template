@@ -13,6 +13,7 @@ import utils from './utils/index'
 
 // 设置core config
 setConfig({
+    frontendFlag: 'PC',
     pluginsAuthService: {
         ...pluginsAuthService
     },

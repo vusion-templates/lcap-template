@@ -70,19 +70,19 @@ function download(url) {
         // 包含 content-disposition， 从中解析名字，不包含 content-disposition 的获取请求地址的后缀
         let effectiveFileName = res.request.getAllResponseHeaders().includes('content-disposition') ? getFilenameFromContentDispositionHeader(res.request.getResponseHeader('content-disposition')) : res.request.responseURL.split('/').pop();
         const { data, status, statusText } = res;
-        // 如果没有size长度 PC端独有👇
-        // effectiveFileName = decodeURIComponent(effectiveFileName);
-        // if (data && data.size === 0) {
-        //     return Promise.resolve({
-        //         data: {
-        //             code: status,
-        //             msg: statusText,
-        //         },
-        //     });
-        // }
-        // // 👆
-        effectiveFileName = Config.utils?.decodeDownloadName(effectiveFileName);
-        // Config.utils.downloadUrlDiff(data, status, statusText)
+        if (Config?.frontendFlag === 'PC') {
+            // 如果没有size长度 PC端独有👇
+            effectiveFileName = decodeURIComponent(effectiveFileName);
+            if (data && data.size === 0) {
+                return Promise.resolve({
+                    data: {
+                        code: status,
+                        msg: statusText,
+                    },
+                });
+            }
+           // 👆
+        }
         const downloadUrl = window.URL.createObjectURL(new Blob([data]));
         const link = document.createElement('a');
         link.href = downloadUrl;

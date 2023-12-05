@@ -5,6 +5,11 @@ on:
     branches:
       - release/*
   workflow_dispatch:
+    inputs:
+      version:
+        description: '自定义版本号'
+        required: false
+        type: string
 
 jobs:
   build:
@@ -13,7 +18,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install pnpm 7
+      - name: Install pnpm 8
         uses: pnpm/action-setup@v2.2.4
         with:
           version: 8
@@ -34,6 +39,11 @@ jobs:
       - name: Get version from branch name
         # 从分支名中获取版本号release/v1.0.0 => 1.0.0
         run: echo "VERSION=$(echo $BRANCH_NAME | sed 's/release\/v//g')" >> $GITHUB_ENV
+
+      # 版本号优先取自定义版本号，其次取分支名中的版本号
+      - name: Get version from input
+        if: ${{ inputs.version }}
+        run: echo "VERSION=${{ inputs.version }}" >> $GITHUB_ENV
 
       - name: Build
         run: npm run build && node ./scripts/build-assets.js --version ${{ env.VERSION }}

@@ -10,3 +10,15 @@
       |-- h5 // h5端业务包
 ```
 
+## 本地发布静态资源
+
+根目录下
+```
+npm run build
+
+npm run deploy:dev
+```
+
+## 发版asset资源获取
+
+https://github.com/vusion-templates/lcap-template/actions

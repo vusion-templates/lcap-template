@@ -3,7 +3,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "lerna run build:designer-local"
+    "build": "lerna run build:designer-local",
+    "build:designer-local": "lerna run build:designer-local",
+    "deploy:dev": "lerna run deploy:dev"
   },
   "keywords": [],
   "author": "",

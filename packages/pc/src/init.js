@@ -13,7 +13,7 @@ import {
     RouterPlugin,
     ServicesPlugin,
     UtilsPlugin,
-    getTitleGuard,
+    // getTitleGuard,
     initRouter,
     microFrontend,
     filterRoutes,
@@ -22,6 +22,7 @@ import {
     filterAuthResources,
     findNoAuthView,
 } from '@lcap/core-template';
+import { getTitleGuard } from './router';
 
 import VueI18n from 'vue-i18n';
 import App from './App.vue';

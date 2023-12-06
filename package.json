@@ -5,7 +5,8 @@
   "scripts": {
     "build": "lerna run build:designer-local",
     "build:designer-local": "lerna run build:designer-local",
-    "deploy:dev": "lerna run deploy:dev"
+    "deploy:dev": "lerna run deploy:dev",
+    "deploy:test": "lerna run deploy:test"
   },
   "keywords": [],
   "author": "",

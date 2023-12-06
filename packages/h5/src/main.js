@@ -1,5 +1,5 @@
 import '@lcap/mobile-ui/dist-theme/index.css';
-import { routes } from '@lcap/core-template';
+import { routes } from './router/routes';
 
 import metaData from './metaData.json';
 import platformConfig from './platform.config.json';

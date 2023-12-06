@@ -21,9 +21,11 @@ import {
     getBasePath,
     filterAuthResources,
     findNoAuthView,
-    getTitleGuard,
+    // getTitleGuard,
     initRouter,
 } from '@lcap/core-template';
+
+import { getTitleGuard } from './router';
 
 import VueI18n from 'vue-i18n';
 import App from './App.vue';

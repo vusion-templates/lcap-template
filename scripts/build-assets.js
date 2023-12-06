@@ -23,11 +23,13 @@ if (!fs.existsSync(tempDir)) {
 const mobileTemplateDir = path.resolve(tempDir, `mobile-template@${version}`);
 fs.mkdirSync(mobileTemplateDir);
 execSync(`cp -r ${h5Dir}/public/* ${mobileTemplateDir}`);
+execSync(`cp ${h5Dir}/zip.tgz ${mobileTemplateDir}`);
 
 // 复制pc的public里的内容到临时目录下的pc-template@version
 const pcTemplateDir = path.resolve(tempDir, `pc-template@${version}`);
 fs.mkdirSync(pcTemplateDir);
 execSync(`cp -r ${pcDir}/public/* ${pcTemplateDir}`);
+execSync(`cp ${pcDir}/zip.tgz ${pcTemplateDir}`);
 
 // 复制core的zip.tgz文件到临时目录下的core-template@version
 const coreTemplateDir = path.resolve(tempDir, `core-template@${version}`);

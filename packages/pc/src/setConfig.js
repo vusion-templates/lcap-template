@@ -1,7 +1,7 @@
 import VueRouter from 'vue-router';
 import { setConfig } from '@lcap/core-template';
 
-import { $globalUtils, getFrontendVariables, setGlobal } from './plugins/dataTypes/index';
+import { getFrontendVariables, setGlobal } from './plugins/dataTypes/index';
 import { destination } from './plugins/router';
 import { getTitleGuard } from './router/guards/title';
 

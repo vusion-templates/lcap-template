@@ -2,9 +2,12 @@ module.exports = {
     moduleFileExtensions: [
         'vue', 'js', 'mjs', 'cjs', 'jsx', 'ts', 'tsx', 'json', 'node',
     ],
+    preset: 'ts-jest',
+    testEnvironment: 'node',
     transform: {
         '^.+\\.vue$': 'vue-jest',
-        '^.+\\.jsx?$': 'babel-jest',
+        '^.+\\.(js|jsx)$': 'babel-jest',
+        '^.+\\.(ts|tsx)?$': 'ts-jest',
         '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
     },
     transformIgnorePatterns: [
@@ -21,7 +24,10 @@ module.exports = {
         '**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)',
         '**/tests/unit/**/*.test.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)',
     ],
-    testURL: 'http://localhost/',
+    testEnvironment: 'jsdom',
+    testEnvironmentOptions: {
+        url: 'http://localhost/',
+    },
     watchPlugins: [
         'jest-watch-typeahead/filename',
         'jest-watch-typeahead/testname',

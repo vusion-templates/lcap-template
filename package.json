@@ -12,7 +12,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "lerna": "^8.0.0",
-    "minimist": "^1.2.8"
+    "lerna": "^8.0.0"
   }
 }

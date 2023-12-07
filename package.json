@@ -2,8 +2,7 @@
   "name": "root",
   "description": "低代码应用模板",
   "scripts": {
-    "build": "lerna run build:designer-local",
-    "build:designer-local": "lerna run build:designer-local",
+    "build": "lerna run build:designer",
     "deploy:dev": "lerna run deploy:dev",
     "deploy:test": "lerna run deploy:test"
   },

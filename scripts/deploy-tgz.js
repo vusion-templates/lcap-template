@@ -70,6 +70,9 @@ function deployTgz(options = {}) {
     })
     .catch(() => {
       console.error(`上传失败`);
+    })
+    .finally(() => {
+      fs.unlinkSync(sourcePath);
     });
 }
 

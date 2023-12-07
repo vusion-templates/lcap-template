@@ -1,7 +1,6 @@
 {
   "name": "root",
-  "description": "",
-  "main": "index.js",
+  "description": "低代码应用模板",
   "scripts": {
     "build": "lerna run build:designer-local",
     "build:designer-local": "lerna run build:designer-local",
@@ -13,6 +12,7 @@
   "license": "ISC",
   "devDependencies": {
     "lerna": "^8.0.0",
+    "lcap": "0.2.3",
     "minimist": "^1.2.8"
   }
 }

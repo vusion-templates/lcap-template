@@ -1,8 +1,6 @@
 import { utils as codewaveUtils } from '@/plugins/utils/index.js';
 
-jest.mock('cloud-ui.vusion', () => ({
 
-}));
 
 describe('日期时间计数函数', () => {
     test('GetDateCount，Date 类型，无时区信息，兼容性测试', () => {

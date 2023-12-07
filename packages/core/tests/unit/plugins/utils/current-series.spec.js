@@ -2,9 +2,7 @@ import { utils as codewaveUtils } from '@/plugins/utils/index.js';
 const momentTZ = require('moment-timezone');
 const moment = require('moment');
 
-jest.mock('cloud-ui.vusion', () => ({
 
-}));
 
 describe('当前日期时间系列函数', () => {
     test('CurrentDateTime', () => {

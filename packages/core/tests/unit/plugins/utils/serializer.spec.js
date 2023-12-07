@@ -1,9 +1,7 @@
 import { utils as codewaveUtils } from '@/plugins/utils/index.js';
 import momentTZ from 'moment-timezone';
 
-jest.mock('cloud-ui.vusion', () => ({
 
-}));
 
 describe('序列化函数', () => {
     test('JSON 序列化兼容性测试，无时区', () => {
@@ -87,6 +85,20 @@ describe('序列化函数', () => {
                 .toBe('2016-03-13 01:59:59');
             expect(codewaveUtils.ToString('nasl.core.DateTime', noSummerTime1, 'Asia/Shanghai'))
                 .toBe('2016-03-13 14:59:59');
+        }
+
+        {
+            expect(codewaveUtils.ToString('nasl.core.Time', '01:59:59'))
+                .toBe('01:59:59');
+            expect(codewaveUtils.ToString('nasl.core.Time', '14:59:59'))
+                .toBe('14:59:59');
+        }
+
+        {
+            expect(codewaveUtils.ToString('nasl.core.Time', '2016-03-13 01:59:59'))
+                .toBe('01:59:59');
+            expect(codewaveUtils.ToString('nasl.core.Time', '2016-03-13 14:59:59'))
+                .toBe('14:59:59');
         }
     });
 

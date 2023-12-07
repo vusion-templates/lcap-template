@@ -1,9 +1,7 @@
 import { utils as codewaveUtils } from '@/plugins/utils/index.js';
 import momentTZ from 'moment-timezone';
 
-jest.mock('cloud-ui.vusion', () => ({
 
-}));
 
 describe('Convert 函数', () => {
     test('Convert 函数，string 到 string', () => {

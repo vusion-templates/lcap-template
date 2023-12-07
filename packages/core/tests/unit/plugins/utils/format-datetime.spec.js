@@ -1,8 +1,6 @@
 import { utils as codewaveUtils } from '@/plugins/utils/index.js';
 
-jest.mock('cloud-ui.vusion', () => ({
 
-}));
 
 describe('日期时间格式化函数', () => {
     const curTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;

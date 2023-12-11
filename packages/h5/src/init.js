@@ -21,7 +21,6 @@ import {
     getBasePath,
     filterAuthResources,
     findNoAuthView,
-    // getTitleGuard,
     initRouter,
 } from '@lcap/core-template';
 

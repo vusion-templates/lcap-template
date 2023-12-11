@@ -3,7 +3,6 @@ import { setConfig } from '@lcap/core-template';
 
 import { getFrontendVariables, setGlobal } from './plugins/dataTypes/index';
 import { destination } from './plugins/router';
-import { getTitleGuard } from './router/guards/title';
 
 import { UToast } from 'cloud-ui.vusion';
 
@@ -23,7 +22,6 @@ setConfig({
             routes,
         });
     },
-    getTitleGuard,
     utils: {
         decodeDownloadName: (effectiveFileName) => {
             return decodeURIComponent(effectiveFileName);

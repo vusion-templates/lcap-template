@@ -3,7 +3,7 @@ import { setConfig } from '@lcap/core-template';
 
 import { getFrontendVariables, setGlobal } from './plugins/dataTypes/index';
 import { destination } from './plugins/router';
-
+import { createRouter } from './router';
 import { UToast } from 'cloud-ui.vusion';
 
 // 设置core config
@@ -15,13 +15,7 @@ setConfig({
     setGlobal,
     getFrontendVariables,
     destination,
-    createRouter: (routes) => {
-        return new VueRouter({
-            mode: 'history',
-            base: window.LcapMicro?.routePrefix || process.env.BASE_URL,
-            routes,
-        });
-    },
+    createRouter,
     utils: {
         decodeDownloadName: (effectiveFileName) => {
             return decodeURIComponent(effectiveFileName);

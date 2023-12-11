@@ -1,7 +1,5 @@
 import Vue from 'vue';
 
-import Config from '../../config';
-
 export const getComponentOption = function (routerItem) {
     if (routerItem.components.default) {
         const ctor = routerItem.components.default._Ctor;
@@ -14,5 +12,3 @@ export const getComponentOption = function (routerItem) {
         return componentOptions;
     }
 };
-
-export const getTitleGuard = Config.getTitleGuard;

@@ -3,7 +3,7 @@ import { VanToast as Toast } from '@lcap/mobile-ui';
 
 import { getFrontendVariables, setGlobal } from './plugins/dataTypes';
 import { destination } from './plugins/router';
-import { createRouter, getTitleGuard } from './router';
+import { createRouter } from './router';
 
 // 设置core config
 setConfig({
@@ -11,7 +11,6 @@ setConfig({
     getFrontendVariables,
     destination,
     createRouter,
-    getTitleGuard,
     Toast: {
         show: (message, stack) => Toast({
             message,

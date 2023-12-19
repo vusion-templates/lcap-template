@@ -1,15 +1,6 @@
 name: Build Assets
 
-on:
-  push:
-    branches:
-      - release/*
-  workflow_dispatch:
-    inputs:
-      version:
-        description: '自定义版本号'
-        required: false
-        type: string
+on: [push]
 
 jobs:
   build:

@@ -55,7 +55,12 @@ jobs:
         run: npm run build && node ./scripts/copy-assets.js --version ${{ env.VERSION }}
 
       - name: Upload
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'lcap-template@${{ env.VERSION }}'
           path: temp
+
+  call-giselle:
+    needs: build
+    uses: vusion-templates/giselle/.github/workflows/release-lcap-template.yml@master
+    secrets: inherit

@@ -4,12 +4,6 @@ on:
   push:
     branches:
       - release/*
-  workflow_dispatch:
-    inputs:
-      version:
-        description: '自定义版本号'
-        required: false
-        type: string
 
 jobs:
   build:
@@ -36,16 +30,6 @@ jobs:
       - name: Get current branch name
         run: echo "BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_ENV
 
-      - name: Get version from branch name
-        # 从分支名中获取版本号, 如分支名release/v1.0.0，获取到1.0.0；如果分支名不符合规范，则不设置VERSION变量
-        run: 
-          echo "VERSION=$(echo $BRANCH_NAME | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' | cut -c 2-)" >> $GITHUB_ENV
-
-      # 版本号优先取自定义版本号，其次取分支名中的版本号
-      - name: Get version from input
-        if: ${{ inputs.version }}
-        run: echo "VERSION=${{ inputs.version }}" >> $GITHUB_ENV
-      
       # 如果版本号不匹配a.b.c格式，则使用lerna.json中的版本号
       - name: Get version from lerna.json
         if: ${{ !env.VERSION }}
@@ -55,7 +39,12 @@ jobs:
         run: npm run build && node ./scripts/copy-assets.js --version ${{ env.VERSION }}
 
       - name: Upload
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'lcap-template@${{ env.VERSION }}'
           path: temp
+
+  call-giselle:
+    needs: build
+    uses: vusion-templates/giselle/.github/workflows/release-lcap-template.yml@master
+    secrets: inherit

@@ -134,7 +134,7 @@ export const utils = {
     }
     return "";
   },
-  ToEnumValue(value, enumTypeAnnotation) {
+  ToEnumItem(value, enumTypeAnnotation) {
     const { typeName, typeNamespace } = enumTypeAnnotation || {};
     if (typeName) {
       let enumName = typeName;

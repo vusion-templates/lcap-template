@@ -68,6 +68,7 @@ import {
 } from "./helper";
 
 let enumsMap = {};
+let dataTypesMap = {}
 
 const safeNewDate = (dateStr) => {
   try {
@@ -133,7 +134,7 @@ export const utils = {
     }
     return "";
   },
-  StringToEnumValue(value, enumTypeAnnotation) {
+  ToEnumItem(value, enumTypeAnnotation) {
     const { typeName, typeNamespace } = enumTypeAnnotation || {};
     if (typeName) {
       let enumName = typeName;
@@ -149,16 +150,24 @@ export const utils = {
   },
   EnumToList(enumTypeAnnotation) {
     const { typeName, typeNamespace } = enumTypeAnnotation || {};
+    let tempEnums = dataTypesMap[`${typeNamespace}.${typeName}`] || {};
+    let tempName = tempEnums?.name;
     let enumName = typeName;
     if (typeName && typeNamespace?.startsWith("extensions")) {
-      enumName = typeNamespace + "." + enumName;
+        enumName = typeNamespace + "." + enumName;
+        tempName = enumName;
     }
     const enumeration = enumsMap[enumName];
+   
+    let isToNumber = false;
+    if (enumName === tempName && tempEnums.valueType?.typeName === 'Long' && tempEnums.valueType?.typeNamespace === 'nasl.core') {
+        isToNumber = true
+    }
     if (!enumeration) return [];
     else {
       return Object.keys(enumeration).map((key) => ({
         text: enumeration[key],
-        value: key,
+        value: isToNumber ? +key : key
       }));
     }
   },
@@ -1414,5 +1423,6 @@ export default {
     Vue.prototype.$utils = utils;
     window.$utils = utils;
     enumsMap = options.enumsMap;
+    dataTypesMap = options.dataTypesMap;
   },
 };

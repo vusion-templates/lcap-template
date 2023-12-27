@@ -120,6 +120,9 @@ export default {
         const decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
         return decryptedStr.toString();
       },
+      hasAuth({ authPath }) {
+        return authService.has(authPath);
+      },
       getLocation() {
         return new Promise((res, rej) => {
           function showPosition(position) {

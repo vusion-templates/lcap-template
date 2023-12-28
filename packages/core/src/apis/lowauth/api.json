@@ -30,7 +30,7 @@
 	"GetUserResources": {
 		"url": {
 			"method": "get",
-			"path": "/rest/getUserResources",
+			"path": "/api/user/system/getUserResources",
 			"query": {}
 		}
 	},

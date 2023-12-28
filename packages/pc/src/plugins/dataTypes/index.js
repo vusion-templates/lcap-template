@@ -23,9 +23,6 @@ export function getFrontendVariables(options) {
 
 export function setGlobal($global) {
     return Object.assign($global, {
-        hasAuth({ string: authPath }) {
-            return authService.has(authPath);
-        },
         logout() {
             Vue.prototype
                 .$confirm({

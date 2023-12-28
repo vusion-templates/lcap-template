@@ -1,5 +1,5 @@
 import './public-path';
-import metaData from './metaData.json';
+import metaData from './metaData.js';
 import platformConfig from './platform.config.json';
 import { routes } from './router/routes';
 import './library';
@@ -31,9 +31,9 @@ export async function mount(props) {
         window.LcapMicro.notFoundFn = () => {
             location.href = window.LcapMicro.notFoundUrl;
         };
-    
+
     const { container } = props;
-    window.LcapMicro.container = container.querySelector('#app'); 
+    window.LcapMicro.container = container.querySelector('#app');
     // window.LcapMicro.appendTo = container.querySelector('#app');  // 如果开启了样式隔离，需要设置 appendTo, 弹窗等组件会挂在 container 上。
     window.LcapMicro.props = props;
     appVM = cloudAdminDesigner.init(platformConfig?.appConfig, platformConfig, routes, metaData);

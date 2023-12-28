@@ -9,6 +9,8 @@ import paramsSerializer from "./paramsSerializer";
 import { formatMicroFrontUrl } from "../../plugins/router/microFrontUrl"; // 微前端路由方法
 
 import Config from '../../config';
+import { createMockServiceByData} from "./mockData.js";
+const getData = (str)=> (new Function('return ' + str))();
 
 
 const formatContentType = function (contentType, data) {
@@ -164,7 +166,7 @@ const adjustPathWithSysPrefixPath = (apiSchemaList) => {
     if (apiSchemaList) {
         for (const key in apiSchemaList) {
             if (!newApiSchemaMap[key]) {
-                const { url, ...others } = apiSchemaList[key] || {};
+              const { url, ...others } = apiSchemaList[key] || {};
                 newApiSchemaMap[key] = {
                     url: {
                         ...url,
@@ -194,7 +196,23 @@ export const createService = function createService(apiSchemaList, serviceConfig
     });
     serviceConfig = fixServiceConfig;
     const newApiSchemaMap = adjustPathWithSysPrefixPath(apiSchemaList);
-    return service.generator(newApiSchemaMap, dynamicServices, serviceConfig);
+    let logicsInstance = service.generator(newApiSchemaMap, dynamicServices, serviceConfig);
+    console.log('logicsInstance',JSON.stringify(logicsInstance),logicsInstance['GetUser'])
+    let mockInstance ={}
+
+      if (window.appInfo.isPreviewFe) {
+        if(window?.allMockData?.mock){
+            JSON.parse(window?.allMockData?.mock).map(v=>{
+             createMockServiceByData(v.name, getData(v.mockData), mockInstance)
+            })
+            createMockServiceByData('GetUser', {}, mockInstance)
+            createMockServiceByData('GetUserResources', {}, mockInstance)
+            Object.keys(logicsInstance).map(apiName => !mockInstance[apiName] && (mockInstance[apiName]= logicsInstance[apiName]))
+        }
+     }else{
+        mockInstance = logicsInstance
+     }
+     return mockInstance
 };
 
 export const createLogicService = function createLogicService(apiSchemaList, serviceConfig, dynamicServices) {
@@ -209,19 +227,21 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
     serviceConfig = fixServiceConfig;
     const newApiSchemaMap = adjustPathWithSysPrefixPath(apiSchemaList);
     if (window.preRequest) {
-        service.preConfig.set('preRequest', (requestInfo, preData) => {
-            const HttpRequest = {
-                requestURI: requestInfo.url.path,
-                remoteIp: '',
-                requestMethod: requestInfo.url.method,
-                body: JSON.stringify(requestInfo.url.body),
-                headers: requestInfo.url.headers,
-                querys: JSON.stringify(requestInfo.url.query),
-                cookies: foramtCookie(document.cookie),
-            };
+      let resolve  = (requestInfo, preData) => {
+        const HttpRequest = {
+            requestURI: requestInfo.url.path,
+            remoteIp: '',
+            requestMethod: requestInfo.url.method,
+            body: JSON.stringify(requestInfo.url.body),
+            headers: requestInfo.url.headers,
+            querys: JSON.stringify(requestInfo.url.query),
+            cookies: foramtCookie(document.cookie),
+            requestInfo
+        };
+        return  window.preRequest && window.preRequest(HttpRequest, preData);
+      }
 
-            window.preRequest && window.preRequest(HttpRequest, preData);
-        });
+        service.preConfig.set('preRequest',   {resolve});
         serviceConfig.config.preRequest = true;
     }
     if (window.postRequest) {
@@ -312,5 +332,19 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
     };
     serviceConfig.config.lcapLocation = true;
     service.postConfig.set('shortResponse', shortResponse);
-    return service.generator(newApiSchemaMap, dynamicServices, serviceConfig);
+    let logicsInstance=  service.generator(newApiSchemaMap, dynamicServices, serviceConfig);
+    console.log('logicsInstance  Logic',JSON.stringify(logicsInstance))
+    let mockInstance ={}
+    if (window.appInfo.isPreviewFe) {
+        if(window?.allMockData?.mock){
+            let mockApiList =JSON.parse(window?.allMockData?.mock).map(v=>v.name)
+            JSON.parse(window?.allMockData?.mock).map(v=>{
+             createMockServiceByData(v.name, getData(v.mockData), mockInstance)
+            })
+            Object.keys(logicsInstance).map(apiName => !mockInstance[apiName] && (mockInstance[apiName]= logicsInstance[apiName]))
+        }
+     }else{
+        mockInstance= logicsInstance
+     }
+    return mockInstance
 };

@@ -23,7 +23,9 @@ export default {
         Vue.prototype.$formatMicroFrontUrl = formatMicroFrontUrl;
         Vue.prototype.$formatMicroFrontRouterPath = formatMicroFrontRouterPath;
 
-        Vue.prototype.$destination = Config.destination.bind(Vue.prototype);
+        Vue.prototype.$destination = function(...args) {
+          Config.destination.call(this, ...args);
+        };
 
         Vue.prototype.$link = async function (url, target = '_self') {
             let realUrl;

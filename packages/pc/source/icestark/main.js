@@ -1,4 +1,4 @@
-import metaData from './metaData.json';
+import metaData from './metaData.js';
 import platformConfig from './platform.config.json';
 import { routes } from './router/routes';
 import './library';
@@ -30,8 +30,8 @@ export function mount({ container, customProps  }) {
         window.LcapMicro.notFoundFn = () => {
             location.href = window.LcapMicro.notFoundUrl;
         };
-    
-    window.LcapMicro.container = container; 
+
+    window.LcapMicro.container = container;
     window.LcapMicro.props = customProps;
     appVM = cloudAdminDesigner.init(platformConfig?.appConfig, platformConfig, routes, metaData);
 }

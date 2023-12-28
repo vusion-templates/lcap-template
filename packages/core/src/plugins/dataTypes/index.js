@@ -9,6 +9,7 @@ import {
 import { porcessPorts } from "../router/processService";
 
 import Config from '../../config'
+import authService from '../auth/authService';
 
 window.CryptoJS = CryptoJS;
 const aesKey = ";Z#^$;8+yhO!AhGo";

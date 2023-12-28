@@ -36,10 +36,6 @@ export function setGlobal($global) {
         navigateToUserInfo() {
             navigateToUserInfoPage();
         },
-
-        hasAuth(authPath) {
-            return authService.has(authPath);
-        },
         logout() {
             window.vant.VanDialog.confirm({
                 title: '提示',

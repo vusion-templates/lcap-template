@@ -69,15 +69,28 @@ import {
 
 let enumsMap = {};
 
+const safeNewDate = (dateStr) => {
+  try {
+      const res = new Date(dateStr.replaceAll('-', '/'));
+      if (['Invalid Date', 'Invalid time value', 'invalid date'].includes(res.toString())) {
+          return new Date(dateStr);
+      } else {
+          return res;
+      }
+  } catch (err) {
+      return new Date(dateStr);
+  }
+};
+
 function naslDateToLocalDate(date) {
   const localTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const localDate = momentTZ.tz(date, "YYYY-MM-DD", localTZ);
-  return new Date(localDate.format("YYYY-MM-DD HH:mm:ss"));
+  return safeNewDate(localDate.format("YYYY-MM-DD HH:mm:ss"));
 }
 
-function convertJSDateInTargetTimeZone(date, tz) {
-  return new Date(
-    momentTZ.tz(date, getAppTimezone(tz)).format("YYYY-MM-DD HH:mm:ss.SSS")
+export function convertJSDateInTargetTimeZone(date, tz) {
+  return safeNewDate(
+    momentTZ.tz(safeNewDate(date), getAppTimezone(tz)).format("YYYY-MM-DD HH:mm:ss")
   );
 }
 
@@ -88,19 +101,6 @@ function toValue(date, typeKey) {
   else if (typeKey === "json") return this.JsonSerialize(date);
   else if (typeKey === "timestamp") return date.getTime();
   else return date;
-}
-/* 改变ios的-时间格式, 可参考https://www.jianshu.com/p/208a24a4cd8c */
-function fixIOSDateString(value) {
-  // 判断是否ios系统
-  if (!/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
-    return value;
-  }
-
-  if (/^\d{4}-\d{1,2}-\d{1,2}(\s\d{1,2}:\d{1,2}:\d{1,2})?$/.test(value)) {
-    return value.replace(/-/g, "/");
-  }
-
-  return value;
 }
 
 function isArrayInBounds(arr, index) {
@@ -842,20 +842,20 @@ export const utils = {
   },
   AddDays(date = new Date(), amount = 1, converter = "json") {
     return toValue(
-      addDays(new Date(fixIOSDateString(date)), amount),
+      addDays(safeNewDate(date), amount),
       converter
     );
   },
   AddMonths(date = new Date(), amount = 1, converter = "json") {
     /** 传入的值为标准的时间格式 */
     return toValue(
-      addMonths(new Date(fixIOSDateString(date)), amount),
+      addMonths(safeNewDate(date), amount),
       converter
     );
   },
   SubDays(date = new Date(), amount = 1, converter = "json") {
     return toValue(
-      subDays(new Date(fixIOSDateString(date)), amount),
+      subDays(safeNewDate(date), amount),
       converter
     );
   },
@@ -919,7 +919,7 @@ export const utils = {
     }
   },
   AlterDateTime(dateString, option, count, unit) {
-    const date = new Date(dateString);
+    const date = safeNewDate(dateString);
     const amount = option === "Increase" ? count : -count;
     let addDate;
     switch (unit) {
@@ -955,12 +955,10 @@ export const utils = {
     }
   },
   isInputValidNaslDateTime(inp) {
-    return (
-      inp instanceof Date ||
-      /^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2})/.test(inp) ||
-      /^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2})/.test(inp)
-    );
-  },
+    return inp instanceof Date
+        || (typeof inp === 'string' && /^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2})/.test(inp))
+        || (typeof inp === 'string' && /^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2})/.test(inp));
+},
   GetSpecificDaysOfWeek(startdatetr, enddatetr, arr, tz) {
     if (!startdatetr)
       toastAndThrow(`内置函数GetSpecificDaysOfWeek入参错误：startDate不能为空`);
@@ -1098,14 +1096,14 @@ export const utils = {
   Convert(value, typeAnnotation) {
     if (typeAnnotation && typeAnnotation.typeKind === "primitive") {
       if (typeAnnotation.typeName === "DateTime")
-        return formatRFC3339(new Date(fixIOSDateString(value)));
+        return formatRFC3339(safeNewDate(value));
       else if (typeAnnotation.typeName === "Date")
-        return format(new Date(fixIOSDateString(value)), "yyyy-MM-dd");
+        return format(safeNewDate(value), "yyyy-MM-dd");
       else if (typeAnnotation.typeName === "Time") {
         if (/^\d{2}:\d{2}:\d{2}$/.test(value))
           // 纯时间 12:30:00
-          return format(new Date("2022/01/01 " + value), "HH:mm:ss");
-        else return format(new Date(fixIOSDateString(value)), "HH:mm:ss");
+          return format(safeNewDate("2022/01/01 " + value), "HH:mm:ss");
+        else return format(safeNewDate(value), "HH:mm:ss");
       } else if (typeAnnotation.typeName === "String") return String(value);
       else if (
         typeAnnotation.typeName === "Double" ||
@@ -1119,7 +1117,7 @@ export const utils = {
       )
         // 日期时间格式特殊处理; 整数： format 'int' ; 长整数: format: 'long'
         return /^\d{4}-\d{2}-\d{2}(.*)+/.test(value)
-          ? new Date(fixIOSDateString(value)).getTime()
+          ? safeNewDate(value).getTime()
           : Math.round(+value);
       else if (typeAnnotation.typeName === "Boolean")
         // 布尔值
@@ -1189,8 +1187,8 @@ export const utils = {
       dateTime2 = `1970/01/01 ${dateTime2}`;
     }
     if (
-      !isValid(new Date(fixIOSDateString(dateTime1))) ||
-      !isValid(new Date(fixIOSDateString(dateTime2)))
+      !isValid(safeNewDate(dateTime1)) ||
+      !isValid(safeNewDate(dateTime2))
     )
       return;
     const map = {
@@ -1206,8 +1204,8 @@ export const utils = {
     if (!map[calcType]) return;
     const method = map[calcType];
     const diffRes = method(
-      new Date(fixIOSDateString(dateTime2)),
-      new Date(fixIOSDateString(dateTime1))
+      safeNewDate(dateTime2),
+      safeNewDate(dateTime1)
     );
     return isAbs ? Math.abs(diffRes) : diffRes;
   },
@@ -1216,7 +1214,7 @@ export const utils = {
     if (!dateTime) {
       toastAndThrow(`内置函数ConvertTimezone入参错误：指定日期为空`);
     }
-    if (!isValid(new Date(dateTime))) {
+    if (!isValid(safeNewDate(dateTime))) {
       toastAndThrow(
         `内置函数ConvertTimezone入参错误：指定日期不是合法日期类型`
       );

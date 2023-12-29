@@ -71,8 +71,8 @@ export default {
         .GetUserResources({
           headers: getBaseHeaders(),
           query: {
-            userId: Vue.prototype.$global.userInfo.UserId,
-            userName: Vue.prototype.$global.userInfo.UserName,
+            // userId: Vue.prototype.$global.userInfo.UserId,
+            // userName: Vue.prototype.$global.userInfo.UserName,
           },
           config: {
             noErrorTip: true,

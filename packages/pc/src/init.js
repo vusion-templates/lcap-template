@@ -111,10 +111,10 @@ const init = (appConfig, platformConfig, routes, metaData) => {
             console.error(err);
         }
     };
+    if (!window?.$toast) {
+        window.$toast = $toast;
+    }
     if (window?.rendered) {
-        if (!window?.$toast) {
-            window.$toast = $toast;
-        }
         window.rendered();
     }
     const baseResourcePaths = platformConfig.baseResourcePaths || [];

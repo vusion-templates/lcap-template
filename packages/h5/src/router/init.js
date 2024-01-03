@@ -1,7 +1,7 @@
 export function createRouter({ routes, VueRouter }) {
     const router = new VueRouter({
         mode: 'history',
-        base: process.env.BASE_URL,
+        base: window.LcapMicro?.routePrefix || process.env.BASE_URL,
         routes,
     });
 

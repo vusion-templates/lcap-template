@@ -7,8 +7,12 @@ export function getFrontendVariables(options) {
 
     if (Array.isArray(options && options.frontendVariables)) {
         options.frontendVariables.forEach((frontendVariable) => {
-            const { name, typeAnnotation, defaultValue, localCache } = frontendVariable;
+            const { name, typeAnnotation, defaultValueFn, defaultCode, localCache } = frontendVariable;
             localCache && localCacheVariableSet.add(name); // 本地存储的全局变量集合
+            let defaultValue = defaultCode?.code;
+            if (Object.prototype.toString.call(defaultValueFn) === '[object Function]') {
+                defaultValue = defaultValueFn(Vue);
+            }
             frontendVariables[name] = genInitFromSchema(genSortedTypeKey(typeAnnotation), defaultValue);
         });
     }

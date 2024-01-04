@@ -197,7 +197,6 @@ export const createService = function createService(apiSchemaList, serviceConfig
     serviceConfig = fixServiceConfig;
     const newApiSchemaMap = adjustPathWithSysPrefixPath(apiSchemaList);
     let logicsInstance = service.generator(newApiSchemaMap, dynamicServices, serviceConfig);
-    console.log('logicsInstance',JSON.stringify(logicsInstance),logicsInstance['GetUser'])
     let mockInstance ={}
 
       if (window.appInfo.isPreviewFe) {
@@ -333,7 +332,6 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
     serviceConfig.config.lcapLocation = true;
     service.postConfig.set('shortResponse', shortResponse);
     let logicsInstance=  service.generator(newApiSchemaMap, dynamicServices, serviceConfig);
-    console.log('logicsInstance  Logic',JSON.stringify(logicsInstance))
     let mockInstance ={}
     if (window.appInfo.isPreviewFe) {
         if(window?.allMockData?.mock){

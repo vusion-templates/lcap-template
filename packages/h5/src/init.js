@@ -1,7 +1,8 @@
 import Vue from 'vue';
-import { installOptions, installFilters, install } from '@vusion/utils';
+import { installOptions, installFilters, installComponents, install } from '@vusion/utils';
 import * as Vant from '@lcap/mobile-ui';
 import { VanToast as Toast } from '@lcap/mobile-ui';
+import * as Components from '@/components';
 
 import MEmitter from 'cloud-ui.vusion/src/components/m-emitter.vue';
 import MPubSub from 'cloud-ui.vusion/src/components/m-pub-sub.vue';
@@ -82,6 +83,7 @@ const init = (appConfig, platformConfig, routes, metaData) => {
     window.appInfo = Object.assign(appConfig, platformConfig);
 
     installFilters(Vue, filters);
+    installComponents(Vue, Components);
 
     // 处理当前语言
     let locale = 'zh-CN';
@@ -173,7 +175,7 @@ const init = (appConfig, platformConfig, routes, metaData) => {
                 };
                 await beforeRouter(event);
             }
-        } catch (err) {}
+        } catch (err) { }
         next();
     };
     beforeRouter && router.beforeEach(getAuthGuard(router, routes, authResourcePaths, appConfig, baseResourcePaths, window.beforeRouter));
@@ -208,7 +210,7 @@ const init = (appConfig, platformConfig, routes, metaData) => {
                 if (afterRouter) {
                     await afterRouter(to, from);
                 }
-            } catch (err) {}
+            } catch (err) { }
         });
     app.$mount('#app');
     return app;

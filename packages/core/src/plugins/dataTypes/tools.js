@@ -664,7 +664,14 @@ export const toString = (
         const enumItem = enumItems.find(
           (enumItem) => variable === enumItem.value
         );
-        str = enumItem?.label;
+        if (
+          Vue.prototype?.$global?.i18nInfo?.enabled &&
+          enumItem?.label?.i18nKey
+        ) {
+          str = Vue.prototype.$t(enumItem.label.i18nKey);
+        } else {
+          str = enumItem?.label?.value || enumItem?.label;
+        }
       }
     } else if (["TypeAnnotation", "Structure", "Entity"].includes(concept)) {
       // 复合类型
@@ -898,7 +905,7 @@ export const fromString = (variable, typeKey) => {
     });
     return outputDate;
   } else if (typeName === "Date" && isValidDate(variable, DateReg)) {
-    return moment(new Date(variable)).format('YYYY-MM-DD');
+    return moment(new Date(variable)).format("YYYY-MM-DD");
   } else if (typeName === "Time" && TimeReg.test(variable)) {
     // ???
     return moment(new Date("2022-01-01 " + variable)).format("HH:mm:ss");

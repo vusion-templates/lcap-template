@@ -121,19 +121,19 @@
     },
     "getProcessFormDefinition": {
         "url": {
-            "path": "/api/system/process/getProcessFormDefinition",
+            "path": "/api/processV2/getProcessFormDefinition",
             "method": "post"
         }
     },
     "fieldPermissionDetail": {
         "url": {
-            "path": "/api/system/process/fieldPermissionDetail",
+            "path": "/api/processV2/fieldPermissionDetail",
             "method": "post"
         }
     },
     "getTaskInstanceForm": {
         "url": {
-            "path": "/api/system/process/getTaskInstanceForm",
+            "path": "/api/processV2/getTaskInstanceForm",
             "method": "post"
         }
     },

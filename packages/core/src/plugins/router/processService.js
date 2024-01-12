@@ -39,50 +39,30 @@ export default {
   },
   // 获取任务节点表单数据
   async getTaskInstanceForm(param = {}) {
-    // const res = await processInitService().getTaskInstanceForm({
-    //   body: {
-    //     ...param,
-    //   },
-    // });
-    // return res;
-    return {
-      userName: 'zzz',
-      phone: '123456789',
-      email: '111111@qq.com',
-    }
+    const res = await processInitService().getTaskInstanceForm({
+      body: {
+        ...param,
+      },
+    });
+    return res;
   },
   // 获取任务节点表单字段权限
   async fieldPermissionDetail(param = {}) {
-    // const res = await processInitService().fieldPermissionDetail({
-    //   body: {
-    //     ...param,
-    //   },
-    // });
-    // return res;
-    return [
-      {
-        propertyName: 'userName',
-        permission: 'hide'
+    const res = await processInitService().fieldPermissionDetail({
+      body: {
+        ...param,
       },
-      {
-        propertyName: 'phone',
-        permission: 'editable'
-      },
-      {
-        propertyName: 'email',
-        permission: 'readOnly'
-      }
-    ];
+    });
+    return res;
   },
   // 获取任务节点表单定义
   async getProcessFormDefinition(param = {}) {
-    // const res = await processInitService().getProcessFormDefinition({
-    //   body: {
-    //     ...param,
-    //   },
-    // });
-    // return res;
-    return '<u-form :ref="`form_4`" :id="`dynamicRenderContainer`" key="form_4">\n    <u-form-item :ref="`form_item_6`" required="" :rules="[{validate: \'required\',message: `表单项不得为空`,trigger: \'input+blur\',required: true}]"\n        :layout="`center`">\n        <template #label :ref="`template_10`">\n            <u-text :ref="`text_10`" :text="`用户名`"></u-text>\n        </template>\n        <u-input :ref="`input_4`" :placeholder="`请输入用户名`" :value.sync="processDetailFormData.userName"></u-input>\n    </u-form-item>\n    <u-form-item :ref="`form_item_7`" :layout="`center`">\n        <template #label :ref="`template_11`">\n            <u-text :ref="`text_11`" :text="`手机号`"></u-text>\n        </template>\n        <u-input :ref="`input_5`" :placeholder="`请输入手机号`" :value.sync="processDetailFormData.phone"></u-input>\n    </u-form-item>\n    <u-form-item :ref="`form_item_8`" :layout="`center`">\n        <template #label :ref="`template_12`">\n            <u-text :ref="`text_12`" :text="`邮箱`"></u-text>\n        </template>\n        <u-input :ref="`input_6`" :placeholder="`请输入邮箱`" :value.sync="processDetailFormData.email"></u-input>\n    </u-form-item>\n</u-form>'
+    const res = await processInitService().getProcessFormDefinition({
+      body: {
+        ...param,
+      },
+    });
+    return res;
   },
 
 };

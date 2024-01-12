@@ -118,5 +118,23 @@
             "path": "/api/system/process/updateTaskDefinitionStrategy",
             "method": "post"
         }
+    },
+    "getProcessFormDefinition": {
+        "url": {
+            "path": "/api/system/process/getProcessFormDefinition",
+            "method": "post"
+        }
+    },
+    "fieldPermissionDetail": {
+        "url": {
+            "path": "/api/system/process/fieldPermissionDetail",
+            "method": "post"
+        }
+    },
+    "getTaskInstanceForm": {
+        "url": {
+            "path": "/api/system/process/getTaskInstanceForm",
+            "method": "post"
+        }
     }
 }

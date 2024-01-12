@@ -127,7 +127,7 @@ export const utils = {
         enumName = typeNamespace + "." + enumName;
       }
       if (enumsMap[enumName]) {
-        return enumsMap[enumName][value];
+        return toString(enumName, value, "global");
       }
       return "";
     }

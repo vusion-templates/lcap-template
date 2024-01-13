@@ -82,5 +82,11 @@
             "path": "/api/processV2/getTaskInstanceForm",
             "method": "post"
         }
+    },
+    "getProcessFormDefinition": {
+        "url": {
+            "path": "/api/processV2/getProcessFormDefinition",
+            "method": "post"
+        }
     }
 }

@@ -70,5 +70,17 @@
             "path": "/api/processV2/operationPermissionDetail",
             "method": "post"
         }
+    },
+    "fieldPermissionDetail": {
+        "url": {
+            "path": "/api/processV2/fieldPermissionDetail",
+            "method": "post"
+        }
+    },
+    "getTaskInstanceForm": {
+        "url": {
+            "path": "/api/processV2/getTaskInstanceForm",
+            "method": "post"
+        }
     }
 }

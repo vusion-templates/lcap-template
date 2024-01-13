@@ -65,7 +65,7 @@ export default {
     return res;
   },
   // 流程启动
-  async getProcessFormDefinition(param = {}) {
+  async launch(param = {}) {
     const res = await processInitService().launch({
       body: {
         ...param,

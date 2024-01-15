@@ -17,7 +17,7 @@
 ## 安装依赖
 > 项目根目录下
 ```
-pnpm i
+pnpm install
 ```
 
 ## 本地发布静态资源
@@ -45,5 +45,5 @@ https://github.com/vusion-templates/lcap-template/actions
 ## 修改版本号方式
 > 根目录下
 ```
-pnpm dlx lerna version
+pnpm change:version
 ```

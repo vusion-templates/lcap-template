@@ -233,8 +233,9 @@ export function isInstanceOf(variable, typeKey) {
     if (Array.isArray(enumItems)) {
       if (varStr === "[object String]") {
         // 当前值在枚举中存在
+        // 枚举值支持integer，改为不严格判断
         const enumItemIndex = enumItems.findIndex(
-          (enumItem) => variable === enumItem.value
+          (enumItem) => variable == enumItem.value
         );
         return enumItemIndex !== -1;
       } else if (varStr === "[object Array]") {
@@ -661,8 +662,9 @@ export const toString = (
       }
     } else if (concept === "Enum") {
       if (Array.isArray(enumItems) && enumItems.length) {
+        // 改为不严格判断，枚举值支持数字类型
         const enumItem = enumItems.find(
-          (enumItem) => variable === enumItem.value
+          (enumItem) => variable == enumItem.value
         );
         str = enumItem?.label;
       }

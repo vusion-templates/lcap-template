@@ -1,5 +1,5 @@
 import { cookie, storage, authService, genSortedTypeKey, getBasePath, genInitFromSchema } from '@lcap/core-template';
-import { navigateToUserInfoPage } from '../common/wx';
+import { navigateToUserInfoPage, navigateToUserPhonePage, navigateScanCodePage,navigateLocationPage } from '../common/wx';
 
 export function getFrontendVariables(options) {
     const frontendVariables = {};
@@ -37,8 +37,33 @@ export function setGlobal($global) {
         getWeChatNickName() {
             return localStorage.getItem('_wx_nickname');
         },
+        getWeChatPhone() {
+            return localStorage.getItem('_wx_phone');
+        },
+        getWeChatScanCode() {
+            const data = localStorage.getItem('_wx_scan_code');
+            localStorage.setItem('_wx_scan_code', '');
+            return data
+        },
+        getWeChatLocation() {
+            const data = localStorage.getItem('_wx_location');
+            localStorage.setItem('_wx_location', '');
+            return data
+        },
         navigateToUserInfo() {
             navigateToUserInfoPage();
+        },
+        navigateToUserPhone() {
+            navigateToUserPhonePage();
+        },
+        navigateToScanCode() {
+            navigateScanCodePage();
+        },
+        navigateToLocation() {
+            navigateLocationPage();
+        },
+        hasAuth(authPath) {
+            return authService.has(authPath);
         },
         logout() {
             window.vant.VanDialog.confirm({

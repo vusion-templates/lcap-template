@@ -30,6 +30,10 @@ import App from './App.vue';
 import 'cloud-ui.vusion.css';
 import '@/assets/css/index.css';
 
+import SToast from '@/components/s-toast.vue';
+const Ctr = Vue.component('s-toast', SToast);
+const $toast = new Ctr();
+
 window.appVue = Vue;
 window.Vue = Vue;
 window.CloudUI = CloudUI;
@@ -107,7 +111,9 @@ const init = (appConfig, platformConfig, routes, metaData) => {
             console.error(err);
         }
     };
-
+    if (!window?.$toast) {
+        window.$toast = $toast;
+    }
     if (window?.rendered) {
         window.rendered();
     }

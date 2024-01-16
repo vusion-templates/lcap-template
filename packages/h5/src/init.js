@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { installOptions, installFilters, installComponents, install } from '@vusion/utils';
 import * as Vant from '@lcap/mobile-ui';
+import { VanToast as Toast } from '@lcap/mobile-ui';
 import * as Components from '@/components';
 
 import MEmitter from 'cloud-ui.vusion/src/components/m-emitter.vue';
@@ -126,7 +127,10 @@ const init = (appConfig, platformConfig, routes, metaData) => {
             console.error(err);
         }
     };
-
+    if (!window?.$toast) {
+        // eslint-disable-next-line new-cap
+        window.$toast = { show: (message) => Toast({ message, position: top }) };
+    }
     if (window?.rendered) {
         window.rendered();
     }

@@ -107,7 +107,9 @@ const init = (appConfig, platformConfig, routes, metaData) => {
             console.error(err);
         }
     };
-
+    if (!window?.$toast) {
+        window.$toast =  window.Vue.prototype.$toast;
+    }
     if (window?.rendered) {
         window.rendered();
     }

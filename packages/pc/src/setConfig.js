@@ -9,9 +9,9 @@ import SToast from '@/components/s-toast.vue';
 const Ctr = Vue.component('s-toast', SToast);
 const $toast = new Ctr();
 
-if (!window?.$toast) {
-    window.$toast = $toast;
-}
+// if (!window?.$toast) {
+//     window.$toast = window.Vue.prototype.$toast;
+// }
 
 // 设置core config
 setConfig({

@@ -667,10 +667,10 @@ export const toString = (
           (enumItem) => variable == enumItem.value
         );
         if (
-          Vue.prototype?.$global?.i18nInfo?.enabled &&
+          $global?.i18nInfo?.enabled &&
           enumItem?.label?.i18nKey
         ) {
-          str = Vue.prototype.$t(enumItem.label.i18nKey);
+          str = $i18n.t(enumItem.label.i18nKey);
         } else {
           str = enumItem?.label?.value || enumItem?.label;
         }

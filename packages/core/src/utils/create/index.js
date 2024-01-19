@@ -27,7 +27,14 @@ const parseCookie = (str) =>
     .split(";")
     .map((v) => v.split("="))
     .reduce((acc, v) => {
-      acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
+      const getValue = s =>{
+        try {
+          return decodeURIComponent(s.trim())
+        } catch (error) {
+          return s.trim()
+        }
+      }
+      acc[getValue(v[0])] = getValue(v[1]);
       return acc;
     }, {});
 

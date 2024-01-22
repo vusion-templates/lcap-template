@@ -948,7 +948,7 @@ export const utils = {
         addDate = addYears(date, amount);
         break;
     }
-    if (typeof dateString === "object" || dateString.includes("T")) {
+    if (typeof dateString === "object" || this.isInputValidNaslDateTime(dateString)) {
       return format(addDate, "yyyy-MM-dd HH:mm:ss");
     } else {
       return format(addDate, "yyyy-MM-dd");

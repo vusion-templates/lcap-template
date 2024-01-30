@@ -72,14 +72,14 @@ let dataTypesMap = {}
 
 const safeNewDate = (dateStr) => {
   try {
-      const res = new Date(dateStr.replaceAll('-', '/'));
-      if (['Invalid Date', 'Invalid time value', 'invalid date'].includes(res.toString())) {
-          return new Date(dateStr);
-      } else {
-          return res;
-      }
-  } catch (err) {
+    const res = new Date(dateStr.replaceAll('-', '/'));
+    if (['Invalid Date', 'Invalid time value', 'invalid date'].includes(res.toString())) {
       return new Date(dateStr);
+    } else {
+      return res;
+    }
+  } catch (err) {
+    return new Date(dateStr);
   }
 };
 
@@ -154,14 +154,14 @@ export const utils = {
     let tempName = tempEnums?.name;
     let enumName = typeName;
     if (typeName && typeNamespace?.startsWith("extensions")) {
-        enumName = typeNamespace + "." + enumName;
-        tempName = enumName;
+      enumName = typeNamespace + "." + enumName;
+      tempName = enumName;
     }
     const enumeration = enumsMap[enumName];
-   
+
     let isToNumber = false;
     if (enumName === tempName && tempEnums.valueType?.typeName === 'Long' && tempEnums.valueType?.typeNamespace === 'nasl.core') {
-        isToNumber = true
+      isToNumber = true
     }
     if (!enumeration) return [];
     else {
@@ -330,13 +330,13 @@ export const utils = {
     return nullRemoved.length === 0
       ? null
       : nullRemoved
-          .reduce(
-            (prev, cur) =>
-              // decimal 可解决 0.1 + 0.2 的精度问题，下同
-              new Decimal(cur + "").plus(prev),
-            new Decimal("0")
-          )
-          .toNumber();
+        .reduce(
+          (prev, cur) =>
+            // decimal 可解决 0.1 + 0.2 的精度问题，下同
+            new Decimal(cur + "").plus(prev),
+          new Decimal("0")
+        )
+        .toNumber();
   },
   ListProduct: (arr) => {
     if (!Array.isArray(arr)) {
@@ -349,11 +349,11 @@ export const utils = {
     return nullRemoved.length === 0
       ? null
       : nullRemoved
-          .reduce(
-            (prev, cur) => new Decimal(cur + "").mul(prev),
-            new Decimal("1")
-          )
-          .toNumber();
+        .reduce(
+          (prev, cur) => new Decimal(cur + "").mul(prev),
+          new Decimal("1")
+        )
+        .toNumber();
   },
   ListAverage: (arr) => {
     if (!Array.isArray(arr)) {
@@ -366,8 +366,8 @@ export const utils = {
     return nullRemoved.length === 0
       ? null
       : new Decimal(utils.ListSum(nullRemoved))
-          .div(nullRemoved.length)
-          .toNumber();
+        .div(nullRemoved.length)
+        .toNumber();
   },
   ListMax: (arr) => {
     if (!Array.isArray(arr)) {
@@ -380,9 +380,9 @@ export const utils = {
     return nullRemoved.length === 0
       ? null
       : nullRemoved.reduce(
-          (prev, cur) => (prev >= cur ? prev : cur),
-          nullRemoved[0]
-        );
+        (prev, cur) => (prev >= cur ? prev : cur),
+        nullRemoved[0]
+      );
   },
   ListMin: (arr) => {
     if (!Array.isArray(arr)) {
@@ -395,9 +395,9 @@ export const utils = {
     return nullRemoved.length === 0
       ? null
       : nullRemoved.reduce(
-          (prev, cur) => (prev <= cur ? prev : cur),
-          nullRemoved[0]
-        );
+        (prev, cur) => (prev <= cur ? prev : cur),
+        nullRemoved[0]
+      );
   },
   ListReverse(arr) {
     if (Array.isArray(arr)) {
@@ -965,9 +965,9 @@ export const utils = {
   },
   isInputValidNaslDateTime(inp) {
     return inp instanceof Date
-        || (typeof inp === 'string' && /^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2})/.test(inp))
-        || (typeof inp === 'string' && /^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2})/.test(inp));
-},
+      || (typeof inp === 'string' && /^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2})/.test(inp))
+      || (typeof inp === 'string' && /^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2})/.test(inp));
+  },
   GetSpecificDaysOfWeek(startdatetr, enddatetr, arr, tz) {
     if (!startdatetr)
       toastAndThrow(`内置函数GetSpecificDaysOfWeek入参错误：startDate不能为空`);
@@ -1098,7 +1098,7 @@ export const utils = {
 
     try {
       result = JSON.parse(str);
-    } catch (e) {}
+    } catch (e) { }
 
     return result;
   },
@@ -1147,6 +1147,32 @@ export const utils = {
   },
   FromString(value, typeKey) {
     return fromString(value, typeKey);
+  },
+  NewDate(year, month, day) {
+    return fromString([
+      {
+        value: year,
+        len: 4
+      },
+      {
+        value: month,
+        len: 2
+      },
+      {
+        value: day,
+        len: 2
+      }
+    ].map(({ value, len }) => {
+      return ('' + value).padStart(len, '0');
+    }).join('-'), 'nasl.core.Date');
+  },
+  NewTime(hour, minute, second) {
+    return fromString([hour, minute, second].map((value) => {
+      return ('' + value).padStart(2, '0');
+    }).join(':'), 'nasl.core.Time');
+  },
+  NewDateTime(date, time) {
+    return fromString(`${date} ${time}`, 'nasl.core.DateTime');
   },
   /**
    * 数字格式化

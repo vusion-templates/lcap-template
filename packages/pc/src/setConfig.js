@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { setConfig } from '@lcap/core-template';
+
 import { getFrontendVariables, setGlobal } from './plugins/dataTypes/index';
 import { destination } from './plugins/router';
 import { createRouter } from './router';

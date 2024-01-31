@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import { setConfig } from '@lcap/core-template';
-import { UToast } from 'cloud-ui.vusion';
 import { getFrontendVariables, setGlobal } from './plugins/dataTypes/index';
 import { destination } from './plugins/router';
 import { createRouter } from './router';
@@ -17,7 +16,7 @@ const $toast = new Ctr();
 setConfig({
     Toast: {
         show: $toast?.show,
-        error: UToast?.error,
+        error: $toast?.show,
     },
     setGlobal,
     getFrontendVariables,

@@ -5,27 +5,45 @@
             "method": "post"
         }
     },
+    "getMyPendingTaskList": {
+        "url": {
+            "path": "/api/processV2/getMyPendingTaskList",
+            "method": "post"
+        }
+    },
+    "getMyCompletedTaskList": {
+        "url": {
+            "path": "/api/processV2/getMyCompletedTaskList",
+            "method": "post"
+        }
+    },
+    "getMyInitiateTaskList": {
+        "url": {
+            "path": "/api/processV2/getMyInitiateTaskList",
+            "method": "post"
+        }
+    },
     "getTaskDestinationUrl": {
         "url": {
             "path": "/api/processV2/getTaskDestinationUrl",
             "method": "post"
         }
     },
-    "getProcessDefinitionList": {
+    "getProcDefList": {
         "url": {
-            "path": "/api/processV2/getProcessDefinitionList",
+            "path": "/api/processV2/getProcDefList",
             "method": "post"
         }
     },
-    "getProcessStartByList": {
+    "getProcInstStartByList": {
         "url": {
-            "path": "/api/processV2/getProcessStartByList",
+            "path": "/api/processV2/getProcInstStartByList",
             "method": "post"
         }
     },
-    "getProcessInstanceInfo": {
+    "getProcInstInfo": {
         "url": {
-            "path": "/api/processV2/getProcessInstanceInfo",
+            "path": "/api/processV2/getProcInstInfo",
             "method": "post"
         }
     },
@@ -35,39 +53,57 @@
             "method": "post"
         }
     },
-    "consentTaskInstance": {
+    "approveTask": {
         "url": {
-            "path": "/api/processV2/consentTaskInstance",
+            "path": "/api/processV2/approveTask",
             "method": "post"
         }
     },
-    "rejectTaskInstance": {
+    "rejectTask": {
         "url": {
-            "path": "/api/processV2/rejectTaskInstance",
+            "path": "/api/processV2/rejectTask",
             "method": "post"
         }
     },
-    "submitTaskInstance": {
+    "submitTask": {
         "url": {
-            "path": "/api/processV2/submitTaskInstance",
+            "path": "/api/processV2/submitTask",
             "method": "post"
         }
     },
-    "transferTaskInstance": {
+    "transferTask": {
         "url": {
-            "path": "/api/processV2/transferTaskInstance",
+            "path": "/api/processV2/transferTask",
             "method": "post"
         }
     },
-    "launch": {
+    "revertTask": {
         "url": {
-            "path": "/api/processV2/launch",
+            "path": "/api/processV2/revertTask",
             "method": "post"
         }
     },
-    "operationPermissionDetail": {
+    "withdrawTask": {
         "url": {
-            "path": "/api/processV2/operationPermissionDetail",
+            "path": "/api/processV2/withdrawTask",
+            "method": "post"
+        }
+    },
+    "launchProcess": {
+        "url": {
+            "path": "/api/processV2/launchProcess",
+            "method": "post"
+        }
+    },
+    "taskOptPermission": {
+        "url": {
+            "path": "/api/processV2/taskOptPermission",
+            "method": "post"
+        }
+    },
+    "getProcInstRecords": {
+        "url": {
+            "path": "/api/processV2/getProcInstRecords",
             "method": "post"
         }
     },

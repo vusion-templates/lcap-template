@@ -3,11 +3,11 @@
   "version": "1.1.0",
   "description": "",
   "main": "dist/index.js",
-  "typings": "./typings",
   "scripts": {
-    "build": "tsc",
+    "build": "npm run clean && tsc",
     "zip": "npm pack",
-    "build:designer": "npm run build && npm run zip"
+    "build:designer": "npm run build && npm run zip",
+    "clean": "rm -rf dist"
   },
   "files": [
     "index.js",

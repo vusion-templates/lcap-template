@@ -11,6 +11,7 @@ export default {
     set(data = {}, exdays = 1) {
         const d = new Date();
         d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        // @ts-ignore
         const expires = d.toGMTString();
         Object.keys(data).forEach((key) => {
             const value = data[key];
@@ -34,6 +35,7 @@ export default {
     erase(name) {
         const d = new Date();
         d.setTime(d.getTime() - (1 * 24 * 60 * 60 * 1000));
+        // @ts-ignore
         const expires = d.toGMTString();
         document.cookie = `${name}=; expires=${expires}; path=/`;
         const domain = getDomain();

@@ -2,7 +2,7 @@ import axios from 'axios';
 import Service from 'request-pre';
 import { stringify } from 'qs';
 
-import { formatMicroFrontUrl } from "../../plugins/router/microFrontUrl"; // 微前端路由方法
+import { formatMicroFrontUrl } from "../../init/router/microFrontUrl"; // 微前端路由方法
 
 import cookie from "../cookie";
 import { addConfigs, shortResponse } from "./add.configs";
@@ -196,7 +196,7 @@ const adjustPathWithSysPrefixPath = (apiSchemaList) => {
     return newApiSchemaMap;
 };
 
-export const createService = function createService(apiSchemaList, serviceConfig, dynamicServices) {
+export const createService = function createService(apiSchemaList, serviceConfig?, dynamicServices?) {
     addConfigs(service);
     const fixServiceConfig = serviceConfig || {};
     fixServiceConfig.config = fixServiceConfig.config || {};
@@ -225,7 +225,7 @@ export const createService = function createService(apiSchemaList, serviceConfig
      return mockInstance
 };
 
-export const createLogicService = function createLogicService(apiSchemaList, serviceConfig, dynamicServices) {
+export const createLogicService = function createLogicService(apiSchemaList, serviceConfig?, dynamicServices?) {
     const fixServiceConfig = serviceConfig || {};
     fixServiceConfig.config = fixServiceConfig.config || {};
     Object.assign(fixServiceConfig.config, {

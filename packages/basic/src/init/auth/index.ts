@@ -1,4 +1,4 @@
-import authService, { runAhead } from "./authService";
+import authService from "./authService";
 import Global from "../../global";
 
 function initAuth(options: {
@@ -37,6 +37,5 @@ function initAuth(options: {
 }
 
 export { 
-  initAuth, 
-  runAhead 
+  initAuth,
 };

@@ -12,6 +12,9 @@ interface Window {
   LcapMicro: any;
   $services: any;
   $utils: any;
+  allMockData: any;
+  preRequest: any;
+  postRequest: any;
 }
 
 // navigator对象

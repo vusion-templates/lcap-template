@@ -30,8 +30,8 @@ export const createMockServiceByData = (api, data,allLogics= {} ) => {
                 }
             })
         }
-    async function mockRequest() {
-        console.log('请求了mock接口: ', api, arguments, data);
+    async function mockRequest(...args) {
+        console.log('请求了mock接口: ', api, args, data);
         return Promise.resolve(data)
     }
     !allLogics[api] && (allLogics[api] = mockRequest)

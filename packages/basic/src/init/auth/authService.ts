@@ -270,7 +270,3 @@ const Service: IService = {
 };
 
 export default Service;
-
-export const runAhead = function (domainName) {
-    authInitService().init(domainName);
-};

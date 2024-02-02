@@ -1,4 +1,5 @@
 import cloneDeep from "lodash/cloneDeep";
+import _set from 'lodash/set';
 import isEqual from "lodash/isEqual";
 import isObject from "lodash/isObject";
 import {
@@ -249,7 +250,9 @@ export const utils = {
   },
   Set(arr, index, item) {
     if (isArrayInBounds(arr, index)) {
-      return Global.prototype.set(arr, index, item);
+      arr[index] = item;
+      return arr;
+      // return Global.prototype.set(arr, index, item);
     }
   },
   Contains(arr, item) {
@@ -580,7 +583,8 @@ export const utils = {
   },
   MapPut(map, key, value) {
     if (isObject(map)) {
-      Global.prototype.$set(map, key, value);
+      // Global.prototype.$set(map, key, value);
+      _set(map, key, value);
     }
   },
   MapRemove(map, key) {

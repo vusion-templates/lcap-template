@@ -6,8 +6,8 @@ export default {
   async getTasks(param: {
     query?: any
   } = {}) {
-    const userInfo = (await authService.getUserInfo()) || {};
-    user = userInfo.UserName;
+    const userInfo = await authService.getUserInfo();
+    user = userInfo?.UserName;
     const { query } = param;
     const res = await initProcessService().getTasks({
       query: {

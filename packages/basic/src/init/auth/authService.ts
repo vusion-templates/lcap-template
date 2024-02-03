@@ -25,12 +25,15 @@ export const getBaseHeaders = () => {
 let userInfoPromise = null;
 let userResourcesPromise = null;
 
+// FIXME 替换成真实类型
+export type NASLUserInfo = { UserName: string };
+
 export interface IService {
   _map: Map<string, any>;
   authService: any;
   lowauthInitService: any;
   start: () => void;
-  getUserInfo: () => Promise<any>;
+  getUserInfo: () => Promise<NASLUserInfo | undefined>;
   getUserResources: (DomainName: string) => Promise<any>;
   getKeycloakLogoutUrl: () => Promise<string>;
   logout: () => Promise<any>;

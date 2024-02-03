@@ -4,8 +4,11 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "npm run clean && tsc",
+    "build": "tsc",
+    "dev": "nodemon --watch src --exec 'yalc publish'",
     "zip": "npm pack",
+    "prepublish": "npm run clean && npm run build && npm run test",
+    "test": "",
     "build:designer": "npm run build && npm run zip",
     "clean": "rm -rf dist",
     "deploy:dev": "node scripts/deploy-tgz --platform http://defaulttenant.lcap.codewave-dev.163yun.com"
@@ -33,6 +36,8 @@
   "devDependencies": {
     "@types/node": "^20.11.16",
     "minimist": "^1.2.8",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "nodemon": "^3.0.3",
+    "yalc": "^1.0.0-pre.53"
   }
 }

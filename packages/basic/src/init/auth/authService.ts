@@ -26,7 +26,10 @@ let userInfoPromise = null;
 let userResourcesPromise = null;
 
 // FIXME 替换成真实类型
-export type NASLUserInfo = { UserName: string };
+export type NASLUserInfo = { 
+  UserName: string;
+  UserId: string;
+};
 
 export interface IService {
   _map: Map<string, any>;

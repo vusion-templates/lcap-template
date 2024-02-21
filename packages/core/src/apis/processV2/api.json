@@ -107,6 +107,12 @@
             "method": "post"
         }
     },
+    "getTransferTargetUserList": {
+        "url": {
+            "path": "/api/processV2/getTransferTargetUserList",
+            "method": "post"
+        }
+    },
     "fieldPermissionDetail": {
         "url": {
             "path": "/api/processV2/getDataPropertiesPermission",

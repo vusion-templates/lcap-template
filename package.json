@@ -5,7 +5,8 @@
     "change:version": "lerna version --force-publish --no-push",
     "build": "lerna run build:designer",
     "deploy:dev": "lerna run deploy:dev",
-    "deploy:test": "lerna run deploy:test"
+    "deploy:test": "lerna run deploy:test",
+    "deploy:codewave-test": "lerna run deploy:codewave-test"
   },
   "keywords": [],
   "author": "",

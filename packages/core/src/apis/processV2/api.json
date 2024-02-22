@@ -115,7 +115,7 @@
     },
     "fieldPermissionDetail": {
         "url": {
-            "path": "/api/processV2/getDataPropertiesPermission",
+            "path": "/api/processV2/getDataPropertyPermissions",
             "method": "post"
         }
     },
@@ -128,6 +128,12 @@
     "getProcessFormDefinition": {
         "url": {
             "path": "/api/processV2/getTaskFormDef",
+            "method": "post"
+        }
+    },
+    "getProcVariable": {
+        "url": {
+            "path": "/api/processV2/getProcVariable",
             "method": "post"
         }
     }

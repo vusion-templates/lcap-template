@@ -5,21 +5,21 @@
             "method": "post"
         }
     },
-    "getMyPendingTaskList": {
+    "getMyPendingTasks": {
         "url": {
-            "path": "/api/processV2/getMyPendingTaskList",
+            "path": "/api/processV2/getMyPendingTasks",
             "method": "post"
         }
     },
-    "getMyCompletedTaskList": {
+    "getMyCompletedTasks": {
         "url": {
-            "path": "/api/processV2/getMyCompletedTaskList",
+            "path": "/api/processV2/getMyCompletedTasks",
             "method": "post"
         }
     },
-    "getMyInitiateTaskList": {
+    "getMyInitiateTasks": {
         "url": {
-            "path": "/api/processV2/getMyInitiateTaskList",
+            "path": "/api/processV2/getMyInitiateTasks",
             "method": "post"
         }
     },
@@ -29,15 +29,15 @@
             "method": "post"
         }
     },
-    "getProcDefList": {
+    "getProcDefInfos": {
         "url": {
-            "path": "/api/processV2/getProcDefList",
+            "path": "/api/processV2/getProcDefInfos",
             "method": "post"
         }
     },
-    "getProcInstStartByList": {
+    "getProcInstInitiators": {
         "url": {
-            "path": "/api/processV2/getProcInstStartByList",
+            "path": "/api/processV2/getProcInstInitiators",
             "method": "post"
         }
     },
@@ -71,9 +71,9 @@
             "method": "post"
         }
     },
-    "transferTask": {
+    "reassignTask": {
         "url": {
-            "path": "/api/processV2/transferTask",
+            "path": "/api/processV2/reassignTask",
             "method": "post"
         }
     },
@@ -95,9 +95,9 @@
             "method": "post"
         }
     },
-    "taskOptPermission": {
+    "getTaskOperationPermissions": {
         "url": {
-            "path": "/api/processV2/taskOptPermission",
+            "path": "/api/processV2/getTaskOperationPermissions",
             "method": "post"
         }
     },
@@ -107,9 +107,9 @@
             "method": "post"
         }
     },
-    "getTransferTargetUserList": {
+    "getUsersForReassign": {
         "url": {
-            "path": "/api/processV2/getTransferTargetUserList",
+            "path": "/api/processV2/getUsersForReassign",
             "method": "post"
         }
     },

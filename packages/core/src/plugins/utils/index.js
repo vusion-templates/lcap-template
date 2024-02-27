@@ -123,7 +123,7 @@ export const utils = {
   EnumValueToText(value, enumTypeAnnotation) {
     const { typeName, typeNamespace } = enumTypeAnnotation || {};
     if (typeName && typeNamespace) {
-      return toString(typeNamespace + "." + enumName, value) || "";
+      return toString(typeNamespace + "." + typeName, value) || "";
     }
     return "";
   },

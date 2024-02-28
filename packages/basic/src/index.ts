@@ -25,7 +25,6 @@ import {
 import {
   findNoAuthView,
   filterAuthResources,
-  getAuthGuard,
   microFrontend,
   userInfoGuard,
 } from './router'
@@ -49,7 +48,6 @@ export {
   initUtils,
   findNoAuthView,
   filterAuthResources,
-  getAuthGuard,
   microFrontend,
   userInfoGuard,
   Global,

@@ -9,6 +9,7 @@
     "build:designer": "npm run build && npm run zip",
     "deploy:dev": "node scripts/deploy-tgz --platform http://defaulttenant.lcap.codewave-dev.163yun.com",
     "deploy:test": "node scripts/deploy-tgz --platform http://defaulttenant.lcap.ha.test.com",
+    "deploy:process": "node scripts/deploy-tgz --platform http://defaulttenant.lcap.liucheng01-lowcode.com/",
     "test": "jest --coverage"
   },
   "keywords": [],

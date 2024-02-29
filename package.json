@@ -4,7 +4,8 @@
   "scripts": {
     "build": "lerna run build:designer",
     "deploy:dev": "lerna run deploy:dev",
-    "deploy:test": "lerna run deploy:test"
+    "deploy:test": "lerna run deploy:test",
+    "deploy:process": "lerna run deploy:process"
   },
   "keywords": [],
   "author": "",

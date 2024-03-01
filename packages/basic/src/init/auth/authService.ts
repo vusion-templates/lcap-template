@@ -32,9 +32,6 @@ export type NASLUserInfo = {
 };
 
 export interface IService {
-  _map: Map<string, any>;
-  authService: any;
-  lowauthInitService: any;
   start: () => void;
   getUserInfo: () => Promise<NASLUserInfo | undefined>;
   getUserResources: (DomainName: string) => Promise<any>;
@@ -52,26 +49,27 @@ export interface IService {
   hasFullPath?: (path: string) => boolean;
 }
 
+let _map;
+let authService;
+let lowauthService;
+
 const Service: IService = {
-  _map: undefined,
-  authService: undefined,
-  lowauthInitService: undefined,
   start() {
-    this.authService = authInitService();
-    this.lowauthInitService = lowauthInitService();
-    window.authService = this.authService;
+    authService = authInitService();
+    lowauthService = lowauthInitService();
+    window.authService = authService;
   },
   getUserInfo() {
     if (!userInfoPromise) {
       if (window.appInfo.hasUserCenter) {
-        userInfoPromise = this.lowauthInitService.GetUser({
+        userInfoPromise = lowauthService.GetUser({
           headers: getBaseHeaders(),
           config: {
             noErrorTip: true,
           },
         });
       } else {
-        userInfoPromise = this.authService.GetUser({
+        userInfoPromise = authService.GetUser({
           headers: getBaseHeaders(),
           config: {
             noErrorTip: true,
@@ -102,7 +100,7 @@ const Service: IService = {
   },
   getUserResources(DomainName) {
     if (window.appInfo.hasAuth) {
-      userResourcesPromise = this.lowauthInitService
+      userResourcesPromise = lowauthService
         .GetUserResources({
           headers: getBaseHeaders(),
           query: {
@@ -114,20 +112,20 @@ const Service: IService = {
         .then((result) => {
           let resources = [];
           // 初始化权限项
-          this._map = new Map();
+          _map = new Map();
           if (Array.isArray(result)) {
             resources = result.filter(
               (resource) => resource?.resourceType === "ui"
             );
             resources.forEach((resource) =>
-              this._map.set(resource.resourceValue, resource)
+              _map.set(resource.resourceValue, resource)
             );
           }
           return resources;
         });
     } else {
       // 这个是非下沉应用，调用的是Nuims的接口，此处需非常注意Resource大小写情况，开发时需关注相关测试用例是否覆盖
-      userResourcesPromise = this.authService
+      userResourcesPromise = authService
         .GetUserResources({
           headers: getBaseHeaders(),
           query: {
@@ -138,7 +136,7 @@ const Service: IService = {
           },
         })
         .then((res) => {
-          this._map = new Map();
+          _map = new Map();
           const resources = res.Data.items.reduce(
             (acc, { ResourceType, ResourceValue, ...item }) => {
               if (ResourceType === "ui") {
@@ -156,7 +154,7 @@ const Service: IService = {
           );
           // 初始化权限项
           resources.forEach((resource) =>
-            this._map.set(resource?.ResourceValue, resource)
+            _map.set(resource?.ResourceValue, resource)
           );
           return resources;
         });
@@ -167,7 +165,7 @@ const Service: IService = {
     let logoutUrl = "";
     const basePath = getBasePath();
     if (window.appInfo.hasUserCenter) {
-      const res = await this.lowauthInitService.getAppLoginTypes({
+      const res = await lowauthService.getAppLoginTypes({
         query: {
           Action: "GetTenantLoginTypes",
           Version: "2020-06-01",
@@ -179,7 +177,7 @@ const Service: IService = {
         logoutUrl = `${KeycloakConfig?.config?.logoutUrl}?redirect_uri=${window.location.protocol}//${window.location.host}${basePath}/login`;
       }
     } else {
-      const res = await this.authService.getNuimsTenantLoginTypes({
+      const res = await authService.getNuimsTenantLoginTypes({
         query: {
           Action: "GetTenantLoginTypes",
           Version: "2020-06-01",
@@ -206,7 +204,7 @@ const Service: IService = {
         window.location.href = logoutUrl;
         await sleep(1000);
       } else {
-        return this.lowauthInitService
+        return lowauthService
           .Logout({
             headers: getBaseHeaders(),
           })
@@ -223,7 +221,7 @@ const Service: IService = {
         window.location.href = logoutUrl;
         await sleep(1000);
       } else {
-        return this.authService
+        return authService
           .Logout({
             headers: getBaseHeaders(),
           })
@@ -235,19 +233,19 @@ const Service: IService = {
     }
   },
   loginH5(data) {
-    return this.authService.LoginH5({
+    return authService.LoginH5({
       headers: getBaseHeaders(),
       ...data,
     });
   },
   getNuims(query) {
-    return this.authService.GetNuims({
+    return authService.GetNuims({
       headers: getBaseHeaders(),
       query,
     });
   },
   getConfig() {
-    return this.authService.GetConfig({
+    return authService.GetConfig({
       headers: getBaseHeaders(),
     });
   },
@@ -258,7 +256,7 @@ const Service: IService = {
    * 权限服务是否初始化
    */
   isInit() {
-    return !!this._map;
+    return !!_map;
   },
   /**
    * 初始化权限服务
@@ -271,7 +269,7 @@ const Service: IService = {
    * @param {*} authPath 权限路径，如 /dashboard/entity/list
    */
   has(authPath) {
-    return (this._map && this._map.has(authPath)) || false;
+    return (_map && _map.has(authPath)) || false;
   },
 };
 

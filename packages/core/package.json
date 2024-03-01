@@ -10,7 +10,7 @@
     "deploy:dev": "node scripts/deploy-tgz --platform http://defaulttenant.lcap.codewave-dev.163yun.com",
     "deploy:test": "node scripts/deploy-tgz --platform http://defaulttenant.lcap.ha.test.com",
     "deploy:codewave-test": "node scripts/deploy-tgz --platform http://test.lcap.codewave-test.163yun.com",
-    "test": "jest --coverage"
+    "test": "jest --env=jsdom --coverage"
   },
   "keywords": [],
   "author": "LCAP FE Team",

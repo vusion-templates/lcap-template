@@ -3,7 +3,6 @@ module.exports = {
         'vue', 'js', 'mjs', 'cjs', 'jsx', 'ts', 'tsx', 'json', 'node',
     ],
     preset: 'ts-jest',
-    testEnvironment: 'node',
     transform: {
         '^.+\\.vue$': 'vue-jest',
         '^.+\\.(js|jsx)$': 'babel-jest',

@@ -14,6 +14,11 @@ module.exports = {
     devServer: {
         port: 8810,
         proxy: {
+            '/assets': {
+                target: 'http://localhost:8080',
+                changeOrigin: true,
+                autoRewrite: true,
+            },
             '/api': {
                 target: 'http://localhost:8080',
                 changeOrigin: true,

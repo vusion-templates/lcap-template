@@ -22,7 +22,7 @@
     "watch:designer-local": "node ./bin/local-designer-build.js",
     "build:designer": "npm pack && cross-env BUILD_LIB_ENV=designer vue-cli-service build --formats umd-min --target lib --name cloudAdminDesigner src/init.js",
     "deploy:dev": "lcap deploy ./public --platform http://defaulttenant.lcap.codewave-dev.163yun.com && node ./scripts/deploy-tgz.js --platform http://defaulttenant.lcap.codewave-dev.163yun.com",
-    "deploy:test": "lcap deploy ./public --platform https://defaulttenant.lcap.hatest.163yun.com && node ./scripts/deploy-tgz.js --platform https://defaulttenant.lcap.hatest.163yun.com/",
+    "deploy:test": "lcap deploy ./public --platform https://test.lcap.codewave-test.163yun.com && node ./scripts/deploy-tgz.js --platform https://test.lcap.codewave-test.163yun.com",
     "deploy:test2": "lcap deploy ./public --platform http://defaulttenant.lcap.dri816-lowcode.com && node ./scripts/deploy-tgz.js --platform http://defaulttenant.lcap.dri816-lowcode.com",
     "deploy:pre": "lcap deploy ./public --platform http://defaulttenant.lcap.hadri.163yun.com && node ./scripts/deploy-tgz.js --platform http://defaulttenant.lcap.hadri.163yun.com",
     "deploy:online": "lcap deploy ./public --platform http://netease-template.lcap.163yun.com",

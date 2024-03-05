@@ -2,7 +2,7 @@
   "name": "root",
   "private": true,
   "description": "低代码应用模板",
-  "version": "1.1.0",
+  "version": "1.0.2",
   "scripts": {
     "change:version": "node ./scripts/version",
     "build": "export NODE_OPTIONS=--openssl-legacy-provider && pnpm --filter \"./packages/*\" build:designer",

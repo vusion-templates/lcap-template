@@ -4,7 +4,7 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 const cwd = process.cwd();
-const version = argv.version || require('../lerna.json').version;
+const version = argv.version || require('../package.json').version;
 
 // 创建一个临时目录
 const tempDir = path.resolve(cwd, 'temp');

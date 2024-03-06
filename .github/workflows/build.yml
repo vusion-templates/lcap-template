@@ -17,10 +17,10 @@ jobs:
         with:
           version: 8
 
-      - name: Use Node.js 16
+      - name: Use Node.js 18
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '18'
           registry-url: 'https://registry.npmjs.org/'
           cache: 'pnpm'
 
@@ -30,13 +30,13 @@ jobs:
       - name: Get current branch name
         run: echo "BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_ENV
 
-      # 如果版本号不匹配a.b.c格式，则使用lerna.json中的版本号
-      - name: Get version from lerna.json
+      # 使用package.json中的版本号
+      - name: Get version from package.json
         if: ${{ !env.VERSION }}
-        run: echo "VERSION=$(cat lerna.json | jq -r '.version')" >> $GITHUB_ENV
+        run: echo "VERSION=$(cat package.json | jq -r '.version')" >> $GITHUB_ENV
 
       - name: Build
-        run: npm run build && node ./scripts/copy-assets.js --version ${{ env.VERSION }}
+        run: pnpm build && node ./scripts/copy-assets.js --version ${{ env.VERSION }}
 
       - name: Upload
         uses: actions/upload-artifact@v4

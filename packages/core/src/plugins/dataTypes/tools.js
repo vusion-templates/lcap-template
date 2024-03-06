@@ -233,8 +233,9 @@ export function isInstanceOf(variable, typeKey) {
     if (Array.isArray(enumItems)) {
       if (varStr === "[object String]") {
         // 当前值在枚举中存在
+        // 枚举值支持integer，改为不严格判断
         const enumItemIndex = enumItems.findIndex(
-          (enumItem) => variable === enumItem.value
+          (enumItem) => variable == enumItem.value
         );
         return enumItemIndex !== -1;
       } else if (varStr === "[object Array]") {
@@ -661,10 +662,18 @@ export const toString = (
       }
     } else if (concept === "Enum") {
       if (Array.isArray(enumItems) && enumItems.length) {
+        // 改为不严格判断，枚举值支持数字类型
         const enumItem = enumItems.find(
-          (enumItem) => variable === enumItem.value
+          (enumItem) => variable == enumItem.value
         );
-        str = enumItem?.label;
+        if (
+          $global?.i18nInfo?.enabled &&
+          enumItem?.label?.i18nKey
+        ) {
+          str = $i18n.t(enumItem.label.i18nKey);
+        } else {
+          str = enumItem?.label?.value || enumItem?.label;
+        }
       }
     } else if (["TypeAnnotation", "Structure", "Entity"].includes(concept)) {
       // 复合类型
@@ -898,7 +907,7 @@ export const fromString = (variable, typeKey) => {
     });
     return outputDate;
   } else if (typeName === "Date" && isValidDate(variable, DateReg)) {
-    return moment(new Date(variable)).format('YYYY-MM-DD');
+    return moment(new Date(variable)).format("YYYY-MM-DD");
   } else if (typeName === "Time" && TimeReg.test(variable)) {
     // ???
     return moment(new Date("2022-01-01 " + variable)).format("HH:mm:ss");

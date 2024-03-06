@@ -68,6 +68,7 @@ import {
 } from "./helper";
 
 let enumsMap = {};
+let dataTypesMap = {}
 
 const safeNewDate = (dateStr) => {
   try {
@@ -121,23 +122,16 @@ export const utils = {
   Vue: undefined,
   EnumValueToText(value, enumTypeAnnotation) {
     const { typeName, typeNamespace } = enumTypeAnnotation || {};
-    if (typeName) {
-      let enumName = typeName;
-      if (typeNamespace?.startsWith("extensions")) {
-        enumName = typeNamespace + "." + enumName;
-      }
-      if (enumsMap[enumName]) {
-        return enumsMap[enumName][value];
-      }
-      return "";
+    if (typeName && typeNamespace) {
+      return toString(typeNamespace + "." + typeName, value) || "";
     }
     return "";
   },
-  StringToEnumValue(value, enumTypeAnnotation) {
+  ToEnumItem(value, enumTypeAnnotation) {
     const { typeName, typeNamespace } = enumTypeAnnotation || {};
     if (typeName) {
       let enumName = typeName;
-      if (typeNamespace?.startsWith("extensions")) {
+      if (typeNamespace?.startsWith("extensions") || typeNamespace?.startsWith("nasl")) {
         enumName = typeNamespace + "." + enumName;
       }
       if (enumsMap[enumName] && enumsMap[enumName].hasOwnProperty(value)) {
@@ -149,16 +143,22 @@ export const utils = {
   },
   EnumToList(enumTypeAnnotation) {
     const { typeName, typeNamespace } = enumTypeAnnotation || {};
+    let tempEnums = dataTypesMap[`${typeNamespace}.${typeName}`] || {};
+    let tempName = tempEnums?.name;
     let enumName = typeName;
     if (typeName && typeNamespace?.startsWith("extensions")) {
-      enumName = typeNamespace + "." + enumName;
+        enumName = typeNamespace + "." + enumName;
+        tempName = enumName;
     }
-    const enumeration = enumsMap[enumName];
-    if (!enumeration) return [];
+    let isToNumber = false;
+    if (enumName === tempName && tempEnums.valueType?.typeName === 'Long' && tempEnums.valueType?.typeNamespace === 'nasl.core') {
+        isToNumber = true
+    }
+    if (!Array.isArray(tempEnums.enumItems)) return [];
     else {
-      return Object.keys(enumeration).map((key) => ({
-        text: enumeration[key],
-        value: key,
+      return tempEnums.enumItems.map((enumItem) => ({
+        text: toString(typeNamespace + "." + typeName, enumItem.value),
+        value: isToNumber ? +enumItem.value : enumItem.value,
       }));
     }
   },
@@ -948,7 +948,7 @@ export const utils = {
         addDate = addYears(date, amount);
         break;
     }
-    if (typeof dateString === "object" || dateString.includes("T")) {
+    if (typeof dateString === "object" || this.isInputValidNaslDateTime(dateString)) {
       return format(addDate, "yyyy-MM-dd HH:mm:ss");
     } else {
       return format(addDate, "yyyy-MM-dd");
@@ -1028,6 +1028,33 @@ export const utils = {
       return "-";
     }
     return dateFormatter.format(naslDateToLocalDate(value), formatter);
+  },
+  FormatTime(value, formatter) {
+    if (!value) {
+      return "-";
+    }
+    // 使用正则表达式提取时、分、秒
+    const parts = value.match(/(\d{1,2})[^0-9]*(\d{1,2})[^0-9]*(\d{1,2})/);
+
+    // 如果没有匹配到三个部分，则返回原始字符串
+    if (!parts) {
+      return value;
+    }
+
+    // 提取时、分、秒，并将它们转换成整数
+    let hours = parseInt(parts[1], 10);
+    let minutes = parseInt(parts[2], 10);
+    let seconds = parseInt(parts[3], 10);
+
+    // 根据需要格式化时、分、秒
+    let formattedTime = formatter
+      .replace('HH', hours.toString().padStart(2, '0'))
+      .replace('H', hours.toString())
+      .replace('mm', minutes.toString().padStart(2, '0'))
+      .replace('m', minutes.toString())
+      .replace('ss', seconds.toString().padStart(2, '0'))
+      .replace('s', seconds.toString());
+    return formattedTime;
   },
   FormatDateTime(value, formatter, tz) {
     if (!value) {
@@ -1142,14 +1169,20 @@ export const utils = {
   /**
    * 数字格式化
    * @param {digits} 小数点保留个数
+   * @param {omit} 是否隐藏末尾零
    * @param {showGroup} 是否显示千位分割（默认逗号分隔）
+   * @param {fix} 前缀还是后缀
+   * @param {unit} 单位
    */
-  FormatNumber(value, digits, showGroup) {
+  FormatNumber(value, digits, omit, showGroup, fix, unit) {
     if (!value) return value;
     if (parseFloat(value) === 0) return "0";
     if (isNaN(parseFloat(value)) || isNaN(parseInt(digits))) return;
     if (digits !== undefined) {
       value = Number(value).toFixed(parseInt(digits));
+      if (omit) {
+        value = parseFloat(value) + ''; // 转字符串
+      }
     }
     if (showGroup) {
       const temp = ("" + value).split(".");
@@ -1167,7 +1200,55 @@ export const utils = {
       if (right) left = left + "." + right;
       value = left;
     }
+    if (fix && unit) {
+      switch (fix) {
+        case "prefix":
+          value = unit + value;
+          break;
+        case "suffix":
+          value = value + unit;
+          break;
+        default:
+          value = value + unit;
+          break;
+      }
+    }
     return "" + value;
+  },
+  /**
+   * 百分数格式化
+   * @param {digits} 小数点保留个数
+   * @param {omit} 是否隐藏末尾零
+   * @param {showGroup} 是否显示千位分割（默认逗号分隔）
+   */
+  FormatPercent(value, digits, omit, showGroup) {
+    if (!value) return value;
+    if (parseFloat(value) === 0) return "0";
+    if (isNaN(parseFloat(value)) || isNaN(parseInt(digits))) return;
+    value = value * 100;
+    if (digits !== undefined) {
+      value = Number(value).toFixed(parseInt(digits));
+      if (omit) {
+        value = parseFloat(value) + ""; // 转字符串
+      }
+    }
+    if (showGroup) {
+      const temp = ("" + value).split(".");
+      const right = temp[1];
+      let left = temp[0]
+        .split("")
+        .reverse()
+        .join("")
+        .match(/(\d{1,3})/g)
+        .join(",")
+        .split("")
+        .reverse()
+        .join("");
+      if (temp[0][0] === "-") left = "-" + left;
+      if (right) left = left + "." + right;
+      value = left;
+    }
+    return value + "%";
   },
   /**
    * 时间差
@@ -1414,5 +1495,6 @@ export default {
     Vue.prototype.$utils = utils;
     window.$utils = utils;
     enumsMap = options.enumsMap;
+    dataTypesMap = options.dataTypesMap;
   },
 };

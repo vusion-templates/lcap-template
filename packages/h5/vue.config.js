@@ -1,5 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { EsbuildPlugin } = require('esbuild-loader');
+// const { EsbuildPlugin } = require('esbuild-loader');
 const path = require('path');
 const pkg = require('./package.json');
 const pages = require('./pages.json');
@@ -63,12 +63,12 @@ const vueConfig = {
 
         config.module.rule('js').uses.delete('cache-loader');
     },
-    configureWebpack: (config) => {
-        // 使用esbuild压缩
-        config.optimization.minimizer = [
-            new EsbuildPlugin(),
-        ];
-    },
+    // configureWebpack: (config) => {
+    //     // 使用esbuild压缩
+    //     config.optimization.minimizer = [
+    //         new EsbuildPlugin(),
+    //     ];
+    // },
     devServer,
 };
 

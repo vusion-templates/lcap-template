@@ -1,4 +1,4 @@
-const { EsbuildPlugin } = require('esbuild-loader');
+// const { EsbuildPlugin } = require('esbuild-loader');
 const pkg = require('./package.json');
 const argv = require('minimist')(process.argv.slice(2));
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -49,12 +49,12 @@ const vueConfig = {
 
         config.module.rule('js').uses.delete('cache-loader');
     },
-    configureWebpack: (config) => {
-        // 使用esbuild压缩
-        config.optimization.minimizer = [
-            new EsbuildPlugin(),
-        ];
-    },
+    // configureWebpack: (config) => {
+    //     // 使用esbuild压缩
+    //     config.optimization.minimizer = [
+    //         new EsbuildPlugin(),
+    //     ];
+    // },
     devServer,
 };
 

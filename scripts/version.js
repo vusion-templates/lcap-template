@@ -16,10 +16,10 @@ const rootPkg = require(rootPkgPath);
 rootPkg.version = version;
 fs.writeJSONSync(rootPkgPath, rootPkg, {
   spaces: 2,
-  EOL: "\r\n",
+  EOL: "\n",
 });
 
-// 遍历packages下的一级目录 
+// 遍历packages下的一级目录
 const packagesDir = path.join(__dirname, '../packages');
 const packages = fs.readdirSync(packagesDir);
 packages.forEach((package) => {
@@ -28,9 +28,10 @@ packages.forEach((package) => {
     if (fs.existsSync(pkgPath)) {
       const pkg = require(pkgPath);
       pkg.version = version;
+      // 使用LF换行符
       fs.writeJSONSync(pkgPath, pkg, {
         spaces: 2,
-        EOL: "\r\n",
+        EOL: "\n",
       });
     }
   }

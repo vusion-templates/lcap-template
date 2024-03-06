@@ -1,5 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const { EsbuildPlugin } = require('esbuild-loader');
+const { EsbuildPlugin } = require('esbuild-loader');
 const path = require('path');
 const pkg = require('./package.json');
 const pages = require('./pages.json');
@@ -26,17 +26,13 @@ const webpackHtml = require('./webpack/html');
 const webpackOptimization = require('./webpack/optimization');
 const isDesigner = process.env.BUILD_LIB_ENV === 'designer';
 
-const assetsDir = 'public';
 const baseConfig = {
     publicPath: publicPathPrefix,
-    assetsDir,
+    outputDir: 'public',
+    assetsDir: 'public',
     productionSourceMap: false,
     transpileDependencies: [/lodash/, 'resize-detector', /cloud-ui\.vusion/, /@cloud-ui/, /vant/, /@lcap\/mobile-ui/],
 };
-
-if (isDesigner) {
-    webpackDesigner.config(baseConfig, pages);
-}
 const vueConfig = {
     ...baseConfig,
     pages,
@@ -63,12 +59,14 @@ const vueConfig = {
 
         config.module.rule('js').uses.delete('cache-loader');
     },
-    // configureWebpack: (config) => {
-    //     // 使用esbuild压缩
-    //     config.optimization.minimizer = [
-    //         new EsbuildPlugin(),
-    //     ];
-    // },
+    configureWebpack: (config) => {
+        if (isDesigner) {
+            webpackDesigner.config(config, pages);
+        }
+
+        // 使用esbuild压缩
+        config.optimization.minimizer = [new EsbuildPlugin()];
+    },
     devServer,
 };
 

@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { EsbuildPlugin } = require('esbuild-loader');
 const path = require('path');
 const pkg = require('./package.json');
 const pages = require('./pages.json');
@@ -6,8 +7,7 @@ const argv = require('minimist')(process.argv.slice(2));
 if (argv.pages) {
     argv.pages = argv.pages.split(',');
     Object.keys(pages).forEach((key) => {
-        if (!argv.pages.includes(key))
-            delete pages[key];
+        if (!argv.pages.includes(key)) delete pages[key];
     });
 }
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -31,14 +31,7 @@ const baseConfig = {
     publicPath: publicPathPrefix,
     assetsDir,
     productionSourceMap: false,
-    transpileDependencies: [
-        /lodash/,
-        'resize-detector',
-        /cloud-ui\.vusion/,
-        /@cloud-ui/,
-        /vant/,
-        /@lcap\/mobile-ui/,
-    ],
+    transpileDependencies: [/lodash/, 'resize-detector', /cloud-ui\.vusion/, /@cloud-ui/, /vant/, /@lcap\/mobile-ui/],
 };
 
 if (isDesigner) {
@@ -57,7 +50,6 @@ const vueConfig = {
                     args[0].template = path.resolve('./demo.html');
                     return args;
                 });
-
         } else {
             webpackHtml.chain(config, isDevelopment);
             webpackDll.chain(config, publicPathPrefix, isDevelopment);
@@ -70,6 +62,12 @@ const vueConfig = {
         config.output.jsonpFunction('webpackJsonp' + pkg.name);
 
         config.module.rule('js').uses.delete('cache-loader');
+    },
+    configureWebpack: (config) => {
+        // 使用esbuild压缩
+        config.optimization.minimizer = [
+            new EsbuildPlugin(),
+        ];
     },
     devServer,
 };

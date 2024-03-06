@@ -6,8 +6,10 @@ const pkg = require('../package.json');
 const version = argv.version || pkg.version;
 
 deployTgz({
-    root: path.resolve(__dirname, '../'),
-    name: pkg.name,
-    version: version,
-    platform: argv.platform,
+  root: path.resolve(__dirname, "../"),
+  name: pkg.name,
+  version: version,
+  platform: argv.platform,
+  username: argv.username,
+  password: argv.password,
 });

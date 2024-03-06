@@ -16,9 +16,11 @@ describe('当前日期时间系列函数', () => {
         const utcDate = momentTZ.tz(new Date(), 'UTC');
         const cDate = codewaveUtils.CurrDateTime('noUse');
         if (utcDate.hours() > 10) {
-            expect(momentTZ.tz(cDate, 'Pacific/Kiritimati').date() - utcDate.date()).toBe(1);
+            // 可能跨月：-30, -29, -28, -27
+            expect([1, -30, -29, -28]).toContain(momentTZ.tz(cDate, 'Pacific/Kiritimati').date() - utcDate.date());
         } else {
-            expect(momentTZ.tz(cDate, 'Pacific/Midway').date() - utcDate.date()).toBe(-1);
+            // 可能跨月
+            expect([-1, 30, 29, 28, 27]).toContain(momentTZ.tz(cDate, 'Pacific/Midway').date() - utcDate.date());
         }
     });
 
@@ -31,7 +33,13 @@ describe('当前日期时间系列函数', () => {
         const bDate = codewaveUtils.CurrDate('Pacific/Kiritimati');
         const b = momentTZ.tz(bDate, 'YYYY-MM-DD', 'Pacific/Kiritimati').date();
 
-        expect([2, 1]).toContain(b - a);
+        if (b - a > 0) {
+            expect([2, 1]).toContain(b - a);
+        } else {
+            // 跨月后是负数
+            expect([-27, -28, -29, -30]).toContain(b - a);
+        }
+
     });
 
     test('CurrentTime', () => {

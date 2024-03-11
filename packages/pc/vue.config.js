@@ -1,4 +1,4 @@
-// const { EsbuildPlugin } = require('esbuild-loader');
+const { EsbuildPlugin } = require('esbuild-loader');
 const pkg = require('./package.json');
 const argv = require('minimist')(process.argv.slice(2));
 const isDevelopment = process.env.NODE_ENV === 'development';

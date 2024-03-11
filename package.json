@@ -15,8 +15,8 @@
   "license": "ISC",
   "packageManager": "pnpm@8.15.4",
   "engines": {
-    "node": ">= 18",
-    "pnpm": ">= 8"
+    "node": ">=18",
+    "pnpm": ">=8"
   },
   "devDependencies": {
     "fs-extra": "^9.0.0",

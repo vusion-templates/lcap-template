@@ -11,9 +11,7 @@ module.exports = {
     chain(config) {
         config.externals({
             ...config.get('externals'),
-            // 'cloud-ui.vusion': 'CloudUI',
             '@lcap/mobile-ui': 'vant',
         });
-        config.resolve.alias.set('cloud-ui.vusion.css$', path.resolve(__dirname, '../node_modules/cloud-ui.vusion/dist-raw/index.css'));
     },
 };

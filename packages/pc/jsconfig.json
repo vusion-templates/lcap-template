@@ -2,8 +2,7 @@
     "compilerOptions": {
         "baseUrl": "./",
         "paths": {
-            "@/*": ["./src/*"],
-            "cloud-ui.vusion.css": ["./node_modules/cloud-ui.vusion/dist-raw/index.css"]
+            "@/*": ["./src/*"]
         }
     },
     "exclude": ["node_modules", "public", "dist", "dll", "plop"]

@@ -3,9 +3,6 @@ import { installOptions, installFilters, installComponents, install } from '@vus
 import * as Vant from '@lcap/mobile-ui';
 import * as Components from '@/components';
 
-import MEmitter from 'cloud-ui.vusion/src/components/m-emitter.vue';
-import MPubSub from 'cloud-ui.vusion/src/components/m-pub-sub.vue';
-
 import './setConfig';
 
 import {
@@ -43,33 +40,22 @@ Vue.prototype.$at2 = function (obj, propertyPath) {
     if (propertyPath === '' && !this.$env.VUE_APP_DESIGNER) return obj;
     return this.$at(obj, propertyPath);
 };
-
-function getAsyncPublicPath() {
-    const script = document.querySelector('script[src*="cloud-ui.vusion"]');
-    if (!script) return;
-
-    const src = script.src;
-    const publicPath = src.replace(/\/[^/]+$/, '/');
-    // eslint-disable-next-line camelcase, no-undef
-    __webpack_public_path__ = publicPath;
-}
-getAsyncPublicPath();
 /* 👆CloudUI中入口逻辑 */
 
 window.appVue = Vue;
 window.Vue = Vue;
 const CloudUI = {
     install,
-    MEmitter,
-    MPubSub,
+    MEmitter: Vant.MEmitter,
+    MPubSub: Vant.MPubSub,
 };
 // 梳理下来只有install被使用过
 window.CloudUI = CloudUI;
 
 // 预览沙箱不需要调用init来初始化，但是需要使用到CloudUI和Vant组件，所以放在外边
 installOptions(Vue);
-Vue.mixin(MEmitter);
-Vue.mixin(MPubSub);
+Vue.mixin(Vant.MEmitter);
+Vue.mixin(Vant.MPubSub);
 Vue.use(Vant);
 
 // 需要兼容老应用的制品，因此新版本入口函数参数不做改变
@@ -171,7 +157,7 @@ const init = (appConfig, platformConfig, routes, metaData) => {
                 };
                 await beforeRouter(event);
             }
-        } catch (err) { }
+        } catch (err) {}
         next();
     };
     beforeRouter && router.beforeEach(getAuthGuard(router, routes, authResourcePaths, appConfig, baseResourcePaths, window.beforeRouter));
@@ -206,7 +192,7 @@ const init = (appConfig, platformConfig, routes, metaData) => {
                 if (afterRouter) {
                     await afterRouter(to, from);
                 }
-            } catch (err) { }
+            } catch (err) {}
         });
     app.$mount('#app');
     return app;

@@ -18,7 +18,6 @@ const port = argv.port || 8810;
 const devServer = require('./webpack.dev-server')(port);
 
 const webpackDll = require('./webpack/dll');
-const webpackCloudUI = require('./webpack/cloud-ui');
 const webpackStyle = require('./webpack/style');
 const webpackDesigner = require('./webpack/designer');
 const webpackRoutes = require('./webpack/routes');
@@ -52,7 +51,6 @@ const vueConfig = {
         }
         webpackOptimization.chain(config, isDevelopment);
 
-        webpackCloudUI.chain(config);
         webpackStyle.chain(config);
         webpackRoutes.chain(config);
         config.output.jsonpFunction('webpackJsonp' + pkg.name);

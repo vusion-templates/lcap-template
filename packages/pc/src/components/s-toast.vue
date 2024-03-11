@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { UToast, UCopy } from 'cloud-ui.vusion';
+import { UToast, UCopy } from '@lcap/pc-ui';
 
 export default {
     name: 's-toast',

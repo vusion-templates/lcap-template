@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { installOptions, installDirectives, installFilters, installComponents } from '@vusion/utils';
-import * as CloudUI from 'cloud-ui.vusion';
+import * as CloudUI from '@lcap/pc-ui';
 import * as Components from '@/components';
 
 import './setConfig';
@@ -27,7 +27,7 @@ import { getTitleGuard } from './router';
 import VueI18n from 'vue-i18n';
 import App from './App.vue';
 
-import 'cloud-ui.vusion.css';
+import '@lcap/pc-ui/css';
 import '@/assets/css/index.css';
 
 window.appVue = Vue;
@@ -108,7 +108,7 @@ const init = (appConfig, platformConfig, routes, metaData) => {
         }
     };
     if (!window?.$toast) {
-        window.$toast =  window.Vue.prototype.$toast;
+        window.$toast = window.Vue.prototype.$toast;
     }
     if (window?.rendered) {
         window.rendered();

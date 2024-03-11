@@ -1,16 +1,8 @@
 const path = require('path');
 const fs = require('fs-extra');
 module.exports = {
-    config(baseConfig) {
-        baseConfig.outputDir = (baseConfig.outputDir || 'public');
-        fs.emptyDirSync(path.resolve(baseConfig.outputDir));
-        fs.emptyDirSync(path.resolve('vusion_packages'));
-        baseConfig.configureWebpack = {
-            ...baseConfig.configureWebpack,
-            output: {
-                libraryExport: 'default',
-            },
-        };
+    config(config) {
+        config.output.libraryExport = 'default';
     },
     chain(config) {
         config.externals({

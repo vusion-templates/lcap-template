@@ -1,5 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const { EsbuildPlugin } = require('esbuild-loader');
+const { EsbuildPlugin } = require('esbuild-loader');
 const path = require('path');
 const pkg = require('./package.json');
 const pages = require('./pages.json');

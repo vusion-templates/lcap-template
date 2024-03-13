@@ -2,13 +2,13 @@
 const path = require('path');
 
 module.exports = {
-    configureWebpack: {
-        resolve: {
-            alias: {
-                '@lcap/pc-ui$': path.resolve(__dirname, 'node_modules/@lcap/pc-ui/dist-theme/index.js'),
-                '@lcap/pc-ui/css$': path.resolve(__dirname, 'node_modules/@lcap/pc-ui/dist-theme/index.css'),
-            },
-        },
+    configureWebpack(config) {
+        config.resolve.alias['@lcap/pc-ui$'] = path.resolve(__dirname, 'node_modules/@lcap/pc-ui/dist-theme/index.js');
+        config.resolve.alias['@lcap/pc-ui/css$'] = path.resolve(__dirname, 'node_modules/@lcap/pc-ui/dist-theme/index.css');
+
+        if (process.env.NODE_ENV === 'production') {
+            config.devtool = false;
+        }
     },
     lintOnSave: false,
     devServer: {

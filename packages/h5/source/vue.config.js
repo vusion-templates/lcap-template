@@ -1,12 +1,10 @@
 const path = require('path');
 
 module.exports = {
-    configureWebpack: {
-        resolve: {
-            alias: {
-                
-            },
-        },
+    configureWebpack(config) {
+        if (process.env.NODE_ENV === 'production') {
+            config.devtool = false;
+        }
     },
     lintOnSave: false,
     devServer: {

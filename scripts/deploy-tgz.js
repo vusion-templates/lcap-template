@@ -1,6 +1,7 @@
 const upload = require('lcap/lib/upload');
 const fs = require('fs');
 const path = require('path');
+
 /**
  * 
  * @param {*} options
@@ -13,7 +14,7 @@ const path = require('path');
  * http://minio-api.codewave-dev.163yun.com/lowcode-static/packages/@lcap/template-core@3.5.0/zip.tgz
  */
 function deployTgz(options = {}) {
-  const { root, name, version, platform } = options;
+  const { root, name, version, platform, username, password } = options;
 
   const target = name.replace("@", "").replace("/", "-") + "-" + version + ".tgz";
   const targetPath = path.resolve(root, target);
@@ -64,12 +65,14 @@ function deployTgz(options = {}) {
 
   return upload(formFiles, {
     platform: platform,
+    username: username,
+    password: password,
   })
     .then(() => {
       console.log(`上传成功`);
     })
     .catch(() => {
-      console.error(`上传失败`);
+      throw new Error("上传失败");
     })
     .finally(() => {
       fs.unlinkSync(sourcePath);

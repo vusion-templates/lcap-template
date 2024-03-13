@@ -11,7 +11,7 @@
 ```
 
 ## 环境依赖
-- nodejs 16
+- nodejs 18
 - pnpm 8
 
 ## 安装依赖
@@ -23,12 +23,18 @@ pnpm install
 ## 本地发布静态资源
 > 根目录下
 ```
-npm run build:designer
+pnpm build
 
-npm run deploy:dev
+pnpm deploy:dev
 ```
 
-## 发版asset资源获取
+## 修改版本号方式
+> 根目录下
+```
+pnpm change:version --version 1.0.0
+```
+
+## 发版asset资源获取（不再需要此操作）
 
 https://github.com/vusion-templates/lcap-template/actions
 
@@ -41,9 +47,3 @@ https://github.com/vusion-templates/lcap-template/actions
 ```
 
 ‼️将上述3个文件夹放到lcap-assets目录的 @lcap 目录下
-
-## 修改版本号方式
-> 根目录下
-```
-pnpm change:version
-```

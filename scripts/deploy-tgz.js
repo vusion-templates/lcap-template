@@ -76,6 +76,7 @@ function deployTgz(options = {}) {
     })
     .finally(() => {
       fs.unlinkSync(sourcePath);
+      fs.unlinkSync(targetPath);
     });
 }
 

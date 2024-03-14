@@ -1,18 +1,12 @@
 const path = require('path');
 const fs = require('fs-extra');
 module.exports = {
-    config(baseConfig, pages) {
-        baseConfig.outputDir = (baseConfig.outputDir || 'public');
-        fs.emptyDirSync(path.resolve(baseConfig.outputDir));
+    config(config, pages) {
         Object.keys(pages).forEach((pageName) => {
             delete pages[pageName];
         });
-        baseConfig.configureWebpack = {
-            ...baseConfig.configureWebpack,
-            output: {
-                libraryExport: 'default',
-            },
-        };
+
+        config.output.libraryExport = 'default';
     },
     chain(config) {
         config.externals({

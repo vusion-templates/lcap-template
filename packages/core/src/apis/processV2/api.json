@@ -17,9 +17,9 @@
             "method": "post"
         }
     },
-    "getMyInitiateTasks": {
+    "getMyInitiatedTasks": {
         "url": {
-            "path": "/api/processV2/getMyInitiateTasks",
+            "path": "/api/processV2/getMyInitiatedTasks",
             "method": "post"
         }
     },

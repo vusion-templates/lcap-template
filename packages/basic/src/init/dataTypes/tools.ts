@@ -669,7 +669,7 @@ export const toString = (
         const enumItem = enumItems.find(
           (enumItem) => variable == enumItem.value
         );
-        str = enumItem?.label;
+        str = enumItem?.label?.value || enumItem?.label;
       }
     } else if (["TypeAnnotation", "Structure", "Entity"].includes(concept)) {
       // 复合类型

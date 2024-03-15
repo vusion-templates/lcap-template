@@ -542,7 +542,7 @@ function indent(tabSize) {
 export const toString = (
   typeKey,
   variable,
-  tz,
+  tz?,
   tabSize = 0,
   collection = new Set()
 ) => {

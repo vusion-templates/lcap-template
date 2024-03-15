@@ -124,15 +124,8 @@ function isArrayInBounds(arr, index) {
 export const utils = {
   EnumValueToText(value, enumTypeAnnotation) {
     const { typeName, typeNamespace } = enumTypeAnnotation || {};
-    if (typeName) {
-      let enumName = typeName;
-      if (typeNamespace?.startsWith("extensions")) {
-        enumName = typeNamespace + "." + enumName;
-      }
-      if (enumsMap[enumName]) {
-        return enumsMap[enumName][value];
-      }
-      return "";
+    if (typeName && typeNamespace) {
+      return toString(typeNamespace + "." + typeName, value) || "";
     }
     return "";
   },
@@ -140,7 +133,7 @@ export const utils = {
     const { typeName, typeNamespace } = enumTypeAnnotation || {};
     if (typeName) {
       let enumName = typeName;
-      if (typeNamespace?.startsWith("extensions")) {
+      if (typeNamespace?.startsWith("extensions") || typeNamespace?.startsWith("nasl")) {
         enumName = typeNamespace + "." + enumName;
       }
       if (enumsMap[enumName] && enumsMap[enumName].hasOwnProperty(value)) {
@@ -159,17 +152,15 @@ export const utils = {
         enumName = typeNamespace + "." + enumName;
         tempName = enumName;
     }
-    const enumeration = enumsMap[enumName];
-   
     let isToNumber = false;
     if (enumName === tempName && tempEnums.valueType?.typeName === 'Long' && tempEnums.valueType?.typeNamespace === 'nasl.core') {
         isToNumber = true
     }
-    if (!enumeration) return [];
+    if (!Array.isArray(tempEnums.enumItems)) return [];
     else {
-      return Object.keys(enumeration).map((key) => ({
-        text: enumeration[key],
-        value: isToNumber ? +key : key
+      return tempEnums.enumItems.map((enumItem) => ({
+        text: toString(typeNamespace + "." + typeName, enumItem.value),
+        value: isToNumber ? +enumItem.value : enumItem.value,
       }));
     }
   },

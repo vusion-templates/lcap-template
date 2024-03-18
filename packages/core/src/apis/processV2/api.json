@@ -142,5 +142,17 @@
             "path": "/api/processV2/getProcVariable",
             "method": "post"
         }
+    },
+    "addSignTask": {
+        "url": {
+            "path": "/api/processV2/addSignTask",
+            "method": "post"
+        }
+    },
+    "getUsersForAddSign": {
+        "url": {
+            "path": "/api/processV2/getUsersForAddSign",
+            "method": "post"
+        }
     }
 }

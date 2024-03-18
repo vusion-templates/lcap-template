@@ -1,5 +1,6 @@
 import processService from './processService';
 import { initService as processV2Service } from "../../apis/processV2";
+import { initService as systemProcessV2Service } from "../../apis/system/processV2";
 import { formatMicroFrontUrl, formatMicroFrontRouterPath } from './microFrontUrl';
 import Config from "../../config";
 
@@ -21,12 +22,13 @@ export default {
          */
         Vue.prototype.$process = processService;
         Vue.prototype.$processV2 = processV2Service();
+        Vue.prototype.$systemProcessV2 = systemProcessV2Service();
 
         Vue.prototype.$formatMicroFrontUrl = formatMicroFrontUrl;
         Vue.prototype.$formatMicroFrontRouterPath = formatMicroFrontRouterPath;
 
-        Vue.prototype.$destination = function(...args) {
-          Config.destination.call(this, ...args);
+        Vue.prototype.$destination = function (...args) {
+            Config.destination.call(this, ...args);
         };
 
         Vue.prototype.$link = async function (url, target = '_self') {

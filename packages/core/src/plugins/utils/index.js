@@ -602,7 +602,8 @@ export const utils = {
   },
   MapGet(map, key) {
     if (isObject(map)) {
-      return map[key] || null;
+      const value = map[key];
+      return typeof value === "undefined" ? null : value;
     }
   },
   MapPut(map, key, value) {

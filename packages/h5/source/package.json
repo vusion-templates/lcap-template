@@ -9,7 +9,6 @@
     },
     "dependencies": {
         "babel-generator": "^6.26.1",
-        "cloud-ui.vusion": "0.14.16",
         "core-js": "^3.6.5",
         "date-fns": "^2.29.3",
         "date-fns-tz": "^2.0.0",
@@ -18,8 +17,6 @@
         "crypto-js": "^4.1.1",
         "vue": "2.6.12",
         "vue-router": "^3.2.0",
-
-        "@lcap/mobile-ui": "^0.12.0",
         "@vusion/utils": "^0.4.9",
         "axios": "^0.19.0",
         "babel-polyfill": "^6.26.0",

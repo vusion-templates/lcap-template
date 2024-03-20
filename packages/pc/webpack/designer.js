@@ -7,8 +7,8 @@ module.exports = {
     chain(config) {
         config.externals({
             ...config.get('externals'),
-            'cloud-ui.vusion': 'CloudUI',
+            '@lcap/pc-ui': 'CloudUI',
         });
-        config.resolve.alias.set('cloud-ui.vusion.css$', path.resolve(__dirname, './index.css'));
+        config.resolve.alias.set('@lcap/pc-ui/css$', path.resolve(__dirname, './index.css'));
     },
 };

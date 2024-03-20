@@ -1,7 +1,7 @@
 {
   "name": "@lcap/pc-template",
-  "version": "1.1.0",
-  "description": "base on vue cloud-ui.vusion",
+  "version": "1.2.0",
+  "description": "",
   "scripts": {
     "gen:bundle": "node --experimental-modules demo/gen/index.mjs",
     "dev:demo": "npm run gen:bundle && VUE_CLI_SERVICE_CONFIG_PATH=./demo/vue.demo.config.js vue-cli-service serve demo/entry.js",
@@ -108,7 +108,7 @@
     "@vusion/utils": "^0.4.10",
     "axios": "^0.19.0",
     "babel-polyfill": "^6.26.0",
-    "cloud-ui.vusion": "^0.15.0",
+    "@lcap/pc-ui": "http://minio-api.codewave-test.163yun.com/lowcode-static/packages/@lcap/pc-ui@0.22.0/zip.tgz",
     "crypto-js": "^4.1.1",
     "date-fns": "^2.6.0",
     "date-fns-tz": "^2.0.0",
@@ -137,9 +137,5 @@
       "npm run lint -- --fix",
       "git add"
     ]
-  },
-  "ui": {
-    "name": "cloud-ui.vusion",
-    "version": "0.11.24"
   }
 }

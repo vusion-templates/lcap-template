@@ -28,14 +28,17 @@ export default {
         show(text, message, duration = 3000) {
             this.copySuccess = false;
             if (!this.$el) {
-                this.$mount(document.createElement('div'));
-            } else {
-                this.$nextTick(() => {
-                    this.text = text;
-                    this.message = message;
-                    this.$refs.toast.error(null, duration);
-                });
+                const container = document.createElement('div');
+                document.body.appendChild(container);
+                this.$mount(container);
             }
+
+            this.$nextTick(() => {
+                this.text = text;
+                this.message = message;
+                this.$refs.toast.error(null, duration);
+            });
+
         },
     },
 };

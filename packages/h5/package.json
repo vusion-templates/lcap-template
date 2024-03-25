@@ -27,7 +27,8 @@
     "postinstall": "node node_modules/vusion-install/index.js",
     "prepublishOnly": "cp .gitignore _.gitignore && npm run build:designer",
     "postpublish": "rm _.gitignore",
-    "deploy:dev2": "node ./bin/upload.js"
+    "deploy:dev2": "node ./bin/upload.js",
+    "format:less": "lessc src/assets/css/root.less src/assets/css/root.css"
   },
   "keywords": [
     "vue",
@@ -114,7 +115,6 @@
     "jest": "^29.5.0",
     "lcap": "0.2.3",
     "less": "^4.2.0",
-    "less-loader": "^7.3.0",
     "lint-staged": "^9.2.5",
     "minimist": "^1.2.8",
     "nodemon": "^2.0.22",

@@ -30,7 +30,7 @@ import VueI18n from 'vue-i18n';
 import App from './App.vue';
 
 import '@/assets/css/index.css';
-import '@/assets/css/root.less';
+import '@/assets/css/root.css';
 
 const fnList = ['afterRouter'];
 const evalWrap = function (metaData, fnName) {

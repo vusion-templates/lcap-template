@@ -219,7 +219,7 @@ importers:
         version: 4.5.19(@vue/cli-service@4.5.19)(vue-template-compiler@2.6.12)(vue@2.6.12)
       '@vue/cli-service':
         specifier: ^4.5.13
-        version: 4.5.19(babel-core@7.0.0-bridge.0)(less-loader@7.3.0)(lodash@4.17.21)(raw-loader@3.1.0)(vue-template-compiler@2.6.12)(vue@2.6.12)(webpack-cli@3.3.12)
+        version: 4.5.19(babel-core@7.0.0-bridge.0)(lodash@4.17.21)(raw-loader@3.1.0)(vue-template-compiler@2.6.12)(vue@2.6.12)(webpack-cli@3.3.12)
       '@vue/test-utils':
         specifier: ^1.0.2
         version: 1.0.2(vue-template-compiler@2.6.12)(vue@2.6.12)
@@ -301,9 +301,6 @@ importers:
       less:
         specifier: ^4.2.0
         version: 4.2.0
-      less-loader:
-        specifier: ^7.3.0
-        version: 7.3.0(less@4.2.0)(webpack@4.47.0)
       lint-staged:
         specifier: ^9.2.5
         version: 9.5.0
@@ -442,7 +439,7 @@ importers:
         version: 4.5.19(@vue/cli-service@4.5.19)(vue-template-compiler@2.6.12)(vue@2.6.12)
       '@vue/cli-service':
         specifier: ^4.4.1
-        version: 4.5.19(babel-core@7.0.0-bridge.0)(less-loader@7.3.0)(lodash@4.17.21)(raw-loader@3.1.0)(vue-template-compiler@2.6.12)(vue@2.6.12)(webpack-cli@3.3.12)
+        version: 4.5.19(babel-core@7.0.0-bridge.0)(lodash@4.17.21)(raw-loader@3.1.0)(vue-template-compiler@2.6.12)(vue@2.6.12)(webpack-cli@3.3.12)
       '@vue/test-utils':
         specifier: 1.0.2
         version: 1.0.2(vue-template-compiler@2.6.12)(vue@2.6.12)
@@ -3796,7 +3793,7 @@ packages:
     dependencies:
       '@babel/core': 7.23.5
       '@vue/babel-preset-app': 4.5.19(@babel/core@7.23.5)(core-js@3.33.3)(vue@2.6.12)
-      '@vue/cli-service': 4.5.19(babel-core@7.0.0-bridge.0)(less-loader@7.3.0)(lodash@4.17.21)(raw-loader@3.1.0)(vue-template-compiler@2.6.12)(vue@2.6.12)(webpack-cli@3.3.12)
+      '@vue/cli-service': 4.5.19(babel-core@7.0.0-bridge.0)(lodash@4.17.21)(raw-loader@3.1.0)(vue-template-compiler@2.6.12)(vue@2.6.12)(webpack-cli@3.3.12)
       '@vue/cli-shared-utils': 4.5.19
       babel-loader: 8.3.0(@babel/core@7.23.5)(webpack@4.47.0)
       cache-loader: 4.1.0(webpack@4.47.0)
@@ -3815,7 +3812,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.19(babel-core@7.0.0-bridge.0)(less-loader@7.3.0)(lodash@4.17.21)(raw-loader@3.1.0)(vue-template-compiler@2.6.12)(vue@2.6.12)(webpack-cli@3.3.12)
+      '@vue/cli-service': 4.5.19(babel-core@7.0.0-bridge.0)(lodash@4.17.21)(raw-loader@3.1.0)(vue-template-compiler@2.6.12)(vue@2.6.12)(webpack-cli@3.3.12)
       '@vue/cli-shared-utils': 4.5.19
 
   /@vue/cli-plugin-unit-jest@4.5.19(@vue/cli-service@4.5.19)(vue-template-compiler@2.6.12)(vue@2.6.12):
@@ -3826,7 +3823,7 @@ packages:
       '@babel/core': 7.23.5
       '@babel/plugin-transform-modules-commonjs': 7.23.3(@babel/core@7.23.5)
       '@types/jest': 24.9.1
-      '@vue/cli-service': 4.5.19(babel-core@7.0.0-bridge.0)(less-loader@7.3.0)(lodash@4.17.21)(raw-loader@3.1.0)(vue-template-compiler@2.6.12)(vue@2.6.12)(webpack-cli@3.3.12)
+      '@vue/cli-service': 4.5.19(babel-core@7.0.0-bridge.0)(lodash@4.17.21)(raw-loader@3.1.0)(vue-template-compiler@2.6.12)(vue@2.6.12)(webpack-cli@3.3.12)
       '@vue/cli-shared-utils': 4.5.19
       babel-core: 7.0.0-bridge.0(@babel/core@7.23.5)
       babel-jest: 24.9.0(@babel/core@7.23.5)
@@ -3853,9 +3850,9 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.19(babel-core@7.0.0-bridge.0)(less-loader@7.3.0)(lodash@4.17.21)(raw-loader@3.1.0)(vue-template-compiler@2.6.12)(vue@2.6.12)(webpack-cli@3.3.12)
+      '@vue/cli-service': 4.5.19(babel-core@7.0.0-bridge.0)(lodash@4.17.21)(raw-loader@3.1.0)(vue-template-compiler@2.6.12)(vue@2.6.12)(webpack-cli@3.3.12)
 
-  /@vue/cli-service@4.5.19(babel-core@7.0.0-bridge.0)(less-loader@7.3.0)(lodash@4.17.21)(raw-loader@3.1.0)(vue-template-compiler@2.6.12)(vue@2.6.12)(webpack-cli@3.3.12):
+  /@vue/cli-service@4.5.19(babel-core@7.0.0-bridge.0)(lodash@4.17.21)(raw-loader@3.1.0)(vue-template-compiler@2.6.12)(vue@2.6.12)(webpack-cli@3.3.12):
     resolution: {integrity: sha512-+Wpvj8fMTCt9ZPOLu5YaLkFCQmB4MrZ26aRmhhKiCQ/4PMoL6mLezfqdt6c+m2htM+1WV5RunRo+0WHl2DfwZA==}
     engines: {node: '>=8'}
     hasBin: true
@@ -3919,7 +3916,6 @@ packages:
       hash-sum: 2.0.0
       html-webpack-plugin: 3.2.0(webpack@4.47.0)
       launch-editor-middleware: 2.6.1
-      less-loader: 7.3.0(less@4.2.0)(webpack@4.47.0)
       lodash.defaultsdeep: 4.6.1
       lodash.mapvalues: 4.6.0
       lodash.transform: 4.6.0
@@ -7209,6 +7205,7 @@ packages:
     resolution: {integrity: sha512-1j20GZTsvKNkc4BY3NpMOM8tt///wY3FpIzozTOFO2ffuZcV61nojHXVKIy3WM+7ADCy5FVhdZYHYDdgTU0yJw==}
     dependencies:
       is-what: 3.14.1
+    dev: true
 
   /copy-concurrently@1.0.5:
     resolution: {integrity: sha512-f2domd9fsVDFtaFcbaRZuYXwtdmnzqbADSwhSWYxYB/Q8zsdUUFMXVRwXGDMWmbEzAn1kdRrtI1T/KTFOL4X2A==}
@@ -11083,7 +11080,7 @@ packages:
       vue: ^2.6.10
       vue-cli-plugin-vusion: ^0.10.6
     dependencies:
-      '@vue/cli-service': 4.5.19(babel-core@7.0.0-bridge.0)(less-loader@7.3.0)(lodash@4.17.21)(raw-loader@3.1.0)(vue-template-compiler@2.6.12)(vue@2.6.12)(webpack-cli@3.3.12)
+      '@vue/cli-service': 4.5.19(babel-core@7.0.0-bridge.0)(lodash@4.17.21)(raw-loader@3.1.0)(vue-template-compiler@2.6.12)(vue@2.6.12)(webpack-cli@3.3.12)
       cloud-ui.vusion: 0.14.130(@vue/cli-service@4.5.19)(@vusion/utils@0.4.11)(vue-cli-plugin-vusion@0.13.2)(vue@2.6.12)
       vue: 2.6.12
       vue-cli-plugin-vusion: 0.13.2(cloud-ui.vusion@0.14.130)(vue@2.6.12)(webpack@4.47.0)
@@ -11096,7 +11093,7 @@ packages:
       vue: ^2.6.10
       vue-cli-plugin-vusion: ^0.10.6
     dependencies:
-      '@vue/cli-service': 4.5.19(babel-core@7.0.0-bridge.0)(less-loader@7.3.0)(lodash@4.17.21)(raw-loader@3.1.0)(vue-template-compiler@2.6.12)(vue@2.6.12)(webpack-cli@3.3.12)
+      '@vue/cli-service': 4.5.19(babel-core@7.0.0-bridge.0)(lodash@4.17.21)(raw-loader@3.1.0)(vue-template-compiler@2.6.12)(vue@2.6.12)(webpack-cli@3.3.12)
       cloud-ui.vusion: 0.15.2(@vue/cli-service@4.5.19)(@vusion/utils@0.4.11)(vue-cli-plugin-vusion@0.13.2)(vue@2.6.12)
       vue: 2.6.12
       vue-cli-plugin-vusion: 0.13.2(cloud-ui.vusion@0.15.2)(vue@2.6.12)(webpack@4.47.0)
@@ -11160,6 +11157,7 @@ packages:
     engines: {node: '>=0.10.0'}
     hasBin: true
     requiresBuild: true
+    dev: true
     optional: true
 
   /image-size@0.8.3:
@@ -11891,6 +11889,7 @@ packages:
 
   /is-what@3.14.1:
     resolution: {integrity: sha512-sNxgpk9793nzSs7bA6JQJGeIuRBQhAaNGG77kzYQgMkrID+lS6SlK07K5LaptscDlSaIgH+GPFzf+d75FVxozA==}
+    dev: true
 
   /is-whitespace@0.3.0:
     resolution: {integrity: sha512-RydPhl4S6JwAyj0JJjshWJEFG6hNye3pZFBRZaTUfZFwGHxzppNaNOVgQuS/E/SlhrApuMXrpnK1EEIXfdo3Dg==}
@@ -13329,10 +13328,6 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /klona@2.0.6:
-    resolution: {integrity: sha512-dhG34DXATL5hSxJbIexCft8FChFXtmskoZYnoPWjXQuebWYCNkVeV3KkGegCK9CP1oswI/vQibS2GY7Em/sJJA==}
-    engines: {node: '>= 8'}
-
   /kuler@2.0.0:
     resolution: {integrity: sha512-Xq9nH7KlWZmXAtodXDDRE7vs6DU1gTU8zYDHDiWLSip45Egwq3plLHzPn27NgvzL2r1LMPC1vdqh98sQxtqj4A==}
 
@@ -13419,19 +13414,6 @@ packages:
     deprecated: use String.prototype.padStart()
     dev: true
 
-  /less-loader@7.3.0(less@4.2.0)(webpack@4.47.0):
-    resolution: {integrity: sha512-Mi8915g7NMaLlgi77mgTTQvK022xKRQBIVDSyfl3ErTuBhmZBQab0mjeJjNNqGbdR+qrfTleKXqbGI4uEFavxg==}
-    engines: {node: '>= 10.13.0'}
-    peerDependencies:
-      less: ^3.5.0 || ^4.0.0
-      webpack: ^4.0.0 || ^5.0.0
-    dependencies:
-      klona: 2.0.6
-      less: 4.2.0
-      loader-utils: 2.0.4
-      schema-utils: 3.3.0
-      webpack: 4.47.0(webpack-cli@3.3.12)
-
   /less@4.2.0:
     resolution: {integrity: sha512-P3b3HJDBtSzsXUl0im2L7gTO5Ubg8mEN6G8qoTS77iXxXX4Hvu4Qj540PZDvQ8V6DmX6iXo98k7Md0Cm1PrLaA==}
     engines: {node: '>=6'}
@@ -13448,6 +13430,7 @@ packages:
       mime: 1.6.0
       needle: 3.3.1
       source-map: 0.6.1
+    dev: true
 
   /leven@3.1.0:
     resolution: {integrity: sha512-qsda+H8jTaUaN/x5vzW2rzc+8Rw4TAQ/4KjB46IwK5VH+IlVeeeje/EoZRpiXvIqjFgK84QffqPztGI3VBLG1A==}
@@ -14492,6 +14475,7 @@ packages:
     dependencies:
       iconv-lite: 0.6.3
       sax: 1.3.0
+    dev: true
     optional: true
 
   /negotiator@0.6.3:
@@ -15363,6 +15347,7 @@ packages:
   /parse-node-version@1.0.1:
     resolution: {integrity: sha512-3YHlOa/JgH6Mnpr05jP9eDG254US9ek25LyIxZlDItp2iJtwyaXQb57lBYLdT3MowkUFYEV2XXNAYIPlESvJlA==}
     engines: {node: '>= 0.10'}
+    dev: true
 
   /parse-passwd@1.0.0:
     resolution: {integrity: sha512-1Y1A//QUXEZK7YKz+rD9WydcE1+EuPr6ZBgKecAB8tmoW6UFv0NREVJe1p+jRxtThkcbbKkfwIbWJe/IeE6m2Q==}
@@ -17350,14 +17335,6 @@ packages:
       ajv: 6.12.6
       ajv-keywords: 3.5.2(ajv@6.12.6)
 
-  /schema-utils@3.3.0:
-    resolution: {integrity: sha512-pN/yOAvcC+5rQ5nERGuwrjLlYvLTbCibnZ1I7B1LaiAz9BRBlE9GMgE/eqV30P7aJQUf7Ddimy/RsbYO/GrVGg==}
-    engines: {node: '>= 10.13.0'}
-    dependencies:
-      '@types/json-schema': 7.0.15
-      ajv: 6.12.6
-      ajv-keywords: 3.5.2(ajv@6.12.6)
-
   /sec@1.0.0:
     resolution: {integrity: sha512-rVnXtdy9keLxyssT6xung9WwtdB+kha3De93w50RNzwOslyLaDGhqoOqrh4InPoOhhqUZ4JOnovGd3BvLZ+f7A==}
     engines: {node: '>=0.10.0'}
@@ -18932,6 +18909,7 @@ packages:
 
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+    dev: true
 
   /ttf2eot@2.0.0:
     resolution: {integrity: sha512-U56aG2Ylw7psLOmakjemAzmpqVgeadwENg9oaDjaZG5NYX4WB6+7h74bNPcc+0BXsoU5A/XWiHabDXyzFOmsxQ==}

@@ -587,7 +587,7 @@ export const utils = {
     const res = {};
     arr.forEach((e) => {
       const val = getVal(e);
-      if (res[val]) {
+      if (res.hasOwnProperty(val)) {
         // res.get(val) 是一个 array
         res[val].push(e);
       } else {
@@ -619,6 +619,9 @@ export const utils = {
   },
   MapGet(map, key) {
     if (isObject(map)) {
+      if(!map.hasOwnProperty(key) ){
+        return null
+      }
       const value = map[key];
       return typeof value === "undefined" ? null : value;
     }
@@ -635,7 +638,7 @@ export const utils = {
   },
   MapContains(map, key) {
     if (isObject(map)) {
-      return key in map;
+      return map.hasOwnProperty(key);
     }
     return false;
   },

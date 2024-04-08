@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import UIframe from './ui/components/u-iframe.vue/index';
 
 export default {
     name: 's-freesass-transfer',

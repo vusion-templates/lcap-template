@@ -24,6 +24,8 @@
         "babel-polyfill": "^6.26.0",
         "i-material-design.vue": "^5.1.0",
         "moment-timezone": "^0.5.43",
+        "normalize.css": "^7.0.0",
+        "animate.css": "^4.1.1",
         "qs": "^6.8.0",
         "uuid": "^7.0.3"
     },

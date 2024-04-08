@@ -1,8 +1,6 @@
 <template>
     <div style="height:100%">
         <router-view></router-view>
-        <!-- <s-freesass-login @afterShufanLogin="afterShufanLogin" ref="freeSassLogin"></s-freesass-login>
-        <s-freesass-transfer v-if="isPersonSass && loginFinished" ref="freesassTransfer"></s-freesass-transfer> -->
     </div>
 </template>
 

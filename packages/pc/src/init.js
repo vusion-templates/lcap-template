@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { installOptions, installDirectives, installFilters, installComponents } from '@vusion/utils';
-import * as CloudUI from '@lcap/pc-ui';
+
 import * as Components from '@/components';
 
 import './setConfig';
@@ -27,12 +27,10 @@ import { getTitleGuard } from './router';
 import VueI18n from 'vue-i18n';
 import App from './App.vue';
 
-import '@lcap/pc-ui/css';
 import '@/assets/css/index.css';
 
 window.appVue = Vue;
 window.Vue = Vue;
-window.CloudUI = CloudUI;
 const fnList = ['afterRouter'];
 const evalWrap = function (metaData, fnName) {
     // eslint-disable-next-line no-eval
@@ -41,10 +39,12 @@ const evalWrap = function (metaData, fnName) {
 
 // 预览沙箱不需要调用init来初始化，但是需要使用到CloudUI和Vant组件，所以放在外边
 installOptions(Vue);
-installDirectives(Vue, CloudUI.directives);
-installComponents(Vue, CloudUI);
-Vue.mixin(CloudUI.MEmitter);
-Vue.mixin(CloudUI.MPubSub);
+
+// window.CloudUI = CloudUI;
+// installDirectives(Vue, CloudUI.directives);
+// installComponents(Vue, CloudUI);
+// Vue.mixin(CloudUI.MEmitter);
+// Vue.mixin(CloudUI.MPubSub);
 
 // 需要兼容老应用的制品，因此新版本入口函数参数不做改变
 const init = (appConfig, platformConfig, routes, metaData) => {

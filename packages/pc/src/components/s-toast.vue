@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { UToast, UCopy } from '@lcap/pc-ui';
+import UToast from './ui/components/u-toast.vue/index';
 
 export default {
     name: 's-toast',
@@ -29,13 +29,13 @@ export default {
             this.copySuccess = false;
             if (!this.$el) {
                 this.$mount(document.createElement('div'));
-            } else {
-                this.$nextTick(() => {
-                    this.text = text;
-                    this.message = message;
-                    this.$refs.toast.error(null, duration);
-                });
             }
+
+            this.$nextTick(() => {
+                this.text = text;
+                this.message = message;
+                this.$refs.toast.error(null, duration);
+            });
         },
     },
 };

@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import cookie from '@lcap/core-template';
+import UModal from './ui/components/u-modal.vue/index';
 
 export default {
     name: 's-freesass-login',

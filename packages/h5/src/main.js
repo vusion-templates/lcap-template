@@ -1,4 +1,3 @@
-import '@lcap/mobile-ui/dist-theme/index.css';
 import { routes } from './router/routes';
 
 import metaData from './metaData.js';

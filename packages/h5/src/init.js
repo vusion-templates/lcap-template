@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import { installOptions, installFilters, installComponents, install } from '@vusion/utils';
-import * as Vant from '@lcap/mobile-ui';
+import { installFilters, installComponents } from '@vusion/utils';
+
 import * as Components from '@/components';
 
 import './setConfig';
@@ -34,30 +34,9 @@ const evalWrap = function (metaData, fnName) {
     // eslint-disable-next-line no-eval
     metaData && fnName && metaData?.frontendEvents[fnName] && eval(metaData.frontendEvents[fnName]);
 };
-/* 👇CloudUI中入口逻辑 */
-Vue.prototype.$env = Vue.prototype.$env || {};
-Vue.prototype.$env.VUE_APP_DESIGNER = String(process.env.VUE_APP_DESIGNER) === 'true';
-Vue.prototype.$at2 = function (obj, propertyPath) {
-    if (propertyPath === '' && !this.$env.VUE_APP_DESIGNER) return obj;
-    return this.$at(obj, propertyPath);
-};
-/* 👆CloudUI中入口逻辑 */
 
 window.appVue = Vue;
 window.Vue = Vue;
-const CloudUI = {
-    install,
-    MEmitter: Vant.MEmitter,
-    MPubSub: Vant.MPubSub,
-};
-// 梳理下来只有install被使用过
-window.CloudUI = CloudUI;
-
-// 预览沙箱不需要调用init来初始化，但是需要使用到CloudUI和Vant组件，所以放在外边
-installOptions(Vue);
-Vue.mixin(Vant.MEmitter);
-Vue.mixin(Vant.MPubSub);
-Vue.use(Vant);
 
 // 需要兼容老应用的制品，因此新版本入口函数参数不做改变
 const init = (appConfig, platformConfig, routes, metaData) => {

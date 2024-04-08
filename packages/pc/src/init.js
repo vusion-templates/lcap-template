@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { installOptions, installDirectives, installFilters, installComponents } from '@vusion/utils';
+import { installFilters, installComponents } from '@vusion/utils';
 
 import * as Components from '@/components';
 
@@ -36,15 +36,6 @@ const evalWrap = function (metaData, fnName) {
     // eslint-disable-next-line no-eval
     metaData && fnName && metaData?.frontendEvents[fnName] && eval(metaData.frontendEvents[fnName]);
 };
-
-// 预览沙箱不需要调用init来初始化，但是需要使用到CloudUI和Vant组件，所以放在外边
-installOptions(Vue);
-
-// window.CloudUI = CloudUI;
-// installDirectives(Vue, CloudUI.directives);
-// installComponents(Vue, CloudUI);
-// Vue.mixin(CloudUI.MEmitter);
-// Vue.mixin(CloudUI.MPubSub);
 
 // 需要兼容老应用的制品，因此新版本入口函数参数不做改变
 const init = (appConfig, platformConfig, routes, metaData) => {

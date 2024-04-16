@@ -1,5 +1,5 @@
 import { setConfig } from '@lcap/core-template';
-import { VanToast as Toast } from '@lcap/mobile-ui';
+import { Toast } from 'vant';
 
 import { getFrontendVariables, setGlobal } from './plugins/dataTypes';
 import { destination } from './plugins/router';

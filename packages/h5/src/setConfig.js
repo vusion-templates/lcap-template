@@ -31,19 +31,30 @@ setConfig({
                 position: 'top',
             }),
     },
-    utils: {
-        axiosInterceptors: [
-            {
-                onSuccess(response) {
-                    if (response.headers.authorization) {
-                        response.data.authorization = response.headers.authorization;
-                    }
-                    return response;
-                },
-                onError(error) {
-                    return Promise.reject(error);
-                },
+    utils: {},
+    configureRequest(options, axios) {
+        axios.interceptors.response.use(
+            function onSuccess(response) {
+                if (response.headers.authorization) {
+                    response.data.authorization = response.headers.authorization;
+                }
+                return response;
             },
-        ],
+            function onError(error) {
+                return Promise.reject(error);
+            }
+        );
+
+        // 修改请求baseURL
+        // options.baseURL = 'https://some-domain.com/api';
+        // 增加额外的请求头
+        // options.headers['key1'] = 'value1';
+        // options.headers['key2'] = 'value2';
+        // 增加额外的请求参数（get请求）
+        // options.params['key1'] = 'value1';
+        // options.params['key2'] = 'value2';
+        // 增加额外的请求参数（post请求）
+        // options.data['key1'] = 'value1';
+        // options.data['key2'] = 'value2';
     },
 });

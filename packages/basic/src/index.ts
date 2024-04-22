@@ -29,7 +29,7 @@ import {
   userInfoGuard,
 } from './router'
 
-import Global from './global'
+import Global, { global } from './global'
 
 export {
   Config,
@@ -51,6 +51,7 @@ export {
   microFrontend,
   userInfoGuard,
   Global,
+  global,
   downloadClick,
 };
 

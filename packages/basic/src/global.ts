@@ -4,3 +4,5 @@ import _set from 'lodash/set';
 function GlobalFn() {}
 
 export default GlobalFn;
+
+export const global = new GlobalFn();

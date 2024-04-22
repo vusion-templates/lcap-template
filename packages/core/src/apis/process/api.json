@@ -91,7 +91,7 @@
     },
     "getTaskDestinationUrl": {
         "url": {
-            "path": " /api/system/process/getTaskDestinationUrl",
+            "path": "/api/system/process/getTaskDestinationUrl",
             "method": "post"
         }
     },

@@ -57,7 +57,7 @@ function initDataTypes(options) {
   };
 
   return {
-    global,
+    $global,
   }
 }
 

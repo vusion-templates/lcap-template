@@ -20,6 +20,7 @@ import {
     getBasePath,
     filterAuthResources,
     findNoAuthView,
+    createService,
 } from '@lcap/core-template';
 
 import { getTitleGuard } from './router';
@@ -30,6 +31,7 @@ import App from './App.vue';
 import 'cloud-ui.vusion.css';
 import '@/assets/css/index.css';
 
+window._lcapCreateService = createService;
 window.appVue = Vue;
 window.Vue = Vue;
 window.CloudUI = CloudUI;
@@ -114,7 +116,7 @@ const init = (appConfig, platformConfig, routes, metaData) => {
         }
     };
     if (!window?.$toast) {
-        window.$toast =  window.Vue.prototype.$toast;
+        window.$toast = window.Vue.prototype.$toast;
     }
     if (window?.rendered) {
         window.rendered();

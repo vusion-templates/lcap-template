@@ -45,16 +45,30 @@ setConfig({
             }
         );
 
+        /**
+         * options配置参考
+         * https://axios-http.com/zh/docs/req_config
+         */
+
         // 修改请求baseURL
         // options.baseURL = 'https://some-domain.com/api';
+
         // 增加额外的请求头
-        // options.headers['key1'] = 'value1';
-        // options.headers['key2'] = 'value2';
-        // 增加额外的请求参数（get请求）
-        // options.params['key1'] = 'value1';
-        // options.params['key2'] = 'value2';
-        // 增加额外的请求参数（post请求）
-        // options.data['key1'] = 'value1';
-        // options.data['key2'] = 'value2';
+        // options.headers = {
+        //     ...(options.headers || {}),
+        //     key1: 'value1',
+        // }
+
+        // 增加额外的请求参数（带在请求链接上）
+        // options.params = {
+        //     ...(options.params || {}),
+        //     key2: 'value2',
+        // };
+
+        // 增加额外的请求参数（带在请求体上）
+        // options.data = {
+        //     ...(options.data || {}),
+        //     key3: 'value3',
+        // }
     },
 });

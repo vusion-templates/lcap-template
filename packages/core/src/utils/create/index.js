@@ -152,9 +152,11 @@ const requester = function (requestInfo) {
     url: path,
     data,
     headers,
-    withCredentials: !baseURL,
+    withCredentials: config.withCredentials || !baseURL,
     xsrfCookieName: "csrfToken",
     xsrfHeaderName: "x-csrf-token",
+    onUploadProgress: typeof config.onUploadProgress === 'function' ? config.onUploadProgress : () => {},
+    onDownloadProgress: typeof config.onDownloadProgress === 'function' ? config.onDownloadProgress : () => {},
   };
 
   // 自定义请求信息

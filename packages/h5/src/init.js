@@ -22,6 +22,7 @@ import {
     filterAuthResources,
     findNoAuthView,
     initRouter,
+    createService,
 } from '@lcap/core-template';
 
 import { getTitleGuard } from './router';
@@ -57,6 +58,7 @@ function getAsyncPublicPath() {
 getAsyncPublicPath();
 /* 👆CloudUI中入口逻辑 */
 
+window._lcapCreateService = createService;
 window.appVue = Vue;
 window.Vue = Vue;
 const CloudUI = {
@@ -178,7 +180,7 @@ const init = (appConfig, platformConfig, routes, metaData) => {
                 };
                 await beforeRouter(event);
             }
-        } catch (err) { }
+        } catch (err) {}
         next();
     };
     beforeRouter && router.beforeEach(getAuthGuard(router, routes, authResourcePaths, appConfig, baseResourcePaths, window.beforeRouter));
@@ -207,7 +209,7 @@ const init = (appConfig, platformConfig, routes, metaData) => {
                 if (afterRouter) {
                     await afterRouter(to, from);
                 }
-            } catch (err) { }
+            } catch (err) {}
         });
     app.$mount('#app');
     return app;

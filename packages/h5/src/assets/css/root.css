@@ -1,14 +1,43 @@
 .l-root-h5 {
   width: 100%;
-  height: 100%; /* 由于空白页、业务组件、子页面的根元素都用了这个，不能简单的通过100vh解决上述bug，带来的问题比解决这个bug多 */
-
-  padding-bottom: 100px;
+  height: 100%;
   box-sizing: border-box;
+
+  min-height: 100vh;
+  padding-bottom: 100px;
 }
+/* 下面这些都是为了实现只有一级页面级别的.l-root-h5才能设置100vh */
+.l-root-h5 .l-root-h5 {
+  min-height: initial;
+  padding-bottom: 0;
+}
+.h5template-navi .l-root-h5 {
+  min-height: initial;
+  padding-bottom: 0;
+}
+.h5template-user .l-root-h5 {
+  min-height: initial;
+  padding-bottom: 0;
+}
+.h5template-404 .l-root-h5 {
+  min-height: initial;
+  padding-bottom: 0;
+}
+.h5template-401 .l-root-h5 {
+  min-height: initial;
+  padding-bottom: 0;
+}
+.h5template-login-wrap .l-root-h5 {
+  min-height: initial;
+  padding-bottom: 0;
+}
+
 div[root-app] .l-root-h5 {
   /* 【自定义组件】h5业务组件样式设置画布高度不生效 http: //projectmanage.netease-official.lcap.163yun.com/dashboard/BugDetail?id=2770434055995392 */
   /* height: auto;
   min-height: 100%; */
+  min-height: initial; /* 画布中覆盖100vh */
+
   padding-bottom: 0;
 }
 div[root-app] .l-root-h5 > .van-divider:first-child {

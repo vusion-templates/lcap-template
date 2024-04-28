@@ -1,15 +1,20 @@
 .l-root-h5 {
   width: 100%;
-  min-height: 100vh;
+  height: 100%; /* 由于空白页、业务组件、子页面的根元素都用了这个，不能简单的通过100vh解决上述bug，带来的问题比解决这个bug多 */
+
   padding-bottom: 100px;
   box-sizing: border-box;
 }
 div[root-app] .l-root-h5 {
+  /* 【自定义组件】h5业务组件样式设置画布高度不生效 http: //projectmanage.netease-official.lcap.163yun.com/dashboard/BugDetail?id=2770434055995392 */
+  /* height: auto;
+  min-height: 100%; */
   padding-bottom: 0;
 }
 div[root-app] .l-root-h5 > .van-divider:first-child {
   margin-top: 0;
 }
+/* 子页面根元素 */
 div[router-view-symbol] .l-root-h5 {
   padding-bottom: 100px;
 }
@@ -82,6 +87,8 @@ div[router-view-symbol] .l-root-h5 {
   display: none;
 }
 .h5template-navi {
+  /* H5端页面设置背景图片，发布预览后效果与可视化的效果不一致 http: //projectmanage.netease-official.lcap.163yun.com/dashboard/BugDetail?id=2830648833018368 */
+  /* 达到IDE中高度100%的效果 */
   min-height: 100vh;
 }
 .h5template-navi .navi-head {

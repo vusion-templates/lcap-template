@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { installFilters, installComponents } from '@vusion/utils';
+import { installFilters, installComponents, install } from '@vusion/utils';
 
 import * as Components from '@/components';
 
@@ -31,6 +31,7 @@ import '@/assets/css/index.css';
 
 window.appVue = Vue;
 window.Vue = Vue;
+window.LcapInstall = install;
 const fnList = ['afterRouter'];
 const evalWrap = function (metaData, fnName) {
     // eslint-disable-next-line no-eval

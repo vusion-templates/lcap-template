@@ -1,15 +1,49 @@
 .l-root-h5 {
   width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+
   min-height: 100vh;
   padding-bottom: 100px;
-  box-sizing: border-box;
 }
+/* 下面这些都是为了实现只有一级页面级别的.l-root-h5才能设置100vh */
+.l-root-h5 .l-root-h5 {
+  min-height: initial;
+  padding-bottom: 0;
+}
+.h5template-navi .l-root-h5 {
+  min-height: initial;
+  padding-bottom: 0;
+}
+.h5template-user .l-root-h5 {
+  min-height: initial;
+  padding-bottom: 0;
+}
+.h5template-404 .l-root-h5 {
+  min-height: initial;
+  padding-bottom: 0;
+}
+.h5template-401 .l-root-h5 {
+  min-height: initial;
+  padding-bottom: 0;
+}
+.h5template-login-wrap .l-root-h5 {
+  min-height: initial;
+  padding-bottom: 0;
+}
+
 div[root-app] .l-root-h5 {
+  /* 【自定义组件】h5业务组件样式设置画布高度不生效 http: //projectmanage.netease-official.lcap.163yun.com/dashboard/BugDetail?id=2770434055995392 */
+  /* height: auto;
+  min-height: 100%; */
+  min-height: initial; /* 画布中覆盖100vh */
+
   padding-bottom: 0;
 }
 div[root-app] .l-root-h5 > .van-divider:first-child {
   margin-top: 0;
 }
+/* 子页面根元素 */
 div[router-view-symbol] .l-root-h5 {
   padding-bottom: 100px;
 }
@@ -82,6 +116,8 @@ div[router-view-symbol] .l-root-h5 {
   display: none;
 }
 .h5template-navi {
+  /* H5端页面设置背景图片，发布预览后效果与可视化的效果不一致 http: //projectmanage.netease-official.lcap.163yun.com/dashboard/BugDetail?id=2830648833018368 */
+  /* 达到IDE中高度100%的效果 */
   min-height: 100vh;
 }
 .h5template-navi .navi-head {

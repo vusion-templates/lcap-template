@@ -150,9 +150,12 @@ const init = (appConfig, platformConfig, routes, metaData) => {
                     filterRoutes,
                 };
                 await beforeRouter(event);
+            } else {
+                next();
             }
-        } catch (err) {}
-        next();
+        } catch (err) {
+            next();
+        }
     };
     beforeRouter && router.beforeEach(getAuthGuard(router, routes, authResourcePaths, appConfig, baseResourcePaths, window.beforeRouter));
     router.beforeEach(getTitleGuard(appConfig));

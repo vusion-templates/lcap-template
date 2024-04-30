@@ -65,7 +65,9 @@ const vueConfig = {
         }
 
         // 使用esbuild压缩
-        config.optimization.minimizer = [new EsbuildPlugin()];
+        config.optimization.minimizer = [new EsbuildPlugin({
+            target: 'es2015',
+        })];
     },
     devServer,
 };

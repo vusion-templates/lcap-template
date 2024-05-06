@@ -78,7 +78,7 @@
     "copy-webpack-plugin": "^5.0.4",
     "core-js": "^3.6.5",
     "cross-env": "^7.0.2",
-    "esbuild-loader": "^4.0.3",
+    "esbuild": "^0.20.2",
     "eslint": "^6.5.1",
     "eslint-config-vusion": "^3.0.2",
     "fs-extra": "^9.0.0",

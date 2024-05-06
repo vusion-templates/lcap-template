@@ -12,7 +12,7 @@
     "build:designer": "npm run build && npm run zip",
     "clean": "rm -rf dist",
     "deploy:dev": "node scripts/deploy.js --platform http://defaulttenant.lcap.codewave-dev.163yun.com",
-    "deploy:test": "node scripts/deploy.js --platform http://defaulttenant.lcap.ha.test.com",
+    "deploy:test": "node scripts/deploy.js --platform http://defaulttenant.lcap.codewave-test.163yun.com",
     "deploy:codewave-test": "node scripts/deploy.js --platform http://defaulttenant.lcap.codewave-test.163yun.com"
   },
   "files": [

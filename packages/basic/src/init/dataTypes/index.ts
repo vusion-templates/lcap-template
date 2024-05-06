@@ -58,7 +58,9 @@ function initDataTypes(options) {
 
   return {
     $global,
-  }
+    // FIXME remove this
+    global: $global,
+  };
 }
 
 function genInitFromSchema(typeKey, defaultValue?, level?) {

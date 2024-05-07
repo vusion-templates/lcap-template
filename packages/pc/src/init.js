@@ -82,6 +82,12 @@ const init = (appConfig, platformConfig, routes, metaData) => {
             ...(messages || {}),
         };
     }
+    const i18nInfo = appConfig.i18nInfo;
+    const i18n = new VueI18n({
+        locale: locale,
+        messages: i18nInfo.messages,
+    });
+    window.$i18n = i18n;
 
     Vue.use(LogicsPlugin, metaData);
     Vue.use(RouterPlugin);
@@ -153,20 +159,17 @@ const init = (appConfig, platformConfig, routes, metaData) => {
                     filterRoutes,
                 };
                 await beforeRouter(event);
+            } else {
+                next();
             }
-        } catch (err) {}
-        next();
+        } catch (err) {
+            next();
+        }
     };
     beforeRouter && router.beforeEach(getAuthGuard(router, routes, authResourcePaths, appConfig, baseResourcePaths, window.beforeRouter));
     router.beforeEach(getTitleGuard(appConfig));
     router.beforeEach(microFrontend);
 
-    const i18nInfo = appConfig.i18nInfo;
-    const i18n = new VueI18n({
-        locale: locale,
-        messages: i18nInfo.messages,
-    });
-    window.$i18n = i18n;
     const app = new Vue({
         name: 'app',
         router,

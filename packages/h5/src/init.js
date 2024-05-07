@@ -30,6 +30,7 @@ import VueI18n from 'vue-i18n';
 import App from './App.vue';
 
 import '@/assets/css/index.css';
+import '@/assets/css/root.css';
 
 const fnList = ['afterRouter'];
 const evalWrap = function (metaData, fnName) {
@@ -71,6 +72,7 @@ installOptions(Vue);
 Vue.mixin(MEmitter);
 Vue.mixin(MPubSub);
 Vue.use(Vant);
+window.vant = Vant
 
 // 需要兼容老应用的制品，因此新版本入口函数参数不做改变
 const init = (appConfig, platformConfig, routes, metaData) => {
@@ -102,6 +104,12 @@ const init = (appConfig, platformConfig, routes, metaData) => {
             ...(messages || {}),
         };
     }
+    const i18nInfo = appConfig.i18nInfo;
+    const i18n = new VueI18n({
+        locale: locale,
+        messages: i18nInfo.messages,
+    });
+    window.$i18n = i18n;
     Vue.use(LogicsPlugin, metaData);
     Vue.use(RouterPlugin);
     Vue.use(ServicesPlugin, metaData);
@@ -177,12 +185,6 @@ const init = (appConfig, platformConfig, routes, metaData) => {
     beforeRouter && router.beforeEach(getAuthGuard(router, routes, authResourcePaths, appConfig, baseResourcePaths, window.beforeRouter));
     router.beforeEach(getTitleGuard(appConfig));
 
-    const i18nInfo = appConfig.i18nInfo;
-    const i18n = new VueI18n({
-        locale: locale,
-        messages: i18nInfo.messages,
-    });
-    window.$i18n = i18n;
     const app = new Vue({
         name: 'app',
         router,

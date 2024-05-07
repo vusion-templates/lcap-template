@@ -55,11 +55,11 @@ export default {
                 if (data?.Data === true) {
                     // 制品有sf_token 什么都不做
                 } else {
-                    this.$refs.freeSassLogin.open();
+                    // this.$refs.freeSassLogin.open();
                 }
             } catch (error) {
                 console.error('CheckExtendToken: ', error);
-                this.$refs.freeSassLogin.open();
+                // this.$refs.freeSassLogin.open();
             }
         }
     },

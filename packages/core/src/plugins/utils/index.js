@@ -118,19 +118,29 @@ function isArrayInBounds(arr, index) {
   return true;
 }
 
+// from https://github.com/bryc/code/blob/master/jshash/experimental/cyrb53.js
+// public domain license
+const cyrb53 = (str, seed = 0) => {
+  let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+  for(let i = 0, ch; i < str.length; i++) {
+      ch = str.charCodeAt(i);
+      h1 = Math.imul(h1 ^ ch, 2654435761);
+      h2 = Math.imul(h2 ^ ch, 1597334677);
+  }
+  h1  = Math.imul(h1 ^ (h1 >>> 16), 2246822507);
+  h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2  = Math.imul(h2 ^ (h2 >>> 16), 2246822507);
+  h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+
+  return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+};
+
 export const utils = {
   Vue: undefined,
   EnumValueToText(value, enumTypeAnnotation) {
     const { typeName, typeNamespace } = enumTypeAnnotation || {};
-    if (typeName) {
-      let enumName = typeName;
-      if (typeNamespace?.startsWith("extensions")) {
-        enumName = typeNamespace + "." + enumName;
-      }
-      if (enumsMap[enumName]) {
-        return enumsMap[enumName][value];
-      }
-      return "";
+    if (typeName && typeNamespace) {
+      return toString(typeNamespace + "." + typeName, value) || "";
     }
     return "";
   },
@@ -138,7 +148,7 @@ export const utils = {
     const { typeName, typeNamespace } = enumTypeAnnotation || {};
     if (typeName) {
       let enumName = typeName;
-      if (typeNamespace?.startsWith("extensions")) {
+      if (typeNamespace?.startsWith("extensions") || typeNamespace?.startsWith("nasl")) {
         enumName = typeNamespace + "." + enumName;
       }
       if (enumsMap[enumName] && enumsMap[enumName].hasOwnProperty(value)) {
@@ -157,17 +167,15 @@ export const utils = {
       enumName = typeNamespace + "." + enumName;
       tempName = enumName;
     }
-    const enumeration = enumsMap[enumName];
-
     let isToNumber = false;
     if (enumName === tempName && tempEnums.valueType?.typeName === 'Long' && tempEnums.valueType?.typeNamespace === 'nasl.core') {
       isToNumber = true
     }
-    if (!enumeration) return [];
+    if (!Array.isArray(tempEnums.enumItems)) return [];
     else {
-      return Object.keys(enumeration).map((key) => ({
-        text: enumeration[key],
-        value: isToNumber ? +key : key
+      return tempEnums.enumItems.map((enumItem) => ({
+        text: toString(typeNamespace + "." + typeName, enumItem.value),
+        value: isToNumber ? +enumItem.value : enumItem.value,
       }));
     }
   },
@@ -532,9 +540,9 @@ export const utils = {
     const vis = new Set();
     for (const item of arr) {
       // eslint-disable-next-line no-return-await
-      const hashArr = listGetVal.map((fn) => fn(item));
+      const hashArr = listGetVal.map((fn) => cyrb53(String(fn(item))));
       // eslint-disable-next-line no-await-in-loop
-      const hash = hashArr.join("");
+      const hash = cyrb53(hashArr.join(""));
       if (!vis.has(hash)) {
         vis.add(hash);
         res.push(item);
@@ -558,9 +566,9 @@ export const utils = {
     const vis = new Set();
     for (const item of arr) {
       // eslint-disable-next-line no-return-await
-      const hashArr = listGetVal.map(async (fn) => await fn(item));
+      const hashArr = listGetVal.map(async (fn) => await cyrb53(String(fn(item))));
       // eslint-disable-next-line no-await-in-loop
-      const hash = (await Promise.all(hashArr)).join("");
+      const hash = cyrb53((await Promise.all(hashArr)).join(""));
       if (!vis.has(hash)) {
         vis.add(hash);
         res.push(item);
@@ -579,7 +587,7 @@ export const utils = {
     const res = {};
     arr.forEach((e) => {
       const val = getVal(e);
-      if (res[val]) {
+      if (res.hasOwnProperty(val)) {
         // res.get(val) 是一个 array
         res[val].push(e);
       } else {
@@ -611,7 +619,11 @@ export const utils = {
   },
   MapGet(map, key) {
     if (isObject(map)) {
-      return map[key] || null;
+      if(!map.hasOwnProperty(key) ){
+        return null
+      }
+      const value = map[key];
+      return typeof value === "undefined" ? null : value;
     }
   },
   MapPut(map, key, value) {
@@ -626,7 +638,7 @@ export const utils = {
   },
   MapContains(map, key) {
     if (isObject(map)) {
-      return key in map;
+      return map.hasOwnProperty(key);
     }
     return false;
   },
@@ -1038,6 +1050,33 @@ export const utils = {
     }
     return dateFormatter.format(naslDateToLocalDate(value), formatter);
   },
+  FormatTime(value, formatter) {
+    if (!value) {
+      return "-";
+    }
+    // 使用正则表达式提取时、分、秒
+    const parts = value.match(/(\d{1,2})[^0-9]*(\d{1,2})[^0-9]*(\d{1,2})/);
+
+    // 如果没有匹配到三个部分，则返回原始字符串
+    if (!parts) {
+      return value;
+    }
+
+    // 提取时、分、秒，并将它们转换成整数
+    let hours = parseInt(parts[1], 10);
+    let minutes = parseInt(parts[2], 10);
+    let seconds = parseInt(parts[3], 10);
+
+    // 根据需要格式化时、分、秒
+    let formattedTime = formatter
+      .replace('HH', hours.toString().padStart(2, '0'))
+      .replace('H', hours.toString())
+      .replace('mm', minutes.toString().padStart(2, '0'))
+      .replace('m', minutes.toString())
+      .replace('ss', seconds.toString().padStart(2, '0'))
+      .replace('s', seconds.toString());
+    return formattedTime;
+  },
   FormatDateTime(value, formatter, tz) {
     if (!value) {
       return "-";
@@ -1177,14 +1216,20 @@ export const utils = {
   /**
    * 数字格式化
    * @param {digits} 小数点保留个数
+   * @param {omit} 是否隐藏末尾零
    * @param {showGroup} 是否显示千位分割（默认逗号分隔）
+   * @param {fix} 前缀还是后缀
+   * @param {unit} 单位
    */
-  FormatNumber(value, digits, showGroup) {
+  FormatNumber(value, digits, omit, showGroup, fix, unit) {
     if (!value) return value;
     if (parseFloat(value) === 0) return "0";
     if (isNaN(parseFloat(value)) || isNaN(parseInt(digits))) return;
     if (digits !== undefined) {
       value = Number(value).toFixed(parseInt(digits));
+      if (omit) {
+        value = parseFloat(value) + ''; // 转字符串
+      }
     }
     if (showGroup) {
       const temp = ("" + value).split(".");
@@ -1202,7 +1247,55 @@ export const utils = {
       if (right) left = left + "." + right;
       value = left;
     }
+    if (fix && unit) {
+      switch (fix) {
+        case "prefix":
+          value = unit + value;
+          break;
+        case "suffix":
+          value = value + unit;
+          break;
+        default:
+          value = value + unit;
+          break;
+      }
+    }
     return "" + value;
+  },
+  /**
+   * 百分数格式化
+   * @param {digits} 小数点保留个数
+   * @param {omit} 是否隐藏末尾零
+   * @param {showGroup} 是否显示千位分割（默认逗号分隔）
+   */
+  FormatPercent(value, digits, omit, showGroup) {
+    if (!value) return value;
+    if (parseFloat(value) === 0) return "0";
+    if (isNaN(parseFloat(value)) || isNaN(parseInt(digits))) return;
+    value = value * 100;
+    if (digits !== undefined) {
+      value = Number(value).toFixed(parseInt(digits));
+      if (omit) {
+        value = parseFloat(value) + ""; // 转字符串
+      }
+    }
+    if (showGroup) {
+      const temp = ("" + value).split(".");
+      const right = temp[1];
+      let left = temp[0]
+        .split("")
+        .reverse()
+        .join("")
+        .match(/(\d{1,3})/g)
+        .join(",")
+        .split("")
+        .reverse()
+        .join("");
+      if (temp[0][0] === "-") left = "-" + left;
+      if (right) left = left + "." + right;
+      value = left;
+    }
+    return value + "%";
   },
   /**
    * 时间差
@@ -1397,35 +1490,51 @@ export const utils = {
         value === null
       ) {
         return false;
-      } else if (
+      } 
+      if (
         ["nasl.core.Boolean"].includes(typeKey) ||
         value === true ||
         value === false
       ) {
         return true;
-      } else if (["nasl.core.DateTime"].includes(typeKey)) {
+      } 
+      if (["nasl.core.DateTime"].includes(typeKey)) {
         return !!value;
-      } else if (isDefString(typeKey)) {
-        return value.trim() !== "";
-      } else if (isDefNumber(typeKey)) {
-        return !isNaN(value);
-      } else if (isDefList(typeDefinition)) {
-        return value && value.length > 0;
-      } else if (isDefMap(typeDefinition)) {
+      } 
+      if (isDefString(typeKey)) {
+        return String(value).trim() !== "";
+      } 
+      if (isDefNumber(typeKey)) {
+        return !isNaN(Number(value));
+      } 
+      if (isDefList(typeDefinition)) {
+        return Array.isArray(value) && value.length > 0;
+      } 
+      if (isDefMap(typeDefinition)) {
         return Object.keys(value).length > 0;
-      } else if (typeof value === "string") {
-        return value.trim() !== "";
-      } else if (typeof value === "number") {
-        return !isNaN(value);
-      } else if (Array.isArray(value)) {
-        return value && value.length > 0;
-      } else {
-        // structure/entity
-        return !Object.keys(value).every((key) => {
-          const v = value[key];
-          return v === null || v === undefined;
-        });
       }
+
+      if (value === null || value === undefined) {
+        return false;
+      }
+
+      if (typeof value === "string") {
+        return value.trim() !== "";
+      }
+
+      if (typeof value === "number") {
+        return !isNaN(value);
+      }
+
+      if (Array.isArray(value)) {
+        return value && value.length > 0;
+      } 
+
+      // structure/entity
+      return !Object.keys(value).every((key) => {
+        const v = value[key];
+        return v === null || v === undefined;
+      });
     };
 
     let isValid = true;

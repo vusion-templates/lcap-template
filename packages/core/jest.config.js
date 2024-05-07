@@ -1,9 +1,11 @@
+// 设置测试运行的时区
+process.env.TZ = 'Asia/Shanghai';
+
 module.exports = {
     moduleFileExtensions: [
         'vue', 'js', 'mjs', 'cjs', 'jsx', 'ts', 'tsx', 'json', 'node',
     ],
     preset: 'ts-jest',
-    testEnvironment: 'node',
     transform: {
         '^.+\\.vue$': 'vue-jest',
         '^.+\\.(js|jsx)$': 'babel-jest',

@@ -16,7 +16,7 @@
         "request-pre": "^0.4.3",
         "decimal.js": "^10.4.2",
         "crypto-js": "^4.1.1",
-        "vue": "^2.6.11",
+        "vue": "2.6.12",
         "vue-router": "^3.2.0",
 
         "@lcap/mobile-ui": "^0.12.0",
@@ -39,6 +39,7 @@
         "babel-eslint": "^10.1.0",
         "eslint": "^6.7.2",
         "eslint-plugin-vue": "^6.2.2",
-        "mockjs": "^1.1.0"
+        "mockjs": "^1.1.0",
+        "vue-template-compiler": "2.6.12"
     }
 }

@@ -17,7 +17,7 @@ const $toast = new Ctr();
 setConfig({
     Toast: {
         show: $toast?.show,
-        error: $toast?.error,
+        error: $toast?.show,
     },
     setGlobal,
     getFrontendVariables,

@@ -13,6 +13,7 @@ import authService from '../auth/authService';
 
 window.CryptoJS = CryptoJS;
 const aesKey = ";Z#^$;8+yhO!AhGo";
+const databaseLoadFunMap = new Map();
 
 export const genInitFromSchema = (typeKey, defaultValue, level) => genInitData(typeKey, defaultValue, level);
 
@@ -203,6 +204,26 @@ export default {
       },
       getUserLanguage() {
         return navigator.language || navigator.userLanguage;
+      },
+      useDatabaseCallback() {
+        return function (loadFun, ...args) {
+          let loadMap = databaseLoadFunMap.get(loadFun)
+          const cacheKey = JSON.stringify([loadFun, ...args])
+          if (!loadMap) {
+            loadMap = new Map()
+            loadMap.set(cacheKey, (params) => {
+              return loadFun(params, ...args);
+            });
+            databaseLoadFunMap.set(loadFun, loadMap)
+          } else {
+            if (!loadMap.has(cacheKey)) {
+              loadMap.set(cacheKey, (params) => {
+                return loadFun(params, ...args);
+              });
+            }
+          }
+          return loadMap.get(cacheKey);
+        }
       },
     };
     const $global = Config.setGlobal($g);

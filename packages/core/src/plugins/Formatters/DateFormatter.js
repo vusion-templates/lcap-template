@@ -1,4 +1,5 @@
 import Formatter from './Formatter';
+import { safeNewDate } from '../utils';
 
 /**
  * @TODO: use moment or some other library
@@ -51,7 +52,7 @@ export class DateFormatter extends Formatter {
     parse(value, pattern) {
         pattern = pattern || this.pattern;
 
-        return new Date(value);
+        return safeNewDate(value);
     }
 }
 

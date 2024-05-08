@@ -1,5 +1,4 @@
 import Formatter from './Formatter';
-import { safeNewDate } from '../utils';
 
 /**
  * @TODO: use moment or some other library

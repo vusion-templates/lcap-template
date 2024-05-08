@@ -1,4 +1,5 @@
 import cloneDeep from "lodash/cloneDeep";
+import _set from 'lodash/set';
 import isEqual from "lodash/isEqual";
 import isObject from "lodash/isObject";
 import {
@@ -41,12 +42,14 @@ import {
   isSunday,
 } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
-import { dateFormatter } from "../../plugins/Formatters";
-
 const moment = require("moment");
 const momentTZ = require("moment-timezone");
+import Decimal from "decimal.js";
 
-import Vue from "vue";
+import { dateFormatter } from "../../Formatters";
+import Global from "../../global";
+
+import { genInitFromSchema } from "../dataTypes";
 import {
   toString,
   fromString,
@@ -57,7 +60,7 @@ import {
   isDefMap,
   typeDefinitionMap,
 } from "../dataTypes/tools";
-import Decimal from "decimal.js";
+
 import { getAppTimezone, isValidTimezoneIANAString } from "./timezone";
 import {
   findAsync,
@@ -70,7 +73,7 @@ import {
 let enumsMap = {};
 let dataTypesMap = {}
 
-export const safeNewDate = (dateStr) => {
+const safeNewDate = (dateStr) => {
   try {
       const res = new Date(dateStr.replaceAll('-', '/'));
       if (['Invalid Date', 'Invalid time value', 'invalid date'].includes(res.toString())) {
@@ -118,25 +121,7 @@ function isArrayInBounds(arr, index) {
   return true;
 }
 
-// from https://github.com/bryc/code/blob/master/jshash/experimental/cyrb53.js
-// public domain license
-const cyrb53 = (str, seed = 0) => {
-  let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
-  for(let i = 0, ch; i < str.length; i++) {
-      ch = str.charCodeAt(i);
-      h1 = Math.imul(h1 ^ ch, 2654435761);
-      h2 = Math.imul(h2 ^ ch, 1597334677);
-  }
-  h1  = Math.imul(h1 ^ (h1 >>> 16), 2246822507);
-  h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-  h2  = Math.imul(h2 ^ (h2 >>> 16), 2246822507);
-  h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);
-
-  return 4294967296 * (2097151 & h2) + (h1 >>> 0);
-};
-
 export const utils = {
-  Vue: undefined,
   EnumValueToText(value, enumTypeAnnotation) {
     const { typeName, typeNamespace } = enumTypeAnnotation || {};
     if (typeName && typeNamespace) {
@@ -256,7 +241,9 @@ export const utils = {
   },
   Set(arr, index, item) {
     if (isArrayInBounds(arr, index)) {
-      return utils.Vue.set(arr, index, item);
+      arr[index] = item;
+      return arr;
+      // return Global.prototype.set(arr, index, item);
     }
   },
   Contains(arr, item) {
@@ -407,43 +394,6 @@ export const utils = {
           nullRemoved[0]
         );
   },
-  ListReverse(arr) {
-    if (Array.isArray(arr)) {
-      arr.reverse();
-    }
-  },
-  ListSort(arr, callback, sort) {
-    if (Array.isArray(arr)) {
-      if (typeof callback === "function") {
-        arr.sort((a, b) => {
-          const valueA = callback(a);
-          const valueB = callback(b);
-          if (
-            Number.isNaN(valueA) ||
-            Number.isNaN(valueB) ||
-            typeof valueA === "undefined" ||
-            typeof valueB === "undefined" ||
-            valueA === null ||
-            valueB === null
-          ) {
-            return 1;
-          } else {
-            if (valueA >= valueB) {
-              if (sort) {
-                return 1;
-              }
-              return -1;
-            } else {
-              if (sort) {
-                return -1;
-              }
-              return 1;
-            }
-          }
-        });
-      }
-    }
-  },
   async ListSortAsync(arr, callback, sort) {
     const sortRule = (valueA, valueB) => {
       if (
@@ -540,9 +490,9 @@ export const utils = {
     const vis = new Set();
     for (const item of arr) {
       // eslint-disable-next-line no-return-await
-      const hashArr = listGetVal.map((fn) => cyrb53(String(fn(item))));
+      const hashArr = listGetVal.map((fn) => fn(item));
       // eslint-disable-next-line no-await-in-loop
-      const hash = cyrb53(hashArr.join(""));
+      const hash = hashArr.join("");
       if (!vis.has(hash)) {
         vis.add(hash);
         res.push(item);
@@ -566,9 +516,9 @@ export const utils = {
     const vis = new Set();
     for (const item of arr) {
       // eslint-disable-next-line no-return-await
-      const hashArr = listGetVal.map(async (fn) => await cyrb53(String(fn(item))));
+      const hashArr = listGetVal.map(async (fn) => await fn(item));
       // eslint-disable-next-line no-await-in-loop
-      const hash = cyrb53((await Promise.all(hashArr)).join(""));
+      const hash = (await Promise.all(hashArr)).join("");
       if (!vis.has(hash)) {
         vis.add(hash);
         res.push(item);
@@ -587,7 +537,7 @@ export const utils = {
     const res = {};
     arr.forEach((e) => {
       const val = getVal(e);
-      if (res.hasOwnProperty(val)) {
+      if (res[val]) {
         // res.get(val) 是一个 array
         res[val].push(e);
       } else {
@@ -619,26 +569,24 @@ export const utils = {
   },
   MapGet(map, key) {
     if (isObject(map)) {
-      if(!map.hasOwnProperty(key) ){
-        return null
-      }
-      const value = map[key];
-      return typeof value === "undefined" ? null : value;
+      return map[key] || null;
     }
   },
   MapPut(map, key, value) {
     if (isObject(map)) {
-      Vue.prototype.$set(map, key, value);
+      // Global.prototype.$set(map, key, value);
+      _set(map, key, value);
     }
   },
   MapRemove(map, key) {
     if (isObject(map)) {
-      utils.Vue.delete(map, key);
+      // Global.prototype.delete(map, key);
+      delete map[key];
     }
   },
   MapContains(map, key) {
     if (isObject(map)) {
-      return map.hasOwnProperty(key);
+      return key in map;
     }
     return false;
   },
@@ -657,6 +605,7 @@ export const utils = {
     } else {
       const res = [];
       for (const key in map) {
+        // @ts-ignore
         if (Object.hasOwnProperty.call(map, key)) {
           res.push(map[key]);
         }
@@ -1050,33 +999,6 @@ export const utils = {
     }
     return dateFormatter.format(naslDateToLocalDate(value), formatter);
   },
-  FormatTime(value, formatter) {
-    if (!value) {
-      return "-";
-    }
-    // 使用正则表达式提取时、分、秒
-    const parts = value.match(/(\d{1,2})[^0-9]*(\d{1,2})[^0-9]*(\d{1,2})/);
-
-    // 如果没有匹配到三个部分，则返回原始字符串
-    if (!parts) {
-      return value;
-    }
-
-    // 提取时、分、秒，并将它们转换成整数
-    let hours = parseInt(parts[1], 10);
-    let minutes = parseInt(parts[2], 10);
-    let seconds = parseInt(parts[3], 10);
-
-    // 根据需要格式化时、分、秒
-    let formattedTime = formatter
-      .replace('HH', hours.toString().padStart(2, '0'))
-      .replace('H', hours.toString())
-      .replace('mm', minutes.toString().padStart(2, '0'))
-      .replace('m', minutes.toString())
-      .replace('ss', seconds.toString().padStart(2, '0'))
-      .replace('s', seconds.toString());
-    return formattedTime;
-  },
   FormatDateTime(value, formatter, tz) {
     if (!value) {
       return "-";
@@ -1091,7 +1013,7 @@ export const utils = {
     return cloneDeep(obj);
   },
   New(obj) {
-    return utils.Vue.prototype.$genInitFromSchema(obj);
+    return genInitFromSchema(obj);
   },
   /**
    * 将内容置空，array 置为 []; object 沿用 ClearObject 逻辑; 其他置为 undefined
@@ -1158,7 +1080,7 @@ export const utils = {
         typeAnnotation.typeName === "Decimal"
       )
         // 小数
-        return parseFloat(+value);
+        return parseFloat(String(+value));
       else if (
         typeAnnotation.typeName === "Integer" ||
         typeAnnotation.typeName === "Long"
@@ -1190,20 +1112,14 @@ export const utils = {
   /**
    * 数字格式化
    * @param {digits} 小数点保留个数
-   * @param {omit} 是否隐藏末尾零
    * @param {showGroup} 是否显示千位分割（默认逗号分隔）
-   * @param {fix} 前缀还是后缀
-   * @param {unit} 单位
    */
-  FormatNumber(value, digits, omit, showGroup, fix, unit) {
+  FormatNumber(value, digits, showGroup) {
     if (!value) return value;
     if (parseFloat(value) === 0) return "0";
     if (isNaN(parseFloat(value)) || isNaN(parseInt(digits))) return;
     if (digits !== undefined) {
       value = Number(value).toFixed(parseInt(digits));
-      if (omit) {
-        value = parseFloat(value) + ''; // 转字符串
-      }
     }
     if (showGroup) {
       const temp = ("" + value).split(".");
@@ -1220,56 +1136,8 @@ export const utils = {
       if (temp[0][0] === "-") left = "-" + left;
       if (right) left = left + "." + right;
       value = left;
-    }
-    if (fix && unit) {
-      switch (fix) {
-        case "prefix":
-          value = unit + value;
-          break;
-        case "suffix":
-          value = value + unit;
-          break;
-        default:
-          value = value + unit;
-          break;
-      }
     }
     return "" + value;
-  },
-  /**
-   * 百分数格式化
-   * @param {digits} 小数点保留个数
-   * @param {omit} 是否隐藏末尾零
-   * @param {showGroup} 是否显示千位分割（默认逗号分隔）
-   */
-  FormatPercent(value, digits, omit, showGroup) {
-    if (!value) return value;
-    if (parseFloat(value) === 0) return "0";
-    if (isNaN(parseFloat(value)) || isNaN(parseInt(digits))) return;
-    value = value * 100;
-    if (digits !== undefined) {
-      value = Number(value).toFixed(parseInt(digits));
-      if (omit) {
-        value = parseFloat(value) + ""; // 转字符串
-      }
-    }
-    if (showGroup) {
-      const temp = ("" + value).split(".");
-      const right = temp[1];
-      let left = temp[0]
-        .split("")
-        .reverse()
-        .join("")
-        .match(/(\d{1,3})/g)
-        .join(",")
-        .split("")
-        .reverse()
-        .join("");
-      if (temp[0][0] === "-") left = "-" + left;
-      if (right) left = left + "." + right;
-      value = left;
-    }
-    return value + "%";
   },
   /**
    * 时间差
@@ -1464,51 +1332,35 @@ export const utils = {
         value === null
       ) {
         return false;
-      } 
-      if (
+      } else if (
         ["nasl.core.Boolean"].includes(typeKey) ||
         value === true ||
         value === false
       ) {
         return true;
-      } 
-      if (["nasl.core.DateTime"].includes(typeKey)) {
+      } else if (["nasl.core.DateTime"].includes(typeKey)) {
         return !!value;
-      } 
-      if (isDefString(typeKey)) {
-        return String(value).trim() !== "";
-      } 
-      if (isDefNumber(typeKey)) {
-        return !isNaN(Number(value));
-      } 
-      if (isDefList(typeDefinition)) {
-        return Array.isArray(value) && value.length > 0;
-      } 
-      if (isDefMap(typeDefinition)) {
-        return Object.keys(value).length > 0;
-      }
-
-      if (value === null || value === undefined) {
-        return false;
-      }
-
-      if (typeof value === "string") {
+      } else if (isDefString(typeKey)) {
         return value.trim() !== "";
-      }
-
-      if (typeof value === "number") {
+      } else if (isDefNumber(typeKey)) {
         return !isNaN(value);
-      }
-
-      if (Array.isArray(value)) {
+      } else if (isDefList(typeDefinition)) {
         return value && value.length > 0;
-      } 
-
-      // structure/entity
-      return !Object.keys(value).every((key) => {
-        const v = value[key];
-        return v === null || v === undefined;
-      });
+      } else if (isDefMap(typeDefinition)) {
+        return Object.keys(value).length > 0;
+      } else if (typeof value === "string") {
+        return value.trim() !== "";
+      } else if (typeof value === "number") {
+        return !isNaN(value);
+      } else if (Array.isArray(value)) {
+        return value && value.length > 0;
+      } else {
+        // structure/entity
+        return !Object.keys(value).every((key) => {
+          const v = value[key];
+          return v === null || v === undefined;
+        });
+      }
     };
 
     let isValid = true;
@@ -1526,12 +1378,21 @@ export const utils = {
   },
 };
 
-export default {
-  install(Vue, options) {
-    utils.Vue = Vue;
-    Vue.prototype.$utils = utils;
-    window.$utils = utils;
-    enumsMap = options.enumsMap;
-    dataTypesMap = options.dataTypesMap;
-  },
-};
+function initUtils(options: {
+  enumsMap?: Record<string, any>;
+  dataTypesMap?: Record<string, any>;
+} = {}) {
+  enumsMap = options.enumsMap;
+  dataTypesMap = options.dataTypesMap;
+
+  window.$utils = utils;
+  Global.prototype.$utils = utils;
+
+  return {
+    utils: utils,
+  }
+}
+
+export {
+  initUtils,
+}

@@ -1,9 +1,8 @@
 import { formatISO } from "date-fns";
-import { getAppTimezone } from "../utils/timezone";
-import { safeNewDate } from '../utils';
 const momentTZ = require("moment-timezone");
 const moment = require("moment");
 
+import { getAppTimezone } from "../utils/timezone";
 import Config from "../../config";
 
 function tryJSONParse(str) {
@@ -70,7 +69,7 @@ export function genSortedTypeKey(typeAnnotation) {
 }
 
 // 生成构造函数
-function genConstructor(typeKey, definition, Vue) {
+function genConstructor(typeKey, definition, genInitFromSchema) {
   if (typeMap[typeKey]) {
     return typeMap[typeKey];
   } else {
@@ -170,7 +169,7 @@ function genConstructor(typeKey, definition, Vue) {
         const sortedTypeKey = genSortedTypeKey(typeAnnotation);
         code += `this.${propertyName} = `;
         if (needGenInitFromSchema) {
-          code += `Vue.prototype.$genInitFromSchema('${sortedTypeKey}',`;
+          code += `genInitFromSchema('${sortedTypeKey}',`;
         }
         code += `((defaultValue && defaultValue.${propertyName}) === null || (defaultValue && defaultValue.${propertyName}) === undefined) ? ${parsedValue} : defaultValue && defaultValue.${propertyName}`;
         if (needGenInitFromSchema) {
@@ -180,17 +179,20 @@ function genConstructor(typeKey, definition, Vue) {
       });
     }
     // eslint-disable-next-line no-new-func
-    const fn = Function("Vue", "params", code).bind(null, Vue);
+    const fn = Function("genInitFromSchema", "params", code).bind(
+      null,
+      genInitFromSchema
+    );
     typeMap[typeKey] = fn;
     return fn;
   }
 }
 
 // 初始化整个应用的构造器
-export function initApplicationConstructor(dataTypesMap, Vue) {
+export function initApplicationConstructor(dataTypesMap, genInitFromSchema) {
   if (dataTypesMap) {
     for (const typeKey in dataTypesMap) {
-      genConstructor(typeKey, dataTypesMap[typeKey], Vue);
+      genConstructor(typeKey, dataTypesMap[typeKey], genInitFromSchema);
     }
   }
 }
@@ -221,7 +223,7 @@ export function isInstanceOf(variable, typeKey) {
     typeDefinition || {};
   const isPrimitive = isDefPrimitive(typeKey);
   if (typeKind === "union") {
-    let matchedIndex = false;
+    let matchedIndex = -1;
     if (Array.isArray(typeArguments)) {
       matchedIndex = typeArguments.findIndex((typeArg) =>
         isInstanceOf(variable, genSortedTypeKey(typeArg))
@@ -414,7 +416,7 @@ const isTypeMatch = (typeKey, value) => {
  * @param {*} parentLevel
  * @returns
  */
-export const genInitData = (typeKey, defaultValue, parentLevel) => {
+export const genInitData = (typeKey, defaultValue, parentLevel?) => {
   // 已经实例化过的值，直接返回
   if (isInstanceOf(defaultValue, typeKey)) {
     return defaultValue;
@@ -540,7 +542,7 @@ function indent(tabSize) {
 export const toString = (
   typeKey,
   variable,
-  tz,
+  tz?,
   tabSize = 0,
   collection = new Set()
 ) => {
@@ -579,7 +581,7 @@ export const toString = (
     // 日期时间处理
     if (typeKey === "nasl.core.Date") {
       str = momentTZ
-        .tz(safeNewDate(variable), getAppTimezone(tz))
+        .tz(new Date(variable), getAppTimezone(tz))
         .format("YYYY-MM-DD");
     } else if (typeKey === "nasl.core.Time") {
       const timeRegex = /^([01]?\d|2[0-3])(?::([0-5]?\d)(?::([0-5]?\d))?)?$/;
@@ -609,16 +611,16 @@ export const toString = (
           varArr.push(varItem || "00");
         });
         str = momentTZ
-          .tz(safeNewDate("2022-01-01 " + varArr.join(":")), getAppTimezone(tz))
+          .tz(new Date("2022-01-01 " + varArr.join(":")), getAppTimezone(tz))
           .format(formatArr.join(":"));
       } else {
         str = momentTZ
-          .tz(safeNewDate(variable), getAppTimezone(tz))
+          .tz(new Date(variable), getAppTimezone(tz))
           .format("HH:mm:ss");
       }
     } else if (typeKey === "nasl.core.DateTime") {
       str = momentTZ
-        .tz(safeNewDate(variable), getAppTimezone(tz))
+        .tz(new Date(variable), getAppTimezone(tz))
         .format("YYYY-MM-DD HH:mm:ss");
     }
     if (tabSize > 0) {
@@ -658,7 +660,7 @@ export const toString = (
             tz,
             tabSize,
             collection
-          );
+          ) as string;
         }
       }
     } else if (concept === "Enum") {
@@ -667,14 +669,7 @@ export const toString = (
         const enumItem = enumItems.find(
           (enumItem) => variable == enumItem.value
         );
-        if (
-          $global?.i18nInfo?.enabled &&
-          enumItem?.label?.i18nKey
-        ) {
-          str = $i18n.t(enumItem.label.i18nKey);
-        } else {
-          str = enumItem?.label?.value || enumItem?.label;
-        }
+        str = enumItem?.label?.value || enumItem?.label;
       }
     } else if (["TypeAnnotation", "Structure", "Entity"].includes(concept)) {
       // 复合类型
@@ -869,7 +864,7 @@ function isValidDate(dateString, reg) {
     return false;
   }
   // 验证日期是否真实存在
-  const date = safeNewDate(dateString);
+  const date = new Date(dateString);
   if (date.toString() === "Invalid Date") {
     return false;
   }
@@ -901,24 +896,25 @@ export const fromString = (variable, typeKey) => {
   const { typeName } = typeDefinition || {};
   // 日期
   if (typeName === "DateTime" && isValidDate(variable, DateTimeReg)) {
-    const date = safeNewDate(variable);
+    const date = new Date(variable);
     const outputDate = formatISO(date, {
       format: "extended",
+      // @ts-ignore 忽略吧，我也不知道为什么要传这个
       fractionDigits: 3,
     });
     return outputDate;
   } else if (typeName === "Date" && isValidDate(variable, DateReg)) {
-    return moment(safeNewDate(variable)).format("YYYY-MM-DD");
+    return moment(new Date(variable)).format('YYYY-MM-DD');
   } else if (typeName === "Time" && TimeReg.test(variable)) {
     // ???
-    return moment(safeNewDate("2022-01-01 " + variable)).format("HH:mm:ss");
+    return moment(new Date("2022-01-01 " + variable)).format("HH:mm:ss");
   }
   // 浮点数
   else if (
     ["Decimal", "Double"].includes(typeName) &&
     FloatNumberReg.test(variable)
   ) {
-    return parseFloat(+variable);
+    return parseFloat(String(+variable));
   }
   // 整数
   else if (
@@ -944,9 +940,7 @@ export const fromString = (variable, typeKey) => {
 };
 export function toastAndThrowError(err) {
   // 全局提示toast
-  // UToast?.error(err);
-  Config.Toast.error(err);
-  console.log(err);
+  Config.toast.error(err);
   throw new Error(err);
 }
 

@@ -1,0 +1,45 @@
+{
+  "name": "@lcap/basic-template",
+  "version": "1.2.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "nodemon --watch src -e 'ts,js,mjs,cjs,json' --exec 'yalc publish --push'",
+    "zip": "npm pack",
+    "prepublish": "npm run clean && npm run build && npm run test",
+    "test": "",
+    "build:designer": "npm run build && npm run zip",
+    "clean": "rm -rf dist",
+    "deploy:dev": "node scripts/deploy.js --platform http://defaulttenant.lcap.codewave-dev.163yun.com",
+    "deploy:test": "node scripts/deploy.js --platform http://defaulttenant.lcap.ha.test.com",
+    "deploy:codewave-test": "node scripts/deploy.js --platform http://defaulttenant.lcap.codewave-test.163yun.com"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "crypto-js": "^4.1.1",
+    "date-fns": "^2.6.0",
+    "date-fns-tz": "^2.0.0",
+    "decimal.js": "^10.4.1",
+    "lodash": "^4.17.15",
+    "mockjs": "^1.1.0",
+    "moment": "^2.29.4",
+    "moment-timezone": "^0.5.43",
+    "qs": "^6.8.0",
+    "query-string": "^6.13.1",
+    "request-pre": "^0.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.16",
+    "minimist": "^1.2.8",
+    "typescript": "^5.3.3",
+    "nodemon": "^3.0.3",
+    "yalc": "^1.0.0-pre.53"
+  }
+}

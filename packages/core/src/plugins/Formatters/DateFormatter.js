@@ -52,7 +52,7 @@ export class DateFormatter extends Formatter {
     parse(value, pattern) {
         pattern = pattern || this.pattern;
 
-        return safeNewDate(value);
+        return new Date(value);
     }
 }
 

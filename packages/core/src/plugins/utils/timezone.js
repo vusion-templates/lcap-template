@@ -6,7 +6,7 @@ export const getAppTimezone = (inputTz) => {
         // 指定的固定的时区
         return tz;
     } else {
-        // 用户本地时区，包括 tz 是 null 的场景
+        // 用户本地时区，包括 tz 是 null、undefined 的场景
         return Intl.DateTimeFormat().resolvedOptions().timeZone;
     }
 };

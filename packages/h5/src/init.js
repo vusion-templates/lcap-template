@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import { installOptions, installFilters, installComponents, install } from '@vusion/utils';
 import * as Vant from '@lcap/mobile-ui';
-import { VanToast as Toast } from '@lcap/mobile-ui';
 import * as Components from '@/components';
 
 import MEmitter from 'cloud-ui.vusion/src/components/m-emitter.vue';
@@ -23,6 +22,7 @@ import {
     filterAuthResources,
     findNoAuthView,
     initRouter,
+    createService,
 } from '@lcap/core-template';
 
 import { getTitleGuard } from './router';
@@ -31,6 +31,7 @@ import VueI18n from 'vue-i18n';
 import App from './App.vue';
 
 import '@/assets/css/index.css';
+import '@/assets/css/root.css';
 
 const fnList = ['afterRouter'];
 const evalWrap = function (metaData, fnName) {
@@ -57,6 +58,7 @@ function getAsyncPublicPath() {
 getAsyncPublicPath();
 /* 👆CloudUI中入口逻辑 */
 
+window._lcapCreateService = createService;
 window.appVue = Vue;
 window.Vue = Vue;
 const CloudUI = {
@@ -103,6 +105,12 @@ const init = (appConfig, platformConfig, routes, metaData) => {
             ...(messages || {}),
         };
     }
+    const i18nInfo = appConfig.i18nInfo;
+    const i18n = new VueI18n({
+        locale: locale,
+        messages: i18nInfo.messages,
+    });
+    window.$i18n = i18n;
     Vue.use(LogicsPlugin, metaData);
     Vue.use(RouterPlugin);
     Vue.use(ServicesPlugin, metaData);
@@ -127,10 +135,6 @@ const init = (appConfig, platformConfig, routes, metaData) => {
             console.error(err);
         }
     };
-    if (!window?.$toast) {
-        // eslint-disable-next-line new-cap
-        window.$toast = { show: (message) => Toast({ message, position: top }) };
-    }
     if (window?.rendered) {
         window.rendered();
     }
@@ -181,12 +185,6 @@ const init = (appConfig, platformConfig, routes, metaData) => {
     beforeRouter && router.beforeEach(getAuthGuard(router, routes, authResourcePaths, appConfig, baseResourcePaths, window.beforeRouter));
     router.beforeEach(getTitleGuard(appConfig));
 
-    const i18nInfo = appConfig.i18nInfo;
-    const i18n = new VueI18n({
-        locale: locale,
-        messages: i18nInfo.messages,
-    });
-    window.$i18n = i18n;
     const app = new Vue({
         name: 'app',
         router,

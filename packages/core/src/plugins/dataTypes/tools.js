@@ -1,5 +1,6 @@
 import { formatISO } from "date-fns";
 import { getAppTimezone } from "../utils/timezone";
+import { safeNewDate } from '../utils';
 const momentTZ = require("moment-timezone");
 const moment = require("moment");
 
@@ -578,7 +579,7 @@ export const toString = (
     // 日期时间处理
     if (typeKey === "nasl.core.Date") {
       str = momentTZ
-        .tz(new Date(variable), getAppTimezone(tz))
+        .tz(safeNewDate(variable), getAppTimezone(tz))
         .format("YYYY-MM-DD");
     } else if (typeKey === "nasl.core.Time") {
       const timeRegex = /^([01]?\d|2[0-3])(?::([0-5]?\d)(?::([0-5]?\d))?)?$/;
@@ -608,16 +609,16 @@ export const toString = (
           varArr.push(varItem || "00");
         });
         str = momentTZ
-          .tz(new Date("2022-01-01 " + varArr.join(":")), getAppTimezone(tz))
+          .tz(safeNewDate("2022-01-01 " + varArr.join(":")), getAppTimezone(tz))
           .format(formatArr.join(":"));
       } else {
         str = momentTZ
-          .tz(new Date(variable), getAppTimezone(tz))
+          .tz(safeNewDate(variable), getAppTimezone(tz))
           .format("HH:mm:ss");
       }
     } else if (typeKey === "nasl.core.DateTime") {
       str = momentTZ
-        .tz(new Date(variable), getAppTimezone(tz))
+        .tz(safeNewDate(variable), getAppTimezone(tz))
         .format("YYYY-MM-DD HH:mm:ss");
     }
     if (tabSize > 0) {
@@ -666,7 +667,14 @@ export const toString = (
         const enumItem = enumItems.find(
           (enumItem) => variable == enumItem.value
         );
-        str = enumItem?.label;
+        if (
+          $global?.i18nInfo?.enabled &&
+          enumItem?.label?.i18nKey
+        ) {
+          str = $i18n.t(enumItem.label.i18nKey);
+        } else {
+          str = enumItem?.label?.value || enumItem?.label;
+        }
       }
     } else if (["TypeAnnotation", "Structure", "Entity"].includes(concept)) {
       // 复合类型
@@ -861,7 +869,7 @@ function isValidDate(dateString, reg) {
     return false;
   }
   // 验证日期是否真实存在
-  const date = new Date(dateString);
+  const date = safeNewDate(dateString);
   if (date.toString() === "Invalid Date") {
     return false;
   }
@@ -893,17 +901,17 @@ export const fromString = (variable, typeKey) => {
   const { typeName } = typeDefinition || {};
   // 日期
   if (typeName === "DateTime" && isValidDate(variable, DateTimeReg)) {
-    const date = new Date(variable);
+    const date = safeNewDate(variable);
     const outputDate = formatISO(date, {
       format: "extended",
       fractionDigits: 3,
     });
     return outputDate;
   } else if (typeName === "Date" && isValidDate(variable, DateReg)) {
-    return moment(new Date(variable)).format('YYYY-MM-DD');
+    return moment(safeNewDate(variable)).format("YYYY-MM-DD");
   } else if (typeName === "Time" && TimeReg.test(variable)) {
     // ???
-    return moment(new Date("2022-01-01 " + variable)).format("HH:mm:ss");
+    return moment(safeNewDate("2022-01-01 " + variable)).format("HH:mm:ss");
   }
   // 浮点数
   else if (

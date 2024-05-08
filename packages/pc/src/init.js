@@ -20,6 +20,7 @@ import {
     getBasePath,
     filterAuthResources,
     findNoAuthView,
+    createService,
 } from '@lcap/core-template';
 
 import { getTitleGuard } from './router';
@@ -30,10 +31,7 @@ import App from './App.vue';
 import 'cloud-ui.vusion.css';
 import '@/assets/css/index.css';
 
-import SToast from '@/components/s-toast.vue';
-const Ctr = Vue.component('s-toast', SToast);
-const $toast = new Ctr();
-
+window._lcapCreateService = createService;
 window.appVue = Vue;
 window.Vue = Vue;
 window.CloudUI = CloudUI;
@@ -86,6 +84,12 @@ const init = (appConfig, platformConfig, routes, metaData) => {
             ...(messages || {}),
         };
     }
+    const i18nInfo = appConfig.i18nInfo;
+    const i18n = new VueI18n({
+        locale: locale,
+        messages: i18nInfo.messages,
+    });
+    window.$i18n = i18n;
 
     Vue.use(LogicsPlugin, metaData);
     Vue.use(RouterPlugin);
@@ -112,7 +116,7 @@ const init = (appConfig, platformConfig, routes, metaData) => {
         }
     };
     if (!window?.$toast) {
-        window.$toast = $toast;
+        window.$toast = window.Vue.prototype.$toast;
     }
     if (window?.rendered) {
         window.rendered();
@@ -165,12 +169,6 @@ const init = (appConfig, platformConfig, routes, metaData) => {
     router.beforeEach(getTitleGuard(appConfig));
     router.beforeEach(microFrontend);
 
-    const i18nInfo = appConfig.i18nInfo;
-    const i18n = new VueI18n({
-        locale: locale,
-        messages: i18nInfo.messages,
-    });
-    window.$i18n = i18n;
     const app = new Vue({
         name: 'app',
         router,

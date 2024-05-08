@@ -1,8 +1,8 @@
 <template>
     <div style="height:100%">
         <router-view></router-view>
-        <s-freesass-login @afterShufanLogin="afterShufanLogin" ref="freeSassLogin"></s-freesass-login>
-        <s-freesass-transfer v-if="isPersonSass && loginFinished" ref="freesassTransfer"></s-freesass-transfer>
+        <!-- <s-freesass-login @afterShufanLogin="afterShufanLogin" ref="freeSassLogin"></s-freesass-login>
+        <s-freesass-transfer v-if="isPersonSass && loginFinished" ref="freesassTransfer"></s-freesass-transfer> -->
     </div>
 </template>
 
@@ -55,11 +55,11 @@ export default {
                 if (data?.Data === true) {
                     // 制品有sf_token 什么都不做
                 } else {
-                    this.$refs.freeSassLogin.open();
+                    // this.$refs.freeSassLogin.open();
                 }
             } catch (error) {
                 console.error('CheckExtendToken: ', error);
-                this.$refs.freeSassLogin.open();
+                // this.$refs.freeSassLogin.open();
             }
         }
     },

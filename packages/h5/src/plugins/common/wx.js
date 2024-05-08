@@ -4,7 +4,7 @@
 const getUrl = (url) => url.startsWith('http') ? url : 'http://' + url;
 
 /* 小程序环境 */
-export const isMiniApp = () => window.__wxjs_environment === 'miniprogram';
+export const isMiniApp =  localStorage.getItem("_wx_is_mini")
 
 /* 路由跳转 */
 export const navigateTo = ({ url }) => {
@@ -23,3 +23,28 @@ export const navigateToUserInfoPage = () => {
     const uri = location.href;
     window.wx.miniProgram.navigateTo({ url: `/pages/userinfo/index?redirect_uri=${uri}` });
 };
+
+/* 跳转到手机号页面*/
+export const navigateToUserPhonePage = () => {
+    if (!isMiniApp)
+        return;
+    const uri = location.href;
+    window.wx.miniProgram.navigateTo({ url: `/pages/userphone/index?redirect_uri=${uri}` });
+};
+
+/* 跳转到扫一扫页面*/
+export const navigateScanCodePage = () => {
+    if (!isMiniApp)
+        return;
+    const uri = location.href;
+    window.wx.miniProgram.navigateTo({ url: `/pages/scancode/index?redirect_uri=${uri}` });
+};
+
+/* 跳转到定位页面*/
+export const navigateLocationPage = () => {
+    if (!isMiniApp)
+        return;
+    const uri = location.href;
+    window.wx.miniProgram.navigateTo({ url: `/pages/getlocation/index?redirect_uri=${uri}` });
+};
+

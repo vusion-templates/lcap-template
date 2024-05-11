@@ -34,16 +34,35 @@ pnpm deploy:dev
 pnpm change:version --version 1.0.0
 ```
 
-## 发版asset资源获取（不再需要此操作）
+## 分支管理
 
-https://github.com/vusion-templates/lcap-template/actions
+- master: 主分支，最新代码
+- develop: 开发分支，开发代码
+- release/v: 发布分支，版本发布代码
 
-下载后的文件夹结构
-```
-|-- lcap-template
-  |-- core-template@1.0.0 // 通用基础包
-  |-- mobile-template@1.0.0 // h5端业务包
-  |-- pc-template@1.0.0 // pc端业务包
-```
+工作流
 
-‼️将上述3个文件夹放到lcap-assets目录的 @lcap 目录下
+新功能开发
+- 从develop拉取新分支
+- 开发新功能
+- 提交代码到新分支
+- 提交PR到develop
+- 合并代码到develop
+
+
+版本发布
+- 从develop拉取release/v
+- 修改版本号
+- 发布版本
+- 打tag
+- 合并代码到master
+- 合并代码到develop
+
+
+hotfix
+- 从master按tag拉取新分支
+- 提交代码到新分支
+- 提交PR到master
+- 打新tag
+- 合并代码到master
+- 合并代码到develop

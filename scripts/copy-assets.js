@@ -39,3 +39,10 @@ require(`${coreRoot}/scripts/copy-assets.js`)({
     target: coreTargetDir,
 });
 
+// 赋值basic的zip.tgz文件到临时目录下的basic-template@version
+const basicTargetDir = path.resolve(tempDir, `basic-template@${version}`);
+fs.mkdirSync(basicTargetDir);
+const basicRoot = path.resolve(__dirname, "../packages/basic");
+require(`${basicRoot}/scripts/copy-assets.js`)({
+    target: basicTargetDir,
+});

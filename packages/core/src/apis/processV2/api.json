@@ -154,5 +154,11 @@
             "path": "/api/processV2/getUsersForAddSign",
             "method": "post"
         }
+    },
+    "getTaskInfo": {
+        "url": {
+            "path": "/api/processV2/getTaskInfo",
+            "method": "post"
+        }
     }
 }

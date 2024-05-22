@@ -1479,6 +1479,9 @@ export const utils = {
         return String(value).trim() !== "";
       } 
       if (isDefNumber(typeKey)) {
+        if ([''].includes(value)) {
+          return false;
+        }
         return !isNaN(Number(value));
       } 
       if (isDefList(typeDefinition)) {

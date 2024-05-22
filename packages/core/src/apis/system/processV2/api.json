@@ -145,7 +145,7 @@
     },
     "getTaskInfo": {
         "url": {
-            "path": "/api/processV2/getTaskInfo",
+            "path": "/api/system/processV2/getTaskInfo",
             "method": "post"
         }
     }

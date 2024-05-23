@@ -29,9 +29,9 @@ export default {
     Vue.prototype.$genInitFromSchema = genInitFromSchema;
     window.$genInitFromSchema = genInitFromSchema;
 
-    const { 
-      frontendVariables, 
-      localCacheVariableSet 
+    const {
+      frontendVariables,
+      localCacheVariableSet
     } = Config.getFrontendVariables(options);
 
     const $g = {
@@ -206,15 +206,16 @@ export default {
         return navigator.language || navigator.userLanguage;
       },
       useDatabaseCallback() {
+        //  是这样调用的 $global.useDatabaseCallback()(__tableView_1_handleDataSourceLoad)
         return function (loadFun, ...args) {
-          let loadMap = databaseLoadFunMap.get(loadFun)
-          const cacheKey = JSON.stringify([loadFun, ...args])
+          let loadMap = databaseLoadFunMap.get(loadFun);
+          const cacheKey = $g.stringifyOnce([loadFun, ...args]);
           if (!loadMap) {
-            loadMap = new Map()
+            loadMap = new Map();
             loadMap.set(cacheKey, (params) => {
               return loadFun(params, ...args);
             });
-            databaseLoadFunMap.set(loadFun, loadMap)
+            databaseLoadFunMap.set(loadFun, loadMap);
           } else {
             if (!loadMap.has(cacheKey)) {
               loadMap.set(cacheKey, (params) => {
@@ -223,7 +224,25 @@ export default {
             }
           }
           return loadMap.get(cacheKey);
-        }
+        };
+      },
+      // 自定义的解决循环引用的函数
+      stringifyOnce(obj) {
+        const seen = new WeakSet(); // 用于跟踪对象引用
+        return JSON.stringify(obj, (key, value) => {
+          if (typeof value === "object" && value !== null) {
+            // 一些黑名单key
+            if (key === "columnVM") {
+              return;
+            }
+            if (seen.has(value)) {
+              // 如果已经序列化过这个对象，避免循环引用
+              return;
+            }
+            seen.add(value);
+          }
+          return value;
+        });
       },
     };
     const $global = Config.setGlobal($g);

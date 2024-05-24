@@ -9,5 +9,5 @@ on:
 
 jobs:
   call-tyler:
-    uses: netease-lcap/tyler/.github/workflows/deploy-ui-libraries.yml@master
+    uses: netease-lcap/giselle/.github/workflows/deploy-lcap-template.yml@master
     secrets: inherit

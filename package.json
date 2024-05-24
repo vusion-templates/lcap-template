@@ -6,9 +6,7 @@
   "scripts": {
     "change:version": "node ./scripts/version",
     "build": "pnpm --filter \"./packages/*\" build:designer",
-    "deploy:dev": "pnpm --filter \"./packages/*\" deploy:dev",
-    "deploy:test": "pnpm --filter \"./packages/*\" deploy:test",
-    "deploy:codewave-test": "pnpm --filter \"./packages/*\" deploy:codewave-test"
+    "deploy": "pnpm --filter \"./packages/*\" deploy"
   },
   "keywords": [],
   "author": "",

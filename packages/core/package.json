@@ -7,9 +7,7 @@
     "build": "swc ./src -d esm --copy-files",
     "zip": "npm pack",
     "build:designer": "npm run build && npm run zip",
-    "deploy:dev": "node scripts/deploy.js --platform http://defaulttenant.lcap.codewave-dev.163yun.com",
-    "deploy:test": "node scripts/deploy.js --platform http://defaulttenant.lcap.ha.test.com",
-    "deploy:codewave-test": "node scripts/deploy.js --platform http://defaulttenant.lcap.codewave-test.163yun.com",
+    "deploy": "node scripts/deploy.js",
     "test": "jest --env=jsdom --coverage"
   },
   "keywords": [],

@@ -5,7 +5,7 @@
   "version": "1.2.0",
   "scripts": {
     "change:version": "node ./scripts/version",
-    "build": "pnpm --filter \"./packages/*\" build:designer",
+    "build": "pnpm --filter \"./packages/*\" build",
     "deploy": "pnpm --filter \"./packages/*\" deploy"
   },
   "keywords": [],

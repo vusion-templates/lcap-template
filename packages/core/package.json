@@ -4,9 +4,9 @@
   "description": "",
   "module": "index.js",
   "scripts": {
-    "build": "swc ./src -d esm --copy-files",
+    "build:swc": "swc ./src -d esm --copy-files",
     "zip": "npm pack",
-    "build:designer": "npm run build && npm run zip",
+    "build": "npm run build:swc && npm run zip",
     "deploy": "node scripts/deploy.js",
     "test": "jest --env=jsdom --coverage"
   },

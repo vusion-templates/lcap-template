@@ -4,12 +4,12 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build:tsc": "tsc",
     "dev": "nodemon --watch src -e 'ts,js,mjs,cjs,json' --exec 'yalc publish --push'",
     "zip": "npm pack",
-    "prepublish": "npm run clean && npm run build && npm run test",
+    "prepublish": "npm run clean && npm run build:tsc && npm run test",
     "test": "",
-    "build:designer": "npm run build && npm run zip",
+    "build": "npm run build:tsc && npm run zip",
     "clean": "rm -rf dist",
     "deploy": "node scripts/deploy.js"
   },

@@ -209,7 +209,7 @@ export default {
         //  是这样调用的 $global.useDatabaseCallback()(__tableView_1_handleDataSourceLoad)
         return function (loadFun, ...args) {
           let loadMap = databaseLoadFunMap.get(loadFun);
-          const cacheKey = $g.stringifyOnce([loadFun, ...args]);
+          const cacheKey = $g.stringifyCurrentOnce([loadFun, ...args]);
           if (!loadMap) {
             loadMap = new Map();
             loadMap.set(cacheKey, (params) => {
@@ -227,14 +227,24 @@ export default {
         };
       },
       // 自定义的解决循环引用的函数
-      stringifyOnce(obj) {
+      stringifyCurrentOnce(array) {
+        const newArray = array.map((current) => {
+          // 只认current声明的key，其余的可能有vm，所以只认这几个属性
+          if (typeof current === "object" && current !== null) {
+            return {
+              item: current.item,
+              index: current.index,
+              rowIndex: current.rowIndex,
+              columnIndex: current.columnIndex,
+              value: current.value,
+            };
+          }
+          return current;
+        });
+        
         const seen = new WeakSet(); // 用于跟踪对象引用
-        return JSON.stringify(obj, (key, value) => {
+        return JSON.stringify(newArray, (key, value) => {
           if (typeof value === "object" && value !== null) {
-            // 一些黑名单key
-            if (key === "columnVM") {
-              return;
-            }
             if (seen.has(value)) {
               // 如果已经序列化过这个对象，避免循环引用
               return;

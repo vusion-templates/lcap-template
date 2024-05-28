@@ -70,7 +70,7 @@ import {
 let enumsMap = {};
 let dataTypesMap = {}
 
-const safeNewDate = (dateStr) => {
+export const safeNewDate = (dateStr) => {
   try {
       const res = new Date(dateStr.replaceAll('-', '/'));
       if (['Invalid Date', 'Invalid time value', 'invalid date'].includes(res.toString())) {
@@ -1479,6 +1479,9 @@ export const utils = {
         return String(value).trim() !== "";
       } 
       if (isDefNumber(typeKey)) {
+        if ([''].includes(value)) {
+          return false;
+        }
         return !isNaN(Number(value));
       } 
       if (isDefList(typeDefinition)) {

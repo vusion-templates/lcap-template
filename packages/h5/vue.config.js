@@ -1,11 +1,14 @@
-const { EsbuildPlugin } = require('esbuild-loader');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
 const path = require('path');
 const pkg = require('./package.json');
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 const webpackOptimization = require('./webpack/optimization');
+const EsbuildPlugin = require('./webpack/esbuild-plugin');
+
+const isDesigner = process.env.BUILD_LIB_ENV === 'designer';
 
 const vueConfig = {
     publicPath: '/',
@@ -43,7 +46,9 @@ const vueConfig = {
         config.output.libraryExport = 'default';
         config.output.jsonpFunction = 'webpackJsonp' + pkg.name;
         // 使用esbuild压缩
-        config.optimization.minimizer = [new EsbuildPlugin()];
+        config.optimization.minimizer = [new EsbuildPlugin({
+            target: 'es2015',
+        })];
     },
 };
 

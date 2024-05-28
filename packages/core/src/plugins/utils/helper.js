@@ -77,13 +77,3 @@ export function isValidTimezoneIANAString(timezoneString) {
     return false;
   }
 }
-
-export function naslDateToLocalDate(date) {
-  const localTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const localDate = momentTZ.tz(date, 'YYYY-MM-DD', localTZ);
-  return new Date(localDate.format('YYYY-MM-DD HH:mm:ss'));
-}
-
-export function convertJSDateInTargetTimeZone(date, tz) {
-  return new Date(momentTZ.tz(date, getAppTimezone(tz)).format('YYYY-MM-DD HH:mm:ss.SSS'));
-}

@@ -13,6 +13,7 @@ import authService from '../auth/authService';
 
 window.CryptoJS = CryptoJS;
 const aesKey = ";Z#^$;8+yhO!AhGo";
+const databaseLoadFunMap = new Map();
 
 export const genInitFromSchema = (typeKey, defaultValue, level) => genInitData(typeKey, defaultValue, level);
 
@@ -28,9 +29,9 @@ export default {
     Vue.prototype.$genInitFromSchema = genInitFromSchema;
     window.$genInitFromSchema = genInitFromSchema;
 
-    const { 
-      frontendVariables, 
-      localCacheVariableSet 
+    const {
+      frontendVariables,
+      localCacheVariableSet
     } = Config.getFrontendVariables(options);
 
     const $g = {
@@ -203,6 +204,55 @@ export default {
       },
       getUserLanguage() {
         return navigator.language || navigator.userLanguage;
+      },
+      useDatabaseCallback() {
+        //  是这样调用的 $global.useDatabaseCallback()(__tableView_1_handleDataSourceLoad)
+        return function (loadFun, ...args) {
+          let loadMap = databaseLoadFunMap.get(loadFun);
+          const cacheKey = $g.stringifyCurrentOnce([loadFun, ...args]);
+          if (!loadMap) {
+            loadMap = new Map();
+            loadMap.set(cacheKey, (params) => {
+              return loadFun(params, ...args);
+            });
+            databaseLoadFunMap.set(loadFun, loadMap);
+          } else {
+            if (!loadMap.has(cacheKey)) {
+              loadMap.set(cacheKey, (params) => {
+                return loadFun(params, ...args);
+              });
+            }
+          }
+          return loadMap.get(cacheKey);
+        };
+      },
+      // 自定义的解决循环引用的函数
+      stringifyCurrentOnce(array) {
+        const newArray = array.map((current) => {
+          // 只认current声明的key，其余的可能有vm，所以只认这几个属性
+          if (typeof current === "object" && current !== null) {
+            return {
+              item: current.item,
+              index: current.index,
+              rowIndex: current.rowIndex,
+              columnIndex: current.columnIndex,
+              value: current.value,
+            };
+          }
+          return current;
+        });
+        
+        const seen = new WeakSet(); // 用于跟踪对象引用
+        return JSON.stringify(newArray, (key, value) => {
+          if (typeof value === "object" && value !== null) {
+            if (seen.has(value)) {
+              // 如果已经序列化过这个对象，避免循环引用
+              return;
+            }
+            seen.add(value);
+          }
+          return value;
+        });
       },
     };
     const $global = Config.setGlobal($g);

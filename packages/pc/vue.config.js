@@ -1,4 +1,3 @@
-const { EsbuildPlugin } = require('esbuild-loader');
 const pkg = require('./package.json');
 const argv = require('minimist')(process.argv.slice(2));
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -15,6 +14,8 @@ const webpackDesigner = require('./webpack/designer');
 const webpackRoutes = require('./webpack/routes');
 const webpackHtml = require('./webpack/html');
 const webpackOptimization = require('./webpack/optimization');
+const EsbuildPlugin = require('./webpack/esbuild-plugin');
+
 const isDesigner = process.env.BUILD_LIB_ENV === 'designer';
 
 const baseConfig = {
@@ -50,7 +51,11 @@ const vueConfig = {
             webpackDesigner.config(config);
         }
         // 使用esbuild压缩
-        config.optimization.minimizer = [new EsbuildPlugin()];
+        config.optimization.minimizer = [
+            new EsbuildPlugin({
+                target: 'es2015',
+            }),
+        ];
     },
     devServer,
 };

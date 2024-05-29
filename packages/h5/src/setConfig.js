@@ -5,7 +5,7 @@ import { destination } from './plugins/router';
 import { createRouter } from './router';
 
 // 从当前组件库调用Toast
-const UI = window.UILibray || {};
+const UI = window.LCAPUILibrary || {};
 const toast = UI.Toast || {
     show: () => {},
     error: () => {},

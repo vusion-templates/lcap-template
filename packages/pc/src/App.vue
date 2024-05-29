@@ -5,8 +5,6 @@
 </template>
 
 <script>
-import SFreesassLogin from '@/components/s-freesass-login';
-import SFreesassTransfer from '@/components/s-freesass-transfer';
 import { localCacheVariableMixin } from '@lcap/core-template';
 
 const newDomain = location.host.split('.').includes('163');
@@ -15,7 +13,6 @@ const serviceMap = {
     checkSfTokenNew: `${location.protocol}//sfsso-community1.app.codewave.163.com/api/checkSfToken`,
 };
 export default {
-    components: { SFreesassLogin, SFreesassTransfer },
     mixins: [localCacheVariableMixin],
     data() {
         return {
@@ -53,11 +50,9 @@ export default {
                 if (data?.Data === true) {
                     // 制品有sf_token 什么都不做
                 } else {
-                    // this.$refs.freeSassLogin.open();
                 }
             } catch (error) {
                 console.error('CheckExtendToken: ', error);
-                // this.$refs.freeSassLogin.open();
             }
         }
     },

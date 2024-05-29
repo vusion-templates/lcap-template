@@ -32,6 +32,7 @@ import '@/assets/css/index.css';
 window.appVue = Vue;
 window.Vue = Vue;
 window.LcapInstall = install;
+
 const fnList = ['afterRouter'];
 const evalWrap = function (metaData, fnName) {
     // eslint-disable-next-line no-eval

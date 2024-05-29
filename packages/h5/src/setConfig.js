@@ -1,36 +1,26 @@
 import { setConfig } from '@lcap/core-template';
-import { Toast } from 'vant';
 
 import { getFrontendVariables, setGlobal } from './plugins/dataTypes';
 import { destination } from './plugins/router';
 import { createRouter } from './router';
 
-if (!window?.$toast) {
-    // eslint-disable-next-line new-cap
-    window.$toast = {
-        show: (message) => Toast({ message, position: top }),
-        error: (message) => Toast.fail({ message, position: top }),
-    };
-}
+// 从当前组件库调用Toast
+const UI = window.UILibray || {};
+const toast = UI.Toast || {
+    show: () => {},
+    error: () => {},
+};
 
 // 设置core config
 setConfig({
+    Toast: {
+        show: toast?.show,
+        error: toast?.error,
+    },
     setGlobal,
     getFrontendVariables,
     destination,
     createRouter,
-    Toast: {
-        show: (message, stack) =>
-            Toast({
-                message,
-                position: 'top',
-            }),
-        error: (message, stack) =>
-            Toast.fail({
-                message,
-                position: 'top',
-            }),
-    },
     utils: {
         axiosInterceptors: [
             {

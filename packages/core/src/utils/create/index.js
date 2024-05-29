@@ -284,7 +284,7 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
                 if (!err.response) {
                     if (!config.noErrorTip) {
                         // instance.show('系统错误，请查看日志！');
-                        Config.Toast.show('系统错误，请查看日志！');
+                        Config.Toast.error('系统错误，请查看日志！');
                         return;
                     }
                 }

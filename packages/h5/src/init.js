@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { installFilters, installComponents } from '@vusion/utils';
+import { installFilters, installComponents, install } from '@vusion/utils';
 
 import * as Components from '@/components';
 
@@ -37,6 +37,7 @@ const evalWrap = function (metaData, fnName) {
 
 window.appVue = Vue;
 window.Vue = Vue;
+window.LcapInstall = install;
 
 // 需要兼容老应用的制品，因此新版本入口函数参数不做改变
 const init = (appConfig, platformConfig, routes, metaData) => {

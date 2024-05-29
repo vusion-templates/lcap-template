@@ -30,7 +30,6 @@
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.43",
     "qs": "^6.8.0",
-    "query-string": "^6.13.1",
     "request-pre": "^0.4.3"
   },
   "devDependencies": {

@@ -1,5 +1,4 @@
-import queryString from "query-string";
-
+import qs from 'qs';
 import { initService as authInitService } from '../../apis/auth';
 import { initService as lowauthInitService } from '../../apis/lowauth';
 
@@ -26,7 +25,7 @@ let userInfoPromise = null;
 let userResourcesPromise = null;
 
 // FIXME 替换成真实类型
-export type NASLUserInfo = { 
+export type NASLUserInfo = {
   UserName: string;
   UserId: string;
 };
@@ -250,8 +249,8 @@ const Service: IService = {
     });
   },
   // 处理数据的参数转化
-  parse: queryString.parse,
-  stringify: queryString.stringify,
+  parse: qs.parse,
+  stringify: qs.stringify,
   /**
    * 权限服务是否初始化
    */

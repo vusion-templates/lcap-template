@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import queryString from "query-string";
+import qs from 'qs';
 import { initService as authInitService } from '../../apis/auth';
 import { initService as lowauthInitService } from '../../apis/lowauth';
 import cookie from '../../utils/cookie';
@@ -219,8 +219,8 @@ export default {
     });
   },
   // 处理数据的参数转化
-  parse: queryString.parse,
-  stringify: queryString.stringify,
+  parse: qs.parse,
+  stringify: qs.stringify,
   /**
    * 权限服务是否初始化
    */

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { installFilters, installComponents, install } from '@vusion/utils';
+import { installOptions, installFilters, installDirectives, installComponents, install } from '@vusion/utils';
 
 import * as Components from '@/components';
 
@@ -7,6 +7,7 @@ import './setConfig';
 
 import {
     filters,
+    directives,
     AuthPlugin,
     DataTypesPlugin,
     LogicsPlugin,
@@ -38,6 +39,9 @@ const evalWrap = function (metaData, fnName) {
 window.appVue = Vue;
 window.Vue = Vue;
 window.LcapInstall = install;
+
+installOptions(Vue);
+installDirectives(Vue, directives);
 
 // 需要兼容老应用的制品，因此新版本入口函数参数不做改变
 const init = (appConfig, platformConfig, routes, metaData) => {

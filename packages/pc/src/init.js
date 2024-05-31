@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { installFilters, installComponents, install } from '@vusion/utils';
+import { installOptions, installFilters, installComponents, installDirectives, install } from '@vusion/utils';
 
 import * as Components from '@/components';
 
@@ -7,6 +7,7 @@ import './setConfig';
 
 import {
     filters,
+    directives,
     AuthPlugin,
     DataTypesPlugin,
     LogicsPlugin,
@@ -32,6 +33,9 @@ import '@/assets/css/index.css';
 window.appVue = Vue;
 window.Vue = Vue;
 window.LcapInstall = install;
+
+installOptions(Vue);
+installDirectives(Vue, directives);
 
 const fnList = ['afterRouter'];
 const evalWrap = function (metaData, fnName) {

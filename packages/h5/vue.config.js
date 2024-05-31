@@ -1,5 +1,3 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-
 const path = require('path');
 const pkg = require('./package.json');
 
@@ -7,8 +5,6 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 
 const webpackOptimization = require('./webpack/optimization');
 const EsbuildPlugin = require('./webpack/esbuild-plugin');
-
-const isDesigner = process.env.BUILD_LIB_ENV === 'designer';
 
 const vueConfig = {
     publicPath: '/',
@@ -19,9 +15,7 @@ const vueConfig = {
     chainWebpack(config) {
         config.externals({
             ...config.get('externals'),
-            '@lcap/mobile-ui': 'vant',
         });
-        config.resolve.alias.set('cloud-ui.vusion.css$', path.resolve(__dirname, '../node_modules/cloud-ui.vusion/dist-raw/index.css'));
         config.module.rule('js').uses.delete('cache-loader');
 
         webpackOptimization.chain(config, isDevelopment);

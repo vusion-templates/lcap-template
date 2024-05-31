@@ -1,4 +1,3 @@
-import isFunction from 'lodash/isFunction';
 import { getComponentOption } from '@lcap/core-template'
 
 export const getTitleGuard = (appConfig) => (to, from, next) => {
@@ -7,7 +6,7 @@ export const getTitleGuard = (appConfig) => (to, from, next) => {
         return componentOptions?.meta?.title || item.path.slice(1) || item.meta?.title;
     }).filter((i) => i)[0];
     if (metaTitle) {
-        if (isFunction(metaTitle)) {
+        if (typeof metaTitle === 'function') {
             document.title = metaTitle(to, from);
         } else {
             if (appConfig.documentTitle) {

@@ -24,16 +24,6 @@ const vueConfig = {
         config.resolve.alias.set('cloud-ui.vusion.css$', path.resolve(__dirname, '../node_modules/cloud-ui.vusion/dist-raw/index.css'));
         config.module.rule('js').uses.delete('cache-loader');
 
-        config.plugin('copy-cloud-ui-chunks').use(CopyWebpackPlugin, [
-            [
-                {
-                    context: 'node_modules/cloud-ui.vusion/dist-raw',
-                    from: 'chunk-*',
-                    to: 'public/js/',
-                },
-            ],
-        ]);
-
         webpackOptimization.chain(config, isDevelopment);
         if (config.plugins.has('css-sprite-plugin')) {
             config.plugin('css-sprite-plugin').tap(([opts]) => {

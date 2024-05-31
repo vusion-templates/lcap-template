@@ -1,5 +1,3 @@
-import { Dialog } from 'vant';
-
 import { cookie, storage, authService, genSortedTypeKey, getBasePath, genInitFromSchema } from '@lcap/core-template';
 import { navigateToUserInfoPage, navigateToUserPhonePage, navigateScanCodePage, navigateLocationPage } from '../common/wx';
 
@@ -68,23 +66,28 @@ export function setGlobal($global) {
             return authService.has(authPath);
         },
         logout() {
-            Dialog.confirm({
-                title: '提示',
-                message: '确定退出登录吗?',
-            }).then(async () => {
-                try {
-                    await authService.logout();
-                } catch (error) {
-                    console.warn(error);
-                }
-                storage.set('Authorization', '');
-                // cookie.eraseAll();
-                cookie.erase('authorization');
-                cookie.erase('username');
-                window.location.href = `${getBasePath()}/login`;
-            }).catch(() => {
-                // on cancel
-            });
+            // FIXME 从全局变量中获取
+            Vue.prototype
+                .$confirm({
+                    title: '提示',
+                    message: '确定退出登录吗?',
+                    content: '确定退出登录吗？',
+                })
+                .then(async () => {
+                    try {
+                        await authService.logout();
+                    } catch (error) {
+                        console.warn(error);
+                    }
+                    storage.set('Authorization', '');
+                    // cookie.eraseAll();
+                    cookie.erase('authorization');
+                    cookie.erase('username');
+                    window.location.href = `${getBasePath()}/login`;
+                })
+                .catch(() => {
+                    // on cancel
+                });
         },
         setI18nLocale(newLocale) {
             // 修改local中的存储的语言标识

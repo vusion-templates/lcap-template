@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { installOptions, installFilters, installComponents, install } from '@vusion/utils';
+import { installOptions, installFilters, installDirectives, installComponents, install } from '@vusion/utils';
 import * as Vant from '@lcap/mobile-ui';
 import * as Components from '@/components';
 
@@ -10,6 +10,7 @@ import './setConfig';
 
 import {
     filters,
+    directives,
     AuthPlugin,
     DataTypesPlugin,
     LogicsPlugin,
@@ -69,6 +70,7 @@ window.CloudUI = CloudUI;
 
 // 预览沙箱不需要调用init来初始化，但是需要使用到CloudUI和Vant组件，所以放在外边
 installOptions(Vue);
+installDirectives(Vue, directives);
 Vue.mixin(MEmitter);
 Vue.mixin(MPubSub);
 Vue.use(Vant);

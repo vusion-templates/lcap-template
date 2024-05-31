@@ -7,6 +7,7 @@ import './setConfig';
 
 import {
     filters,
+    directives,
     AuthPlugin,
     DataTypesPlugin,
     LogicsPlugin,
@@ -42,6 +43,7 @@ const evalWrap = function (metaData, fnName) {
 // 预览沙箱不需要调用init来初始化，但是需要使用到CloudUI和Vant组件，所以放在外边
 installOptions(Vue);
 installDirectives(Vue, CloudUI.directives);
+installDirectives(Vue, directives);
 installComponents(Vue, CloudUI);
 Vue.mixin(CloudUI.MEmitter);
 Vue.mixin(CloudUI.MPubSub);

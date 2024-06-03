@@ -19,7 +19,7 @@ export const localCacheVariableMixin = {
             try {
                 this.$watch(`$global.frontendVariables.${localCacheVariableKey}`, function(newValue) {
                     storage.set(localCacheVariableKey, newValue, true);
-                });
+                }, { deep: true });
             } catch (error) {
                 console.warn('error: ', error);
             }

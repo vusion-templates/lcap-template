@@ -21,7 +21,7 @@ const baseConfig = {
     publicPath: publicPathPrefix,
     outputDir: 'public',
     assetsDir: 'public',
-    productionSourceMap: false,
+    productionSourceMap: true,
     transpileDependencies: [/lodash/, 'resize-detector', /cloud-ui\.vusion/, /@cloud-ui/],
 };
 

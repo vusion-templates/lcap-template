@@ -1,5 +1,5 @@
 import filters from './filters';
-import * as directvies from './directives';
+import * as directives from './directives';
 
 export * from './config';
 export * from './apis';
@@ -10,7 +10,7 @@ export * from './utils';
 
 export {
   filters,
-  directvies,
+  directives,
 };
 
 export { downloadClick } from "./plugins/router";

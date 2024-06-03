@@ -10,7 +10,7 @@ const vueConfig = {
     publicPath: '/',
     outputDir: 'public',
     assetsDir: 'public',
-    productionSourceMap: false,
+    productionSourceMap: true,
     transpileDependencies: [/lodash/, 'resize-detector'],
     chainWebpack(config) {
         config.externals({

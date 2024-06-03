@@ -1,5 +1,5 @@
 import { cookie, storage, authService, genSortedTypeKey, getBasePath, genInitFromSchema } from '@lcap/core-template';
-import { navigateToUserInfoPage, navigateToUserPhonePage, navigateScanCodePage,navigateLocationPage } from '../common/wx';
+import { navigateToUserInfoPage, navigateToUserPhonePage, navigateScanCodePage, navigateLocationPage } from '../common/wx';
 
 export function getFrontendVariables(options) {
     const frontendVariables = {};
@@ -43,12 +43,12 @@ export function setGlobal($global) {
         getWeChatScanCode() {
             const data = localStorage.getItem('_wx_scan_code');
             localStorage.setItem('_wx_scan_code', '');
-            return data
+            return data;
         },
         getWeChatLocation() {
             const data = localStorage.getItem('_wx_location');
             localStorage.setItem('_wx_location', '');
-            return data
+            return data;
         },
         navigateToUserInfo() {
             navigateToUserInfoPage();
@@ -66,10 +66,13 @@ export function setGlobal($global) {
             return authService.has(authPath);
         },
         logout() {
-            window.vant.VanDialog.confirm({
-                title: '提示',
-                message: '确定退出登录吗?',
-            })
+            // FIXME 从全局变量中获取
+            Vue.prototype
+                .$confirm({
+                    title: '提示',
+                    message: '确定退出登录吗?',
+                    content: '确定退出登录吗？',
+                })
                 .then(async () => {
                     try {
                         await authService.logout();

@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import { installOptions, installDirectives, installFilters, installComponents } from '@vusion/utils';
-import * as CloudUI from 'cloud-ui.vusion';
+import { installOptions, installFilters, installComponents, installDirectives, install } from '@vusion/utils';
+
 import * as Components from '@/components';
 
 import './setConfig';
@@ -28,25 +28,20 @@ import { getTitleGuard } from './router';
 import VueI18n from 'vue-i18n';
 import App from './App.vue';
 
-import 'cloud-ui.vusion.css';
 import '@/assets/css/index.css';
 
 window.appVue = Vue;
 window.Vue = Vue;
-window.CloudUI = CloudUI;
+window.LcapInstall = install;
+
+installOptions(Vue);
+installDirectives(Vue, directives);
+
 const fnList = ['afterRouter'];
 const evalWrap = function (metaData, fnName) {
     // eslint-disable-next-line no-eval
     metaData && fnName && metaData?.frontendEvents[fnName] && eval(metaData.frontendEvents[fnName]);
 };
-
-// 预览沙箱不需要调用init来初始化，但是需要使用到CloudUI和Vant组件，所以放在外边
-installOptions(Vue);
-installDirectives(Vue, CloudUI.directives);
-installDirectives(Vue, directives);
-installComponents(Vue, CloudUI);
-Vue.mixin(CloudUI.MEmitter);
-Vue.mixin(CloudUI.MPubSub);
 
 // 需要兼容老应用的制品，因此新版本入口函数参数不做改变
 const init = (appConfig, platformConfig, routes, metaData) => {
@@ -116,7 +111,7 @@ const init = (appConfig, platformConfig, routes, metaData) => {
         }
     };
     if (!window?.$toast) {
-        window.$toast =  window.Vue.prototype.$toast;
+        window.$toast = window.Vue.prototype.$toast;
     }
     if (window?.rendered) {
         window.rendered();

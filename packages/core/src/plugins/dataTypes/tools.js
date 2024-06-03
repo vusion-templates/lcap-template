@@ -944,7 +944,6 @@ export const fromString = (variable, typeKey) => {
 };
 export function toastAndThrowError(err) {
   // 全局提示toast
-  // UToast?.error(err);
   Config.Toast.error(err);
   console.log(err);
   throw new Error(err);

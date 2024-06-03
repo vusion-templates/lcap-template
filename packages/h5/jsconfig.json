@@ -4,9 +4,6 @@
         "paths": {
             "@/*": [
                 "./src/*"
-            ],
-            "cloud-ui.vusion.css": [
-                "./node_modules/cloud-ui.vusion/dist-raw/index.css"
             ]
         }
     },

@@ -11,14 +11,12 @@ const getErrStrack = (err) => err.StackTrace || '系统错误，请查看日志�
 export default {
     defaults({ config }, err) {
         if (!config.noErrorTip) {
-            // instance.show('系统错误');
-            Config.Toast.show('系统错误');
+            Config.Toast.error('系统错误');
         }
     },
     500({ config }, err = {}) {
         if (!config.noErrorTip) {
-            // instance.show(getErrMessage(err), getErrStrack(err));
-            Config.Toast.show(getErrMessage(err), getErrStrack(err));
+            Config.Toast.error(getErrMessage(err), getErrStrack(err));
         }
     },
     501({ config }, err = {}) {
@@ -29,8 +27,7 @@ export default {
     },
     400({ config }, err = {}) {
         if (!config.noErrorTip) {
-            // instance.show(getErrMessage(err), getErrStrack(err));
-            Config.Toast.show(getErrMessage(err), getErrStrack(err));
+            Config.Toast.error(getErrMessage(err), getErrStrack(err));
         }
     },
     401({ config }, err = {}) {
@@ -53,8 +50,7 @@ export default {
         }
         if (err.Code === 'InvalidToken' && err.Message === 'Token is invalid') {
             if (!config.noErrorTip) {
-                // instance.show('登录失效', '请重新登录');
-                Config.Toast.show('登录失效，请重新登录');
+                Config.Toast.error('登录失效，请重新登录');
             }
             localStorage.setItem('beforeLogin', JSON.stringify(location));
             location.href = '/login';
@@ -62,14 +58,12 @@ export default {
     },
     remoteError({ config }, err) {
         if (!config.noErrorTip) {
-            // instance.show('系统错误，请查看日志！');
-            Config.Toast.show('系统错误，请查看日志！');
+            Config.Toast.error('系统错误，请查看日志！');
         }
     },
     localError({ config }, err) {
         if (!config.noErrorTip) {
-            // instance.show('系统错误，请查看日志！');
-            Config.Toast.show('系统错误，请查看日志！');
+            Config.Toast.error('系统错误，请查看日志！');
         }
     },
 };

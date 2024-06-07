@@ -8,5 +8,5 @@ const root = path.resolve(__dirname, '../');
 module.exports = function ({ target }) {
     const tgz = `${pkg.name.replace('@', '').replace('/', '-')}-${pkg.version}.tgz`;
     fs.copyFileSync(`${root}/${tgz}`, `${target}/zip.tgz`);
-    execSync(`cp -r ${root}/public/* ${target}`);
+    execSync(`cp -r ${root}/dist/* ${target}`);
 };

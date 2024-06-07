@@ -42,26 +42,10 @@ function deployTgz(options = {}) {
 
   // 开始上传流程
   const prefix = `packages/${name}@${version}`;
-  let formFiles = [source];
-
-  if (!formFiles.length) {
-    console.warn("No files found!");
-    process.exit(0);
-  }
-
-  formFiles = formFiles.map((filePath) => {
-    let relativePath = path
-      .relative(root, filePath)
-      .replace(/^public[\\/]/, "")
-      .replace(/\\/g, "/");
-
-    relativePath = path.posix.join(prefix, relativePath);
-
-    return { 
-      name: relativePath, 
-      path: filePath 
-    };
-  });
+  let formFiles = [{
+    name: path.posix.join(prefix, source),
+    path: sourcePath,
+  }];
 
   return upload(formFiles, {
     platform: platform,

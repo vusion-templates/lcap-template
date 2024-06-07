@@ -1,1 +1,0 @@
-# lcap mobile template

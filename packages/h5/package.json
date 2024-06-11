@@ -8,10 +8,8 @@
     "deploy": "node ./scripts/deploy.js"
   },
   "keywords": [
-    "vue",
-    "admin",
-    "cloud-ui",
-    "template"
+    "lcap",
+    "lcap-template"
   ],
   "files": [
     "source",

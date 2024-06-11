@@ -11,14 +11,16 @@ const pkg = require(path.resolve(root, './package.json'));
 
 const publicPath = '/';
 
+const library = 'cloudAdminDesigner';
+
 module.exports = {
     devtool: 'source-map',
     entry: path.join(root, './src/init.js'),
     output: {
         publicPath,
-        filename: 'cloudAdminDesigner.umd.min.js',
+        filename: `${library}.umd.min.js`,
         path: path.resolve(root, 'dist'),
-        library: 'cloudAdminDesigner',
+        library,
         libraryExport: 'default',
         libraryTarget: 'umd',
         umdNamedDefine: true,
@@ -70,7 +72,7 @@ module.exports = {
     plugins: [
         new VueLoaderPlugin(),
         new MiniCssExtractPlugin({
-            filename: 'cloudAdminDesigner.css',
+            filename: `${library}.css`,
         }),
         new webpack.ProgressPlugin(),
         new CleanWebpackPlugin(),

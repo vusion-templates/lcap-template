@@ -68,10 +68,13 @@ const init = (appConfig, platformConfig, routes, metaData) => {
         // 设置当前语言的翻译信息
         window.Vue.prototype.$vantLang = locale;
 
-        window.Vue.prototype.$vantMessages = {
-            ...window.Vue.prototype.$vantMessages,
-            ...(messages || {}),
-        };
+        Object.keys(messages).forEach((key) => {
+            if (Vue.prototype.$vantMessages[key]) {
+                Object.assign(Vue.prototype.$vantMessages[key], messages[key]);
+            } else {
+                Vue.prototype.$vantMessages[key] = messages[key];
+            }
+        });
     }
     const i18nInfo = appConfig.i18nInfo;
     const i18n = new VueI18n({

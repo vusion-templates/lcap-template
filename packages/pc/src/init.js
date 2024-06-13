@@ -74,10 +74,13 @@ const init = (appConfig, platformConfig, routes, metaData) => {
         // 设置当前语言的翻译信息
         window.Vue.prototype.$CloudUILang = locale;
 
-        window.Vue.prototype.$CloudUIMessages = {
-            ...window.Vue.prototype.$CloudUIMessages,
-            ...(messages || {}),
-        };
+        Object.keys(messages).forEach((key) => {
+            if (Vue.prototype.$CloudUIMessages[key]) {
+                Object.assign(Vue.prototype.$CloudUIMessages[key], messages[key]);
+            } else {
+                Vue.prototype.$CloudUIMessages[key] = messages[key];
+            }
+        });
     }
     const i18nInfo = appConfig.i18nInfo;
     const i18n = new VueI18n({

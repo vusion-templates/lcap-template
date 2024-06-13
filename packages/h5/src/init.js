@@ -36,6 +36,12 @@ const evalWrap = function (metaData, fnName) {
     metaData && fnName && metaData?.frontendEvents[fnName] && eval(metaData.frontendEvents[fnName]);
 };
 
+Vue.prototype.$sleep = function () {
+    return new Promise((resolve) => {
+        this.$nextTick(resolve);
+    });
+};
+
 window.appVue = Vue;
 window.Vue = Vue;
 window.LcapInstall = install;

@@ -30,6 +30,12 @@ import App from './App.vue';
 
 import '@/assets/css/index.css';
 
+Vue.prototype.$sleep = function () {
+    return new Promise((resolve) => {
+        this.$nextTick(resolve);
+    });
+};
+
 window.appVue = Vue;
 window.Vue = Vue;
 window.LcapInstall = install;

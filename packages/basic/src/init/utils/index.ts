@@ -569,7 +569,11 @@ export const utils = {
   },
   MapGet(map, key) {
     if (isObject(map)) {
-      return map[key] || null;
+      if (!map.hasOwnProperty(key)) {
+        return null
+      }
+      const value = map[key];
+      return typeof value === "undefined" ? null : value;
     }
   },
   MapPut(map, key, value) {

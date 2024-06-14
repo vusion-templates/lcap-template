@@ -1,8 +1,3 @@
-// import Vue from 'vue';
-// import SToast from '@/components/s-toast.vue';
-// const Ctr = Vue.component('s-toast', SToast);
-// export const instance = new Ctr();
-
 import Config from '../../config';
 
 const getErrMessage = (err) => err.msg || err.Message || '系统错误，请查看日志！';

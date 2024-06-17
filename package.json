@@ -1,6 +1,7 @@
 {
   "name": "root",
   "description": "低代码应用模板",
+  "version": "1.0.1",
   "scripts": {
     "change:version": "lerna version --force-publish --no-push",
     "build": "lerna run build:designer",

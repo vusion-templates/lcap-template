@@ -644,13 +644,7 @@ export const utils = {
   },
   MapKeys(map) {
     if (isObject(map)) {
-      return Object.keys(map).filter(key => {
-        // 过滤掉__toggle https://projectmanage.netease-official.lcap.163yun.com/dashboard/BugDetail?id=2866738277528064
-        if (key === "__toggle") {
-          return false;
-        }
-        return true;
-      }); 
+      return Object.keys(map);
     }
     return 0;
   },

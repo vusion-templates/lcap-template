@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { cookie, storage, authService, genSortedTypeKey, getBasePath, genInitFromSchema } from '@lcap/core-template';
 import { navigateToUserInfoPage, navigateToUserPhonePage, navigateScanCodePage, navigateLocationPage } from '../common/wx';
 

@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { setConfig } from '@lcap/core-template';
 
 import { getFrontendVariables, setGlobal } from './plugins/dataTypes';
@@ -12,7 +13,8 @@ setConfig({
             (() => {
                 console.warn('请在Vue.prototype上挂载$toast.show方法');
             }),
-        error: Vue.prototype?.$toast?.error ||
+        error:
+            Vue.prototype?.$toast?.error ||
             (() => {
                 console.warn('请在Vue.prototype上挂载$toast.error方法');
             }),

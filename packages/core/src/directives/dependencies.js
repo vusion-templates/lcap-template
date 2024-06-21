@@ -15,12 +15,12 @@ function dependencies(el, binding, vnode) {
 
   const vueIns = vnode.componentInstance;
   const action = binding.modifiers['reload'] ? 'reload' : '';
-  if (!action || typeof vueIns[action] !== 'function') {
+  if (!action || !vueIns || typeof vueIns[action] !== 'function') {
     return;
   }
 
   const { value, oldValue } = binding;
-  if (!Array.isArray(value) || !Array.isArray(oldValue) || isShalldowEqualArray(value, oldValue)) {
+  if (!Array.isArray(value) || value.length === 0 || !Array.isArray(oldValue) || isShalldowEqualArray(value, oldValue)) {
     return;
   }
 

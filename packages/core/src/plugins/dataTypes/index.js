@@ -14,7 +14,6 @@ import authService from '../auth/authService';
 window.CryptoJS = CryptoJS;
 const aesKey = ";Z#^$;8+yhO!AhGo";
 const databaseLoadFunMap = new Map();
-const dataSourceCallbackMap = new Map();
 
 export const genInitFromSchema = (typeKey, defaultValue, level) => genInitData(typeKey, defaultValue, level);
 
@@ -226,19 +225,6 @@ export default {
           }
           return loadMap.get(cacheKey);
         };
-      },
-      useDataSourceCallback() {
-        return function (fn) {
-          let map = dataSourceCallbackMap.get(fn);
-          const key = $g.stringifyCurrentOnce([fn]);
-          if (!map) {
-            map = new Map();
-            map.set(key, (params) => {
-              return fn(params);
-            })
-            dataSourceCallbackMap.set(fn, map);
-          }
-        }
       },
       // 自定义的解决循环引用的函数
       stringifyCurrentOnce(array) {

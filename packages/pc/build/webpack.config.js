@@ -14,6 +14,7 @@ const publicPath = '/';
 const library = 'cloudAdminDesigner';
 
 module.exports = {
+    mode: 'production',
     devtool: 'source-map',
     entry: path.join(root, './src/init.js'),
     output: {

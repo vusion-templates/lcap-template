@@ -20,11 +20,12 @@ module.exports = {
         publicPath,
         filename: `${library}.umd.min.js`,
         path: path.resolve(root, 'dist'),
-        library,
-        libraryExport: 'default',
-        libraryTarget: 'umd',
-        umdNamedDefine: true,
-        jsonpFunction: 'webpackJsonp' + pkg.name,
+        library: {
+            name: library,
+            type: 'umd',
+            umdNamedDefine: true,
+            export: 'default',
+        },
     },
     resolve: {
         extensions: ['.vue', '.js', '.json'],

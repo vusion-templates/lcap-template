@@ -135,19 +135,19 @@ export default {
           function showError(error) {
             switch (error.code) {
               case error.PERMISSION_DENIED:
-                Config.Toast.show("用户禁止获取地理定位");
+                Config.Toast.error("用户禁止获取地理定位");
                 rej({ code: error.code, msg: "用户禁止获取地理定位" });
                 break;
               case error.POSITION_UNAVAILABLE:
-                Config.Toast.show("地理定位信息无法获取");
+                Config.Toast.error("地理定位信息无法获取");
                 rej({ code: error.code, msg: "地理定位信息无法获取" });
                 break;
               case error.TIMEOUT:
-                Config.Toast.show("地理定位信息获取超时");
+                Config.Toast.error("地理定位信息获取超时");
                 rej({ code: error.code, msg: "地理定位信息获取超时" });
                 break;
               case error.UNKNOWN_ERROR:
-                Config.Toast.show("未知错误");
+                Config.Toast.error("未知错误");
                 rej({ code: error.code, msg: "未知错误" });
                 break;
             }
@@ -155,7 +155,7 @@ export default {
           if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(showPosition, showError);
           } else {
-            Config.Toast.show("当前系统不支持地理定位");
+            Config.Toast.error("当前系统不支持地理定位");
             rej({ code: 666, msg: "当前系统不支持地理定位" });
           }
         });

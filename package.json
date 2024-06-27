@@ -2,11 +2,11 @@
   "name": "root",
   "private": true,
   "description": "低代码应用模板",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "scripts": {
     "change:version": "node ./scripts/version",
-    "build": "pnpm --filter \"./packages/*\" build",
-    "deploy": "pnpm --filter \"./packages/*\" deploy"
+    "build": "pnpm --filter \"./packages/*\" run build",
+    "deploy": "pnpm --filter \"./packages/*\" run deploy"
   },
   "keywords": [],
   "author": "",

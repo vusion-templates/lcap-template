@@ -7,7 +7,6 @@ module.exports = {
     ],
     preset: 'ts-jest',
     transform: {
-        '^.+\\.vue$': 'vue-jest',
         '^.+\\.(js|jsx)$': 'babel-jest',
         '^.+\\.(ts|tsx)?$': 'ts-jest',
         '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
@@ -16,8 +15,6 @@ module.exports = {
     ],
     moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/src/$1',
-        '^cloud-ui.vusion.css$': '<rootDir>/node_modules/cloud-ui.vusion/dist-raw/index.css',
-        '^cloud-ui.vusion$': '<rootDir>/node_modules/cloud-ui.vusion/dist-raw/index.js',
     },
     snapshotSerializers: [
         'jest-serializer-vue',

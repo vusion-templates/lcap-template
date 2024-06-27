@@ -137,12 +137,52 @@ const cyrb53 = (str, seed = 0) => {
 
 export const utils = {
   Vue: undefined,
-  EnumValueToText(value, enumTypeAnnotation) {
-    const { typeName, typeNamespace } = enumTypeAnnotation || {};
-    if (typeName && typeNamespace) {
-      return toString(typeNamespace + "." + typeName, value) || "";
+  // EnumItemToText(value, enumTypeAnnotation) {
+  //   const { typeName, typeNamespace } = enumTypeAnnotation || {};
+  //   if (typeName && typeNamespace) {
+  //     return toString(typeNamespace + "." + typeName, value) || "";
+  //   }
+  //   return "";
+  // },
+  // EnumItemToStructure(value, enumTypeAnnotation) {
+  //   const { typeName, typeNamespace } = enumTypeAnnotation || {};
+  //   if (typeName && typeNamespace) {
+  //     let isToNumber = false;
+  //     if (typeName === 'Long' && typeNamespace === 'nasl.core') {
+  //         isToNumber = true
+  //     }
+  //     return {
+  //       text: toString(typeNamespace + "." + typeName, value),
+  //       value: isToNumber ? +value : value,
+  //     }
+  //   }
+  //   return {
+  //     text: "",
+  //     value: ""
+  //   }
+  // },
+  EnumItemToText(typeKey, value) {
+    if (typeKey) {
+      return toString(typeKey, value) || "";
     }
     return "";
+  },
+  EnumItemToStructure(typeKey, value) {
+    if (typeKey) {
+      const { typeName, typeNamespace } = typeDefinitionMap[typeKey] || {};
+      let isToNumber = false;
+      if (typeName === 'Long' && typeNamespace === 'nasl.core') {
+          isToNumber = true
+      }
+      return {
+        text: toString(typeKey, value),
+        value: isToNumber ? +value : value,
+      }
+    }
+    return {
+      text: "",
+      value: ""
+    }
   },
   ToEnumItem(value, enumTypeAnnotation) {
     const { typeName, typeNamespace } = enumTypeAnnotation || {};
@@ -1447,7 +1487,13 @@ export const utils = {
       TowardsInfinity: Decimal.ROUND_UP,
       HalfUp: Decimal.ROUND_HALF_UP,
     };
-    return value && new Decimal(value).toFixed(0, modeMap[mode]);
+
+    if (!value) {
+      console.warn("Round 函数的 value 参数不能为空:", value);
+      return 0;
+    }
+
+    return Number(new Decimal(value).toFixed(0, modeMap[mode]));
   },
   /**
    * 空值判断（与）

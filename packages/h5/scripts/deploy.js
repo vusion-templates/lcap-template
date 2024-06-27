@@ -19,7 +19,7 @@ const config = {
 Promise.all([
     deploy({
         ...config,
-        dest: 'public'
+        dest: 'dist'
     }),
     deployTgz({
         ...config,

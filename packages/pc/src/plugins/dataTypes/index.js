@@ -24,12 +24,12 @@ export function getFrontendVariables(options) {
 export function setGlobal($global) {
     return Object.assign($global, {
         logout() {
+            // FIXME 从全局变量中获取
             Vue.prototype
                 .$confirm({
-                    content: '确定退出登录吗？',
                     title: '提示',
-                    okButton: '确定',
-                    cancelButton: '取消',
+                    content: '确定退出登录吗？',
+                    message: '确定退出登录吗?',
                 })
                 .then(() => Vue.prototype.$auth.logout())
                 .then(() => {

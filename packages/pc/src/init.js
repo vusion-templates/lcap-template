@@ -1,12 +1,13 @@
 import Vue from 'vue';
-import { installOptions, installDirectives, installFilters, installComponents } from '@vusion/utils';
-import * as CloudUI from 'cloud-ui.vusion';
+import { installOptions, installFilters, installComponents, installDirectives, install } from '@vusion/utils';
+
 import * as Components from '@/components';
 
 import './setConfig';
 
 import {
     filters,
+    directives,
     AuthPlugin,
     DataTypesPlugin,
     LogicsPlugin,
@@ -27,24 +28,26 @@ import { getTitleGuard } from './router';
 import VueI18n from 'vue-i18n';
 import App from './App.vue';
 
-import 'cloud-ui.vusion.css';
 import '@/assets/css/index.css';
+
+Vue.prototype.$sleep = function () {
+    return new Promise((resolve) => {
+        this.$nextTick(resolve);
+    });
+};
 
 window.appVue = Vue;
 window.Vue = Vue;
-window.CloudUI = CloudUI;
+window.LcapInstall = install;
+
+installOptions(Vue);
+installDirectives(Vue, directives);
+
 const fnList = ['afterRouter'];
 const evalWrap = function (metaData, fnName) {
     // eslint-disable-next-line no-eval
     metaData && fnName && metaData?.frontendEvents[fnName] && eval(metaData.frontendEvents[fnName]);
 };
-
-// 预览沙箱不需要调用init来初始化，但是需要使用到CloudUI和Vant组件，所以放在外边
-installOptions(Vue);
-installDirectives(Vue, CloudUI.directives);
-installComponents(Vue, CloudUI);
-Vue.mixin(CloudUI.MEmitter);
-Vue.mixin(CloudUI.MPubSub);
 
 // 需要兼容老应用的制品，因此新版本入口函数参数不做改变
 const init = (appConfig, platformConfig, routes, metaData) => {
@@ -77,10 +80,13 @@ const init = (appConfig, platformConfig, routes, metaData) => {
         // 设置当前语言的翻译信息
         window.Vue.prototype.$CloudUILang = locale;
 
-        window.Vue.prototype.$CloudUIMessages = {
-            ...window.Vue.prototype.$CloudUIMessages,
-            ...(messages || {}),
-        };
+        Object.keys(messages).forEach((key) => {
+            if (Vue.prototype.$CloudUIMessages[key]) {
+                Object.assign(Vue.prototype.$CloudUIMessages[key], messages[key]);
+            } else {
+                Vue.prototype.$CloudUIMessages[key] = messages[key];
+            }
+        });
     }
     const i18nInfo = appConfig.i18nInfo;
     const i18n = new VueI18n({
@@ -114,7 +120,7 @@ const init = (appConfig, platformConfig, routes, metaData) => {
         }
     };
     if (!window?.$toast) {
-        window.$toast =  window.Vue.prototype.$toast;
+        window.$toast = window.Vue.prototype.$toast;
     }
     if (window?.rendered) {
         window.rendered();

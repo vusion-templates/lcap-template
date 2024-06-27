@@ -122,12 +122,52 @@ function isArrayInBounds(arr, index) {
 }
 
 export const utils = {
-  EnumValueToText(value, enumTypeAnnotation) {
-    const { typeName, typeNamespace } = enumTypeAnnotation || {};
-    if (typeName && typeNamespace) {
-      return toString(typeNamespace + "." + typeName, value) || "";
+  // EnumItemToText(value, enumTypeAnnotation) {
+  //   const { typeName, typeNamespace } = enumTypeAnnotation || {};
+  //   if (typeName && typeNamespace) {
+  //     return toString(typeNamespace + "." + typeName, value) || "";
+  //   }
+  //   return "";
+  // },
+  // EnumItemToStructure(value, enumTypeAnnotation) {
+  //   const { typeName, typeNamespace } = enumTypeAnnotation || {};
+  //   if (typeName && typeNamespace) {
+  //     let isToNumber = false;
+  //     if (typeName === 'Long' && typeNamespace === 'nasl.core') {
+  //         isToNumber = true
+  //     }
+  //     return {
+  //       text: toString(typeNamespace + "." + typeName, value),
+  //       value: isToNumber ? +value : value,
+  //     }
+  //   }
+  //   return {
+  //     text: "",
+  //     value: ""
+  //   }
+  // },
+  EnumItemToText(typeKey, value) {
+    if (typeKey) {
+      return toString(typeKey, value) || "";
     }
     return "";
+  },
+  EnumItemToStructure(typeKey, value) {
+    if (typeKey) {
+      const { typeName, typeNamespace } = typeDefinitionMap[typeKey] || {};
+      let isToNumber = false;
+      if (typeName === 'Long' && typeNamespace === 'nasl.core') {
+          isToNumber = true
+      }
+      return {
+        text: toString(typeKey, value),
+        value: isToNumber ? +value : value,
+      }
+    }
+    return {
+      text: "",
+      value: ""
+    }
   },
   ToEnumItem(value, enumTypeAnnotation) {
     const { typeName, typeNamespace } = enumTypeAnnotation || {};
@@ -569,7 +609,11 @@ export const utils = {
   },
   MapGet(map, key) {
     if (isObject(map)) {
-      return map[key] || null;
+      if (!map.hasOwnProperty(key)) {
+        return null
+      }
+      const value = map[key];
+      return typeof value === "undefined" ? null : value;
     }
   },
   MapPut(map, key, value) {

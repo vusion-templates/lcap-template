@@ -11,7 +11,6 @@ import authService from "../auth/authService";
 
 import { navigateToUserInfoPage } from "./wx";
 
-
 window.CryptoJS = CryptoJS;
 
 export function add(x, y) {
@@ -227,14 +226,14 @@ export function compareKeyboardInput(event, target) {
 
 export async function downloadFile(url, fileName) {
   await initIoService()
-      .downloadFiles({
-          body: {
-              urls: [url],
-              fileName,
-          },
-      })
-      .then((res) => Promise.resolve(res))
-      .catch((err) => Promise.resolve(err));
+    .downloadFiles({
+      body: {
+        urls: [url],
+        fileName,
+      },
+    })
+    .then((res) => Promise.resolve(res))
+    .catch((err) => Promise.resolve(err));
 }
 
 export async function downloadFiles(urls, fileName) {
@@ -284,4 +283,16 @@ export function getWeChatNickName() {
 
 export function navigateToUserInfo() {
   return navigateToUserInfoPage();
+}
+
+export function setI18nLocale(newLocale) {
+  // 修改local中的存储的语言标识
+  localStorage.i18nLocale = newLocale;
+  // 重新加载页面
+  window.location.reload();
+}
+
+export function getI18nList() {
+  // 在ide中拼接好
+  return window.$global.i18nInfo.I18nList || [];
 }

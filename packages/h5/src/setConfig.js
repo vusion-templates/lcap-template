@@ -1,36 +1,28 @@
+import Vue from 'vue';
 import { setConfig } from '@lcap/core-template';
-import { VanToast as Toast } from '@lcap/mobile-ui';
 
 import { getFrontendVariables, setGlobal } from './plugins/dataTypes';
 import { destination } from './plugins/router';
 import { createRouter } from './router';
 
-if (!window?.$toast) {
-    // eslint-disable-next-line new-cap
-    window.$toast = {
-        show: (message) => Toast({ message, position: top }),
-        error: (message) => Toast.fail({ message, position: top }),
-    };
-}
-
 // 设置core config
 setConfig({
+    Toast: {
+        show:
+            Vue.prototype?.$toast?.show ||
+            (() => {
+                console.warn('请在Vue.prototype上挂载$toast.show方法');
+            }),
+        error:
+            Vue.prototype?.$toast?.error ||
+            (() => {
+                console.warn('请在Vue.prototype上挂载$toast.error方法');
+            }),
+    },
     setGlobal,
     getFrontendVariables,
     destination,
     createRouter,
-    Toast: {
-        show: (message, stack) =>
-            Toast({
-                message,
-                position: 'top',
-            }),
-        error: (message, stack) =>
-            Toast.fail({
-                message,
-                position: 'top',
-            }),
-    },
     utils: {
         axiosInterceptors: [
             {

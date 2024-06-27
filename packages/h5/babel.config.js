@@ -1,15 +1,5 @@
 module.exports = {
     presets: [
-        // jsx in vue needed
-        ['@vue/app', {
-            modules: 'commonjs',
-            jsx: {
-                injectH: false,
-            },
-            polyfills: [
-                'es.symbol',
-            ],
-        }],
+        ['@babel/preset-env'],
     ],
-    plugins: ['@babel/plugin-transform-strict-mode'],
 };

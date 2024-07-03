@@ -1336,35 +1336,54 @@ export const utils = {
         value === null
       ) {
         return false;
-      } else if (
+      } 
+      if (
         ["nasl.core.Boolean"].includes(typeKey) ||
         value === true ||
         value === false
       ) {
         return true;
-      } else if (["nasl.core.DateTime"].includes(typeKey)) {
+      } 
+      if (["nasl.core.DateTime"].includes(typeKey)) {
         return !!value;
-      } else if (isDefString(typeKey)) {
-        return value.trim() !== "";
-      } else if (isDefNumber(typeKey)) {
-        return !isNaN(value);
-      } else if (isDefList(typeDefinition)) {
-        return value && value.length > 0;
-      } else if (isDefMap(typeDefinition)) {
+      } 
+      if (isDefString(typeKey)) {
+        return String(value).trim() !== "";
+      } 
+      if (isDefNumber(typeKey)) {
+        if ([''].includes(value)) {
+          return false;
+        }
+        return !isNaN(Number(value));
+      } 
+      if (isDefList(typeDefinition)) {
+        return Array.isArray(value) && value.length > 0;
+      } 
+      if (isDefMap(typeDefinition)) {
         return Object.keys(value).length > 0;
-      } else if (typeof value === "string") {
-        return value.trim() !== "";
-      } else if (typeof value === "number") {
-        return !isNaN(value);
-      } else if (Array.isArray(value)) {
-        return value && value.length > 0;
-      } else {
-        // structure/entity
-        return !Object.keys(value).every((key) => {
-          const v = value[key];
-          return v === null || v === undefined;
-        });
       }
+
+      if (value === null || value === undefined) {
+        return false;
+      }
+
+      if (typeof value === "string") {
+        return value.trim() !== "";
+      }
+
+      if (typeof value === "number") {
+        return !isNaN(value);
+      }
+
+      if (Array.isArray(value)) {
+        return value && value.length > 0;
+      } 
+
+      // structure/entity
+      return !Object.keys(value).every((key) => {
+        const v = value[key];
+        return v === null || v === undefined;
+      });
     };
 
     let isValid = true;

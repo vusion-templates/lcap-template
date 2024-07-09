@@ -1043,6 +1043,33 @@ export const utils = {
     }
     return dateFormatter.format(naslDateToLocalDate(value), formatter);
   },
+  FormatTime(value, formatter) {
+    if (!value) {
+      return "-";
+    }
+    // 使用正则表达式提取时、分、秒
+    const parts = value.match(/(\d{1,2}):(\d{1,2}):(\d{1,2})/);
+
+    // 如果没有匹配到三个部分，则返回原始字符串
+    if (!parts) {
+      return value;
+    }
+
+    // 提取时、分、秒，并将它们转换成整数
+    let hours = parseInt(parts[1], 10);
+    let minutes = parseInt(parts[2], 10);
+    let seconds = parseInt(parts[3], 10);
+
+    // 根据需要格式化时、分、秒
+    let formattedTime = formatter
+      .replace('HH', hours.toString().padStart(2, '0'))
+      .replace('H', hours.toString())
+      .replace('mm', minutes.toString().padStart(2, '0'))
+      .replace('m', minutes.toString())
+      .replace('ss', seconds.toString().padStart(2, '0'))
+      .replace('s', seconds.toString());
+    return formattedTime;
+  },
   FormatDateTime(value, formatter, tz) {
     if (!value) {
       return "-";
@@ -1155,15 +1182,22 @@ export const utils = {
   },
   /**
    * 数字格式化
+   * @param {value} 数字
    * @param {digits} 小数点保留个数
+   * @param {omit} 是否省略小数点后无效的0
    * @param {showGroup} 是否显示千位分割（默认逗号分隔）
+   * @param {fix} 前缀（prefix）、后缀（suffix）
+   * @param {unit} 单位
    */
-  FormatNumber(value, digits, showGroup) {
+  FormatNumber(value, digits, omit, showGroup, fix, unit) {
     if (!value) return value;
     if (parseFloat(value) === 0) return "0";
     if (isNaN(parseFloat(value)) || isNaN(parseInt(digits))) return;
     if (digits !== undefined) {
       value = Number(value).toFixed(parseInt(digits));
+      if (omit) {
+        value = parseFloat(value) + ''; // 转字符串
+      }
     }
     if (showGroup) {
       const temp = ("" + value).split(".");
@@ -1180,6 +1214,19 @@ export const utils = {
       if (temp[0][0] === "-") left = "-" + left;
       if (right) left = left + "." + right;
       value = left;
+    }
+    if (fix && unit) {
+      switch (fix) {
+        case "prefix":
+          value = unit + value;
+          break;
+        case "suffix":
+          value = value + unit;
+          break;
+        default:
+          value = value + unit;
+          break;
+      }
     }
     return "" + value;
   },
@@ -1359,7 +1406,13 @@ export const utils = {
       TowardsInfinity: Decimal.ROUND_UP,
       HalfUp: Decimal.ROUND_HALF_UP,
     };
-    return value && new Decimal(value).toFixed(0, modeMap[mode]);
+
+    if (!value) {
+      console.warn("Round 函数的 value 参数不能为空:", value);
+      return 0;
+    }
+
+    return Number(new Decimal(value).toFixed(0, modeMap[mode]));
   },
   /**
    * 空值判断（与）

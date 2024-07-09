@@ -1406,7 +1406,13 @@ export const utils = {
       TowardsInfinity: Decimal.ROUND_UP,
       HalfUp: Decimal.ROUND_HALF_UP,
     };
-    return value && new Decimal(value).toFixed(0, modeMap[mode]);
+
+    if (!value) {
+      console.warn("Round 函数的 value 参数不能为空:", value);
+      return 0;
+    }
+
+    return Number(new Decimal(value).toFixed(0, modeMap[mode]));
   },
   /**
    * 空值判断（与）

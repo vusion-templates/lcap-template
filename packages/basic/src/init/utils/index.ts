@@ -1115,15 +1115,22 @@ export const utils = {
   },
   /**
    * 数字格式化
+   * @param {value} 数字
    * @param {digits} 小数点保留个数
+   * @param {omit} 是否省略小数点后无效的0
    * @param {showGroup} 是否显示千位分割（默认逗号分隔）
+   * @param {fix} 前缀（prefix）、后缀（suffix）
+   * @param {unit} 单位
    */
-  FormatNumber(value, digits, showGroup) {
+  FormatNumber(value, digits, omit, showGroup, fix, unit) {
     if (!value) return value;
     if (parseFloat(value) === 0) return "0";
     if (isNaN(parseFloat(value)) || isNaN(parseInt(digits))) return;
     if (digits !== undefined) {
       value = Number(value).toFixed(parseInt(digits));
+      if (omit) {
+        value = parseFloat(value) + ''; // 转字符串
+      }
     }
     if (showGroup) {
       const temp = ("" + value).split(".");
@@ -1140,6 +1147,19 @@ export const utils = {
       if (temp[0][0] === "-") left = "-" + left;
       if (right) left = left + "." + right;
       value = left;
+    }
+    if (fix && unit) {
+      switch (fix) {
+        case "prefix":
+          value = unit + value;
+          break;
+        case "suffix":
+          value = value + unit;
+          break;
+        default:
+          value = value + unit;
+          break;
+      }
     }
     return "" + value;
   },

@@ -1003,6 +1003,33 @@ export const utils = {
     }
     return dateFormatter.format(naslDateToLocalDate(value), formatter);
   },
+  FormatTime(value, formatter) {
+    if (!value) {
+      return "-";
+    }
+    // 使用正则表达式提取时、分、秒
+    const parts = value.match(/(\d{1,2}):(\d{1,2}):(\d{1,2})/);
+
+    // 如果没有匹配到三个部分，则返回原始字符串
+    if (!parts) {
+      return value;
+    }
+
+    // 提取时、分、秒，并将它们转换成整数
+    let hours = parseInt(parts[1], 10);
+    let minutes = parseInt(parts[2], 10);
+    let seconds = parseInt(parts[3], 10);
+
+    // 根据需要格式化时、分、秒
+    let formattedTime = formatter
+      .replace('HH', hours.toString().padStart(2, '0'))
+      .replace('H', hours.toString())
+      .replace('mm', minutes.toString().padStart(2, '0'))
+      .replace('m', minutes.toString())
+      .replace('ss', seconds.toString().padStart(2, '0'))
+      .replace('s', seconds.toString());
+    return formattedTime;
+  },
   FormatDateTime(value, formatter, tz) {
     if (!value) {
       return "-";

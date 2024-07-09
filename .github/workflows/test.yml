@@ -8,24 +8,16 @@ on:
     branches: [ "main", "test"]
 
 jobs:
-  install:
+  test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # - name: Set mode to merge
-      #   run: git config pull.rebase false
-
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 18
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '18'
 
       - name: Install pnpm
         run: npm install -g pnpm

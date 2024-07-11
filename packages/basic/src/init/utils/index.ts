@@ -1231,6 +1231,41 @@ export const utils = {
     return "" + value;
   },
   /**
+   * 百分数格式化
+   * @param {digits} 小数点保留个数
+   * @param {omit} 是否隐藏末尾零
+   * @param {showGroup} 是否显示千位分割（默认逗号分隔）
+   */
+  FormatPercent(value, digits, omit, showGroup) {
+    if (!value) return value;
+    if (parseFloat(value) === 0) return "0";
+    if (isNaN(parseFloat(value)) || isNaN(parseInt(digits))) return;
+    value = value * 100;
+    if (digits !== undefined) {
+      value = Number(value).toFixed(parseInt(digits));
+      if (omit) {
+        value = parseFloat(value) + ""; // 转字符串
+      }
+    }
+    if (showGroup) {
+      const temp = ("" + value).split(".");
+      const right = temp[1];
+      let left = temp[0]
+        .split("")
+        .reverse()
+        .join("")
+        .match(/(\d{1,3})/g)
+        .join(",")
+        .split("")
+        .reverse()
+        .join("");
+      if (temp[0][0] === "-") left = "-" + left;
+      if (right) left = left + "." + right;
+      value = left;
+    }
+    return value + "%";
+  },
+  /**
    * 时间差
    * @param {dateTime1} 时间
    * @param {dateTime2} 时间

@@ -1136,12 +1136,41 @@ export const utils = {
   /**
    * 将内容置空，array 置为 []; object 沿用 ClearObject 逻辑; 其他置为 undefined
    */
-  Clear(obj) {
+  Clear(obj,mode,objType) {
+    function clearDeep(obj, seen = new Map()) {
+      if (seen.has(obj)) {
+        return seen.get(obj);
+      }
+
+      seen.set(obj, null);
+
+      for (let key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          if (typeof obj[key] === 'object' && obj[key] !== null) {
+            obj[key] = clearDeep(obj[key], seen);
+          } else if (Array.isArray(obj[key]) || typeof obj[key] === 'number' || typeof obj[key] === 'string' || typeof obj[key] === 'boolean') {
+            obj[key] = null;
+          }
+        }
+      }
+
+      return obj;
+    }
+    let isMap =  objType && ['nasl.collection.Map','nasl.collection.List'].find(t=>objType?.includes(t))
+    if(mode && mode === 'deep' && !isMap){
+      return clearDeep(obj)
+    }
     if (Array.isArray(obj)) {
       obj.splice(0, obj.length);
     } else if (isObject(obj)) {
       for (const key in obj) {
-        if (obj.hasOwnProperty(key)) obj[key] = null;
+        if (obj.hasOwnProperty(key)){
+          if(isMap){
+            delete obj[key]
+          }else{
+            obj[key] = null;
+          }
+        }
       }
     } else {
       obj = undefined;
@@ -1510,29 +1539,29 @@ export const utils = {
         value === null
       ) {
         return false;
-      } 
+      }
       if (
         ["nasl.core.Boolean"].includes(typeKey) ||
         value === true ||
         value === false
       ) {
         return true;
-      } 
+      }
       if (["nasl.core.DateTime"].includes(typeKey)) {
         return !!value;
-      } 
+      }
       if (isDefString(typeKey)) {
         return String(value).trim() !== "";
-      } 
+      }
       if (isDefNumber(typeKey)) {
         if ([''].includes(value)) {
           return false;
         }
         return !isNaN(Number(value));
-      } 
+      }
       if (isDefList(typeDefinition)) {
         return Array.isArray(value) && value.length > 0;
-      } 
+      }
       if (isDefMap(typeDefinition)) {
         return Object.keys(value).length > 0;
       }
@@ -1551,7 +1580,7 @@ export const utils = {
 
       if (Array.isArray(value)) {
         return value && value.length > 0;
-      } 
+      }
 
       // structure/entity
       return !Object.keys(value).every((key) => {

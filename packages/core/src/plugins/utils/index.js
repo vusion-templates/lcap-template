@@ -252,9 +252,18 @@ export const utils = {
       return JSON.stringify(v);
     }
   },
-  Split(str, seperator) {
+  Split(str, separator, trail) {
     if (Object.prototype.toString.call(str) === "[object String]") {
-      return str.split(seperator);
+      const res = str.split(separator);
+      if (trail === true) {
+        return res;
+      } else {
+        const lastStr = res[res.length - 1];
+        if (lastStr.length === 0) {
+          res.pop();
+        }
+        return res;
+      }
     }
     return [];
   },
@@ -920,7 +929,8 @@ export const utils = {
       converter
     );
   },
-  GetDateCount(dateStr, metric, tz) {
+  // 兼容性策略：老应用升级到 3.10，保持老行为不变
+  GetDateCountOld(dateStr, metric, tz) {
     let date;
     if (this.isInputValidNaslDateTime(dateStr) && !tz) {
       // v3.3 老应用升级的场景，使用全局配置（全局配置一般默认是‘用户时区’）
@@ -961,6 +971,79 @@ export const utils = {
         switch (metric2) {
           case "month":
             return getWeekOfMonth(date);
+          case "quarter":
+            return getCurrentWeek(date) - getWeek(startOfQuarter(date)) + 1;
+          case "year":
+            return getCurrentWeek(date);
+        }
+      case "month":
+        switch (metric2) {
+          case "quarter":
+            return getMonth(date) + 1 - (getQuarter(date) - 1) * 3;
+          case "year":
+            return getMonth(date) + 1;
+        }
+      case "quarter":
+        return getQuarter(date);
+      default:
+        return null;
+    }
+  },
+  GetDateCount(dateStr, metric, tz) {
+    let date;
+    if (this.isInputValidNaslDateTime(dateStr) && !tz) {
+      // v3.3 老应用升级的场景，使用全局配置（全局配置一般默认是‘用户时区’）
+      // v3.4 新应用，使用默认时区时选项，tz 为空
+      date = convertJSDateInTargetTimeZone(dateStr, getAppTimezone("global")); // date : Date
+    } else if (this.isInputValidNaslDateTime(dateStr) && tz) {
+      // v3.4 新应用，指定了默认值之外的时区选项，必然有时区参数 tz
+      date = convertJSDateInTargetTimeZone(dateStr, tz);
+    } else {
+      // 针对 nasl.Date 类型
+      date = naslDateToLocalDate(dateStr);
+    }
+
+    const [metric1, metric2] = metric.split("-");
+    // 获取当年的最后一天的所在周会返回1，需要额外判断一下
+    function getCurrentWeek(value) {
+      let count = getWeek(value, { weekStartsOn: 1 });
+      if (value.getMonth() + 1 === 12 && count === 1) {
+        count = getWeek(addDays(value, -7), { weekStartsOn: 1 }) + 1;
+      }
+      return count;
+    }
+    switch (metric1) {
+      case "day":
+        switch (metric2) {
+          case "week":
+            return (
+              differenceInDays(date, startOfWeek(date, { weekStartsOn: 1 })) + 1
+            );
+          case "month":
+            return getDate(date);
+          case "quarter":
+            return differenceInDays(date, startOfQuarter(date)) + 1;
+          case "year":
+            return getDayOfYear(date);
+        }
+      case "week":
+        switch (metric2) {
+          case "month": {
+            // 构造 date 所在月的第一天
+            const startOfMonth = new Date(moment(date).startOf('month').format('YYYY-MM-DD hh:mm:ss'));
+            // 获取该天是周几
+            const wod = startOfMonth.getDay(); // 假设返回 1- 7，确认下
+            console.log(wod)
+
+            const daysOfFirstWeek = 7 - wod + 1;
+            if (date.getDate() <= daysOfFirstWeek) {
+              return 1;
+            } else {
+              console.log((date.getDate() - daysOfFirstWeek)/7)
+              console.log( Math.ceil((date.getDate() - daysOfFirstWeek) / 7))
+              return Math.ceil((date.getDate() - daysOfFirstWeek) / 7) + 1;
+            }
+          }
           case "quarter":
             return getCurrentWeek(date) - getWeek(startOfQuarter(date)) + 1;
           case "year":
@@ -1269,7 +1352,7 @@ export const utils = {
     if (parseFloat(value) === 0) return "0";
     if (isNaN(parseFloat(value)) || isNaN(parseInt(digits))) return;
     if (digits !== undefined) {
-      value = Number(value).toFixed(parseInt(digits));
+      value = new Decimal(value).toFixed(parseInt(digits));
       if (omit) {
         value = parseFloat(value) + ''; // 转字符串
       }

@@ -15,6 +15,7 @@ interface Window {
   allMockData: any;
   preRequest: any;
   postRequest: any;
+  axiosOptionsSetup: (options: any) => void;
 }
 
 // navigator对象

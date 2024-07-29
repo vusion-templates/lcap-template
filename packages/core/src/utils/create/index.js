@@ -151,7 +151,7 @@ const requester = function (requestInfo) {
     });
   }
 
-  const req = axios({
+  const options = {
     params: query,
     paramsSerializer,
     baseURL,
@@ -162,7 +162,14 @@ const requester = function (requestInfo) {
     withCredentials: !baseURL,
     xsrfCookieName: "csrfToken",
     xsrfHeaderName: "x-csrf-token",
-  });
+  }
+
+  if (typeof window.axiosOptionsSetup === 'function') {
+    window.axiosOptionsSetup(options);
+  }
+
+  const req = axios(options);
+
   return req;
 };
 const service = new Service(requester);

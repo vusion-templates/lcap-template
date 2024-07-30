@@ -1240,9 +1240,9 @@ export const utils = {
     if (parseFloat(value) === 0) return "0";
     if (isNaN(parseFloat(value)) || isNaN(parseInt(digits))) return;
     if (digits !== undefined) {
-      value = Number(value).toFixed(parseInt(digits));
+      value = new Decimal(value).toFixed(parseInt(digits));
       if (omit) {
-        value = parseFloat(value) + ''; // 转字符串
+        value = value.replace(/0+$/, '').replace(/\.$/, ''); // 转字符串
       }
     }
     if (showGroup) {

@@ -24,8 +24,8 @@ importers:
   packages/basic:
     dependencies:
       axios:
-        specifier: ^0.19.0
-        version: 0.19.2
+        specifier: ^0.21.2
+        version: 0.21.4
       crypto-js:
         specifier: ^4.1.1
         version: 4.2.0
@@ -76,8 +76,8 @@ importers:
   packages/core:
     dependencies:
       axios:
-        specifier: ^0.19.0
-        version: 0.19.2
+        specifier: ^0.21.2
+        version: 0.21.4
       crypto-js:
         specifier: ^4.1.1
         version: 4.2.0
@@ -1832,6 +1832,9 @@ packages:
   axios@0.19.2:
     resolution: {integrity: sha512-fjgm5MvRHLhx+osE2xoekY70AhARk3a6hkN+3Io1jc00jtquGvxYlKlsFUhmUET0V5te6CcZI7lcv2Ym61mjHA==}
     deprecated: Critical security vulnerability fixed in v0.21.1. For more information, see https://github.com/axios/axios/pull/3410
+
+  axios@0.21.4:
+    resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
 
   babel-jest@29.7.0:
     resolution: {integrity: sha512-BrvGY3xZSwEcCzKvKsCi2GgHqDqsYkOP4/by5xCgIwGXQxIEh+8ew3gmrE1y7XRR6LHZIj6yLYnUi/mm2KXKBg==}
@@ -7188,9 +7191,9 @@ snapshots:
 
   '@types/axios@0.14.0':
     dependencies:
-      axios: 0.19.2
+      axios: 0.21.4
     transitivePeerDependencies:
-      - supports-color
+      - debug
 
   '@types/babel__core@7.20.5':
     dependencies:
@@ -7767,6 +7770,12 @@ snapshots:
       follow-redirects: 1.5.10
     transitivePeerDependencies:
       - supports-color
+
+  axios@0.21.4:
+    dependencies:
+      follow-redirects: 1.15.3
+    transitivePeerDependencies:
+      - debug
 
   babel-jest@29.7.0(@babel/core@7.23.5):
     dependencies:
@@ -8412,6 +8421,7 @@ snapshots:
       update-notifier: 3.0.1
       vusion-api: 0.6.30
     transitivePeerDependencies:
+      - debug
       - supports-color
 
   cross-spawn@5.1.0:
@@ -10323,6 +10333,7 @@ snapshots:
       vusion-api: 0.6.30
       yaml: 1.10.2
     transitivePeerDependencies:
+      - debug
       - supports-color
 
   leven@3.1.0: {}
@@ -12142,6 +12153,7 @@ snapshots:
       vue-template-compiler: 2.6.12
       yaml: 1.10.2
     transitivePeerDependencies:
+      - debug
       - supports-color
 
   vusion-api@0.7.38:
@@ -12188,6 +12200,7 @@ snapshots:
       vue-template-compiler: 2.6.12
       yaml: 1.10.2
     transitivePeerDependencies:
+      - debug
       - supports-color
 
   w3c-xmlserializer@4.0.0:

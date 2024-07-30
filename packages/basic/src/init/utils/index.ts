@@ -1043,6 +1043,33 @@ export const utils = {
     }
     return dateFormatter.format(naslDateToLocalDate(value), formatter);
   },
+  FormatTime(value, formatter) {
+    if (!value) {
+      return "-";
+    }
+    // 使用正则表达式提取时、分、秒
+    const parts = value.match(/(\d{1,2}):(\d{1,2}):(\d{1,2})/);
+
+    // 如果没有匹配到三个部分，则返回原始字符串
+    if (!parts) {
+      return value;
+    }
+
+    // 提取时、分、秒，并将它们转换成整数
+    let hours = parseInt(parts[1], 10);
+    let minutes = parseInt(parts[2], 10);
+    let seconds = parseInt(parts[3], 10);
+
+    // 根据需要格式化时、分、秒
+    let formattedTime = formatter
+      .replace('HH', hours.toString().padStart(2, '0'))
+      .replace('H', hours.toString())
+      .replace('mm', minutes.toString().padStart(2, '0'))
+      .replace('m', minutes.toString())
+      .replace('ss', seconds.toString().padStart(2, '0'))
+      .replace('s', seconds.toString());
+    return formattedTime;
+  },
   FormatDateTime(value, formatter, tz) {
     if (!value) {
       return "-";
@@ -1062,12 +1089,41 @@ export const utils = {
   /**
    * 将内容置空，array 置为 []; object 沿用 ClearObject 逻辑; 其他置为 undefined
    */
-  Clear(obj) {
+  Clear(obj,mode,objType) {
+    function clearDeep(obj, seen = new Map()) {
+      if (seen.has(obj)) {
+        return seen.get(obj);
+      }
+
+      seen.set(obj, null);
+
+      for (let key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          if (typeof obj[key] === 'object' && obj[key] !== null) {
+            obj[key] = clearDeep(obj[key], seen);
+          } else if (Array.isArray(obj[key]) || typeof obj[key] === 'number' || typeof obj[key] === 'string' || typeof obj[key] === 'boolean') {
+            obj[key] = null;
+          }
+        }
+      }
+
+      return obj;
+    }
+    let isMap =  objType && ['nasl.collection.Map','nasl.collection.List'].find(t=>objType?.includes(t))
+    if(mode && mode === 'deep' && !isMap){
+      return clearDeep(obj)
+    }
     if (Array.isArray(obj)) {
       obj.splice(0, obj.length);
     } else if (isObject(obj)) {
       for (const key in obj) {
-        if (obj.hasOwnProperty(key)) obj[key] = null;
+        if (obj.hasOwnProperty(key)){
+          if(isMap){
+            delete obj[key]
+          }else{
+            obj[key] = null;
+          }
+        }
       }
     } else {
       obj = undefined;
@@ -1155,15 +1211,22 @@ export const utils = {
   },
   /**
    * 数字格式化
+   * @param {value} 数字
    * @param {digits} 小数点保留个数
+   * @param {omit} 是否省略小数点后无效的0
    * @param {showGroup} 是否显示千位分割（默认逗号分隔）
+   * @param {fix} 前缀（prefix）、后缀（suffix）
+   * @param {unit} 单位
    */
-  FormatNumber(value, digits, showGroup) {
+  FormatNumber(value, digits, omit, showGroup, fix, unit) {
     if (!value) return value;
     if (parseFloat(value) === 0) return "0";
     if (isNaN(parseFloat(value)) || isNaN(parseInt(digits))) return;
     if (digits !== undefined) {
       value = Number(value).toFixed(parseInt(digits));
+      if (omit) {
+        value = parseFloat(value) + ''; // 转字符串
+      }
     }
     if (showGroup) {
       const temp = ("" + value).split(".");
@@ -1181,7 +1244,55 @@ export const utils = {
       if (right) left = left + "." + right;
       value = left;
     }
+    if (fix && unit) {
+      switch (fix) {
+        case "prefix":
+          value = unit + value;
+          break;
+        case "suffix":
+          value = value + unit;
+          break;
+        default:
+          value = value + unit;
+          break;
+      }
+    }
     return "" + value;
+  },
+  /**
+   * 百分数格式化
+   * @param {digits} 小数点保留个数
+   * @param {omit} 是否隐藏末尾零
+   * @param {showGroup} 是否显示千位分割（默认逗号分隔）
+   */
+  FormatPercent(value, digits, omit, showGroup) {
+    if (!value) return value;
+    if (parseFloat(value) === 0) return "0";
+    if (isNaN(parseFloat(value)) || isNaN(parseInt(digits))) return;
+    value = value * 100;
+    if (digits !== undefined) {
+      value = Number(value).toFixed(parseInt(digits));
+      if (omit) {
+        value = parseFloat(value) + ""; // 转字符串
+      }
+    }
+    if (showGroup) {
+      const temp = ("" + value).split(".");
+      const right = temp[1];
+      let left = temp[0]
+        .split("")
+        .reverse()
+        .join("")
+        .match(/(\d{1,3})/g)
+        .join(",")
+        .split("")
+        .reverse()
+        .join("");
+      if (temp[0][0] === "-") left = "-" + left;
+      if (right) left = left + "." + right;
+      value = left;
+    }
+    return value + "%";
   },
   /**
    * 时间差
@@ -1359,7 +1470,13 @@ export const utils = {
       TowardsInfinity: Decimal.ROUND_UP,
       HalfUp: Decimal.ROUND_HALF_UP,
     };
-    return value && new Decimal(value).toFixed(0, modeMap[mode]);
+
+    if (!value) {
+      console.warn("Round 函数的 value 参数不能为空:", value);
+      return 0;
+    }
+
+    return Number(new Decimal(value).toFixed(0, modeMap[mode]));
   },
   /**
    * 空值判断（与）
@@ -1376,35 +1493,54 @@ export const utils = {
         value === null
       ) {
         return false;
-      } else if (
+      }
+      if (
         ["nasl.core.Boolean"].includes(typeKey) ||
         value === true ||
         value === false
       ) {
         return true;
-      } else if (["nasl.core.DateTime"].includes(typeKey)) {
-        return !!value;
-      } else if (isDefString(typeKey)) {
-        return value.trim() !== "";
-      } else if (isDefNumber(typeKey)) {
-        return !isNaN(value);
-      } else if (isDefList(typeDefinition)) {
-        return value && value.length > 0;
-      } else if (isDefMap(typeDefinition)) {
-        return Object.keys(value).length > 0;
-      } else if (typeof value === "string") {
-        return value.trim() !== "";
-      } else if (typeof value === "number") {
-        return !isNaN(value);
-      } else if (Array.isArray(value)) {
-        return value && value.length > 0;
-      } else {
-        // structure/entity
-        return !Object.keys(value).every((key) => {
-          const v = value[key];
-          return v === null || v === undefined;
-        });
       }
+      if (["nasl.core.DateTime"].includes(typeKey)) {
+        return !!value;
+      }
+      if (isDefString(typeKey)) {
+        return String(value).trim() !== "";
+      }
+      if (isDefNumber(typeKey)) {
+        if ([''].includes(value)) {
+          return false;
+        }
+        return !isNaN(Number(value));
+      }
+      if (isDefList(typeDefinition)) {
+        return Array.isArray(value) && value.length > 0;
+      }
+      if (isDefMap(typeDefinition)) {
+        return Object.keys(value).length > 0;
+      }
+
+      if (value === null || value === undefined) {
+        return false;
+      }
+
+      if (typeof value === "string") {
+        return value.trim() !== "";
+      }
+
+      if (typeof value === "number") {
+        return !isNaN(value);
+      }
+
+      if (Array.isArray(value)) {
+        return value && value.length > 0;
+      }
+
+      // structure/entity
+      return !Object.keys(value).every((key) => {
+        const v = value[key];
+        return v === null || v === undefined;
+      });
     };
 
     let isValid = true;

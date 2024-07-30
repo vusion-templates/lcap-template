@@ -7,6 +7,20 @@ describe('Convert 函数', () => {
     test('Convert 函数，string 到 string', () => {
 
     });
+
+    test('Convert 函数，string 到 Integer', () => {
+        expect(codewaveUtils.Convert('123.4', { typeKind: 'primitive', typeName: 'Long' }))
+            .toBe(123);
+        expect(codewaveUtils.Convert('1234.5', { typeKind: 'primitive', typeName: 'Long' }))
+            .toBe(1235);
+    });
+
+    test('Convert 函数，string 到 Decimal', () => {
+        expect(codewaveUtils.Convert('123.4', { typeKind: 'primitive', typeName: 'Decimal' }))
+            .toBe(123.4);
+        expect(codewaveUtils.Convert('1.01', { typeKind: 'primitive', typeName: 'Decimal' }))
+            .toBe(1.01);
+    });
 //     test('Convert 函数，string 到 DateTime', () => {
 //         const str = '2019-09-09 11:00:00';
 

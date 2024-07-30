@@ -1354,7 +1354,7 @@ export const utils = {
     if (digits !== undefined) {
       value = new Decimal(value).toFixed(parseInt(digits));
       if (omit) {
-        value = parseFloat(value) + ''; // 转字符串
+        value = value.replace(/0+$/, '').replace(/\.$/, ''); // 转字符串
       }
     }
     if (showGroup) {

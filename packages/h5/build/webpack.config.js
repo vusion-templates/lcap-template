@@ -14,17 +14,19 @@ const publicPath = '/';
 const library = 'cloudAdminDesigner';
 
 module.exports = {
+    mode: 'production',
     devtool: 'source-map',
     entry: path.join(root, './src/init.js'),
     output: {
         publicPath,
         filename: `${library}.umd.min.js`,
         path: path.resolve(root, 'dist'),
-        library,
-        libraryExport: 'default',
-        libraryTarget: 'umd',
-        umdNamedDefine: true,
-        jsonpFunction: 'webpackJsonp' + pkg.name,
+        library: {
+            name: library,
+            type: 'umd',
+            umdNamedDefine: true,
+            export: 'default',
+        },
     },
     resolve: {
         extensions: ['.vue', '.js', '.json'],
@@ -78,6 +80,9 @@ module.exports = {
         ],
     },
     plugins: [
+        new webpack.ProvidePlugin({
+            process: require.resolve('process/browser'),
+        }),
         new VueLoaderPlugin(),
         new MiniCssExtractPlugin({
             filename: `${library}.css`,

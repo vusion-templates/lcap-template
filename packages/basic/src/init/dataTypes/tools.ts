@@ -1,6 +1,6 @@
 import { formatISO } from "date-fns";
-const momentTZ = require("moment-timezone");
-const moment = require("moment");
+import momentTZ from "moment-timezone";
+import moment from "moment";
 
 import { getAppTimezone } from "../utils/timezone";
 import Config from "../../config";
@@ -492,7 +492,7 @@ export const genInitData = (typeKey, defaultValue, parentLevel?) => {
     }
     if (typeName === "DateTime" && parsedValue !== undefined) {
       if (parsedValue instanceof Date) {
-        parsedValue = moment(Date).format("YYYY-MM-DDTHH:mm:ss.SSSZ");
+        parsedValue = moment(new Date()).format("YYYY-MM-DDTHH:mm:ss.SSSZ");
       }
       return parsedValue;
     } else if (typeKey) {

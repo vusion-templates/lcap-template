@@ -1,5 +1,5 @@
-const moment = require('moment');
-const momentTZ = require('moment-timezone');
+import momentTZ from "moment-timezone";
+import moment from "moment";
 
 export const findAsync = async (arr, callback) => {
   for (let i = 0; i < arr.length; i++) {

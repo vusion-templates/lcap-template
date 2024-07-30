@@ -28,5 +28,7 @@ temp/
 
 dist/
 esm/
+umd/
+cjs/
 
 coverage/

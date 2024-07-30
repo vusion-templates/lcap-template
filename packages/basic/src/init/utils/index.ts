@@ -42,8 +42,8 @@ import {
   isSunday,
 } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
-const moment = require("moment");
-const momentTZ = require("moment-timezone");
+import momentTZ from "moment-timezone";
+import moment from "moment";
 import Decimal from "decimal.js";
 
 import { dateFormatter } from "../../Formatters";

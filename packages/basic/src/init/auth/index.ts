@@ -1,4 +1,5 @@
 import authService from "./authService";
+import type { NASLUserInfo } from './authService';
 import Global from "../../global";
 
 function initAuth(options: {
@@ -39,3 +40,7 @@ function initAuth(options: {
 export { 
   initAuth,
 };
+
+export type {
+  NASLUserInfo
+}

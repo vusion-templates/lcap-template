@@ -89,6 +89,12 @@
             "method": "post"
         }
     },
+    "getFormDataPropertyPermissions": {
+        "url": {
+            "path": "/api/system/processV2/getFormDataPropertyPermissions",
+            "method": "post"
+        }
+    },
     "getTaskData": {
         "url": {
             "path": "/api/system/processV2/getTaskData",

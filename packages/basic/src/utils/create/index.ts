@@ -85,7 +85,7 @@ function download(url) {
         const mobilePattern = /mobile|mobi|wap|simulator|iphone|android/gi;
         const isMobile = mobilePattern.test(navigator.userAgent);
         if (!isMobile) {
-          effectiveFileName = decodeURIComponent(effectiveFileName);
+          effectiveFileName = decodeURIComponent(effectiveFileName).replace(/_\d{8,}\./, '.');
           if (data && data.size === 0) {
             return Promise.resolve({
               data: {

@@ -125,6 +125,12 @@
             "method": "post"
         }
     },
+    "getFieldPermissionDetail": {
+        "url": {
+            "path": "/api/processV2/getFormDataPropertyPermissions",
+            "method": "post"
+        }
+    },
     "getTaskInstanceForm": {
         "url": {
             "path": "/api/processV2/getTaskData",

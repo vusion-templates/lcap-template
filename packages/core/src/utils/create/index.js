@@ -81,7 +81,7 @@ function download(url) {
         const { data, status, statusText } = res;
         // 如果没有size长度 PC端独有👇
         if (Config.utils?.decodeDownloadName) {
-          effectiveFileName = Config.utils?.decodeDownloadName(effectiveFileName);
+          effectiveFileName = Config.utils?.decodeDownloadName(effectiveFileName).replace(/_\d{8,}\./, '.');
           if (data && data.size === 0) {
             return Promise.resolve({
               data: {

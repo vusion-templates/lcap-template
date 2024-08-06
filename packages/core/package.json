@@ -2,9 +2,10 @@
   "name": "@lcap/core-template",
   "version": "1.4.0",
   "description": "",
-  "module": "index.js",
+  "module": "dist/index.js",
   "scripts": {
     "build:swc": "swc ./src -d esm --copy-files",
+    "build:umd": "",
     "zip": "npm pack",
     "build": "npm run build:swc && npm run zip",
     "deploy": "node scripts/deploy.js",
@@ -14,8 +15,7 @@
   "author": "LCAP FE Team",
   "license": "ISC",
   "files": [
-    "index.js",
-    "esm"
+    "dist"
   ],
   "dependencies": {
     "axios": "^0.21.2",
@@ -32,6 +32,7 @@
     "vue-router": "^3.1.2"
   },
   "peerDependencies": {
+    "@lcap/basic-template": "workspace:*",
     "vue": "2.6.12"
   },
   "devDependencies": {

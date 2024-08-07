@@ -21,4 +21,5 @@ export default {
     typescript(),
     nodePolyfills(),
   ],
+  external: ['vue'],
 };

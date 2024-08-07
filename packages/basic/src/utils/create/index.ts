@@ -10,7 +10,7 @@ import cookie from "../cookie";
 import { addConfigs, shortResponse } from "./add.configs";
 import { getFilenameFromContentDispositionHeader } from "./tools";
 import paramsSerializer from "./paramsSerializer";
-import { createMockServiceByData} from "./mockData.js";
+import { createMockServiceByData } from "./mockData";
 
 const getData = (str)=> (new Function('return ' + str))();
 

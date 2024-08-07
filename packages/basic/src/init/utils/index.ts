@@ -714,7 +714,7 @@ export const utils = {
       arr.reverse();
     }
   },
-  ListSort(arr, callback, sort) {
+  ListSort(arr, callback?, sort?) {
     if (Array.isArray(arr)) {
       if (typeof callback === "function") {
         arr.sort((a, b) => {
@@ -834,7 +834,7 @@ export const utils = {
     );
   },
   // 兼容性策略：老应用升级到 3.10，保持老行为不变
-  GetDateCountOld(dateStr, metric, tz) {
+  GetDateCountOld(dateStr, metric, tz?) {
     let date;
     if (utils.isInputValidNaslDateTime(dateStr) && !tz) {
       // v3.3 老应用升级的场景，使用全局配置（全局配置一般默认是‘用户时区’）
@@ -893,7 +893,7 @@ export const utils = {
         return null;
     }
   },
-  GetDateCount(dateStr, metric, tz) {
+  GetDateCount(dateStr, metric, tz?) {
     let date;
     if (utils.isInputValidNaslDateTime(dateStr) && !tz) {
       // v3.3 老应用升级的场景，使用全局配置（全局配置一般默认是‘用户时区’）
@@ -937,14 +937,11 @@ export const utils = {
             const startOfMonth = new Date(moment(date).startOf('month').format('YYYY-MM-DD hh:mm:ss'));
             // 获取该天是周几
             const wod = startOfMonth.getDay(); // 假设返回 1- 7，确认下
-            console.log(wod)
 
             const daysOfFirstWeek = 7 - wod + 1;
             if (date.getDate() <= daysOfFirstWeek) {
               return 1;
             } else {
-              console.log((date.getDate() - daysOfFirstWeek)/7)
-              console.log( Math.ceil((date.getDate() - daysOfFirstWeek) / 7))
               return Math.ceil((date.getDate() - daysOfFirstWeek) / 7) + 1;
             }
           }
@@ -1007,7 +1004,7 @@ export const utils = {
         || (typeof inp === 'string' && /^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2})/.test(inp))
         || (typeof inp === 'string' && /^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2})/.test(inp));
 },
-  GetSpecificDaysOfWeek(startdatetr, enddatetr, arr, tz) {
+  GetSpecificDaysOfWeek(startdatetr, enddatetr, arr, tz?) {
     if (!startdatetr)
       toastAndThrow(`内置函数GetSpecificDaysOfWeek入参错误：startDate不能为空`);
     if (!enddatetr)
@@ -1229,7 +1226,7 @@ export const utils = {
 
     return value;
   },
-  ToString(typeKey, value, tz) {
+  ToString(typeKey, value, tz?) {
     // v3.3 老应用升级的场景，使用全局配置（全局配置一般默认是‘用户时区’）
     // v3.4 新应用，使用默认时区时选项，tz 为空
     if (typeKey === "nasl.core.DateTime" && !tz) {

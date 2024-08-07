@@ -1,7 +1,8 @@
-export * from './encodeUrl'
+export * from './url'
 export * from './route'
+export * from './create'
 
-import storage from './localStorage'
+import storage from './storage'
 import cookie from './cookie'
 
 export {

@@ -1,1 +1,0 @@
-export * from '@lcap/basic-template/cjs/apis'

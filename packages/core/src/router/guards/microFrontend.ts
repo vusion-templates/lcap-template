@@ -1,4 +1,4 @@
-import { getBasePath } from '../../utils/url';
+import { getBasePath } from '@lcap/basic-template';
 // `${getBasePath()}/login`
 // `${getBasePath()}/noAuth`
 // `${getBasePath()}/notFound`

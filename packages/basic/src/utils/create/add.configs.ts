@@ -1,6 +1,6 @@
 import errHandles from "./errHandles";
 
-export const isPromise = function (func) {
+const isPromise = function (func) {
     return func && typeof func.then === 'function';
 };
 

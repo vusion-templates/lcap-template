@@ -12,7 +12,7 @@
     "prepublish": "npm run clean && npm run build:bundle && npm run test",
     "test": "",
     "build": "npm run build:bundle && npm run zip",
-    "clean": "rm -rf dist",
+    "clean": "rm -rf dist && rm -rf cjs",
     "deploy": "node scripts/deploy.js"
   },
   "files": [

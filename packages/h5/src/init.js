@@ -12,6 +12,7 @@ import {
     DataTypesPlugin,
     LogicsPlugin,
     RouterPlugin,
+    ProcessPlugin,
     ServicesPlugin,
     UtilsPlugin,
     filterRoutes,
@@ -89,6 +90,7 @@ const init = (appConfig, platformConfig, routes, metaData) => {
     });
     window.$i18n = i18n;
     Vue.use(LogicsPlugin, metaData);
+    Vue.use(ProcessPlugin);
     Vue.use(RouterPlugin);
     Vue.use(ServicesPlugin, metaData);
     Vue.use(AuthPlugin, appConfig);

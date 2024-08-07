@@ -7,7 +7,7 @@ import { createRouter } from './router';
 
 // 设置core config
 setConfig({
-    Toast: {
+    toast: {
         show:
             Vue.prototype?.$toast?.show ||
             (() => {
@@ -21,11 +21,8 @@ setConfig({
     },
     setGlobal,
     getFrontendVariables,
-    destination,
-    createRouter,
-    utils: {
-        decodeDownloadName: (effectiveFileName) => {
-            return decodeURIComponent(effectiveFileName);
-        },
+    router: {
+        destination,
+        createRouter,
     },
 });

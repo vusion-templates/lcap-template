@@ -3,6 +3,7 @@
   "version": "1.4.0",
   "description": "base on vue",
   "scripts": {
+    "clean": "rm -rf dist && rm -rf public",
     "dev": "webpack-dev-server --config build/webpack.dev.config.js",
     "build": "webpack --config build/webpack.config.js && npm pack",
     "deploy": "node ./scripts/deploy.js"

@@ -1,10 +1,8 @@
 import qs from "qs";
 
-import { initService as authInitService } from '../../apis/auth';
-import { initService as lowauthInitService } from '../../apis/lowauth';
-
+import { initAuthService, initLowauthService } from '../../apis';
 import cookie from '../../utils/cookie';
-import { getBasePath } from '../../utils/encodeUrl';
+import { getBasePath } from '../../utils/url';
 
 import Global from '../../global';
 
@@ -55,8 +53,8 @@ let lowauthService;
 
 const Service: IService = {
   start() {
-    authService = authInitService();
-    lowauthService = lowauthInitService();
+    authService = initAuthService();
+    lowauthService = initLowauthService();
     window.authService = authService;
   },
   getUserInfo() {

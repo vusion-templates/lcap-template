@@ -1,23 +1,17 @@
-import { porcessPorts } from "../process/processService";
+import { processPorts } from "../process";
 
 import Config from "../../config";
 import Global from "../../global";
 
-import {
-  initApplicationConstructor,
-  genInitData,
-  isInstanceOf,
-  genSortedTypeKey,
-} from "./tools";
+import * as Tools from "./tools";
 import * as Utils from "./utils";
 
-function initDataTypes(options) {
+export function initDataTypes(options) {
   const dataTypesMap = options.dataTypesMap || {};
   const i18nInfo = options.i18nInfo || {};
-  initApplicationConstructor(dataTypesMap, genInitFromSchema);
+  Tools.initApplicationConstructor(dataTypesMap, genInitFromSchema);
 
-  const { frontendVariables, localCacheVariableSet } =
-    getFrontendVariables(options);
+  const { frontendVariables, localCacheVariableSet } = getFrontendVariables(options);
 
   const $global = {
     // 用户信息
@@ -31,8 +25,8 @@ function initDataTypes(options) {
     ...(Config.utils || {}),
   };
 
-  Object.keys(porcessPorts).forEach((service) => {
-    $global[service] = porcessPorts[service];
+  Object.keys(processPorts).forEach((service) => {
+    $global[service] = processPorts[service];
   });
   window.$global = $global;
 
@@ -41,19 +35,14 @@ function initDataTypes(options) {
 
   Global.prototype.$global = $global;
   Global.prototype.$localCacheVariableSet = localCacheVariableSet;
-  Global.prototype.$isInstanceOf = isInstanceOf;
+  Global.prototype.$isInstanceOf = Tools.isInstanceOf;
   // 判断两个对象是否相等，不需要引用完全一致
   Global.prototype.$isLooseEqualFn = isLooseEqualFn;
   Global.prototype.$resolveRequestData = resolveRequestData;
 
   const enumsMap = options.enumsMap || {};
   Global.prototype.$enums = (key, value) => {
-    if (!key || !value) return "";
-    if (enumsMap[key]) {
-      return enumsMap[key][value];
-    } else {
-      return "";
-    }
+    return enums(key, value, enumsMap);
   };
 
   return {
@@ -61,11 +50,20 @@ function initDataTypes(options) {
   }
 }
 
-function genInitFromSchema(typeKey, defaultValue?, level?) {
-  return genInitData(typeKey, defaultValue, level);
+export function enums(key, value, map) {
+  if (!key || !value) return "";
+  if (map[key]) {
+    return map[key][value];
+  } else {
+    return "";
+  }
 }
 
-function getFrontendVariables(options) {
+export function genInitFromSchema(typeKey, defaultValue?, level?) {
+  return Tools.genInitData(typeKey, defaultValue, level);
+}
+
+export function getFrontendVariables(options) {
   const frontendVariables = {};
   const localCacheVariableSet = new Set();
   if (Array.isArray(options && options.frontendVariables)) {
@@ -80,7 +78,7 @@ function getFrontendVariables(options) {
         defaultValue = defaultValueFn(Global);
       }
       frontendVariables[name] = genInitFromSchema(
-        genSortedTypeKey(typeAnnotation),
+        Tools.genSortedTypeKey(typeAnnotation),
         defaultValue
       );
     });
@@ -91,7 +89,7 @@ function getFrontendVariables(options) {
   };
 }
 
-function isLooseEqualFn(obj1, obj2, cache = new Map()) {
+export function isLooseEqualFn(obj1, obj2, cache = new Map()) {
   // 检查对象是否相同
   if (obj1 === obj2) {
     return true;
@@ -132,7 +130,7 @@ function isLooseEqualFn(obj1, obj2, cache = new Map()) {
 }
 
 // 实体的 updateBy 和 deleteBy 需要提前处理请求参数
-function resolveRequestData(root) {
+export function resolveRequestData(root) {
   if (!root) return;
   // console.log(root.concept)
   delete root.folded;
@@ -160,7 +158,7 @@ function resolveRequestData(root) {
 }
 
 // 实体的 updateBy 和 deleteBy 需要提前处理请求参数
-function parseRequestDataType(root, _prop) {
+export function parseRequestDataType(root, _prop) {
   let value;
   try {
     // eslint-disable-next-line no-eval
@@ -197,7 +195,7 @@ function parseRequestDataType(root, _prop) {
   }
 }
 
-export { 
-  initDataTypes,
-  genInitFromSchema,
+export {
+  Utils,
+  Tools,
 };

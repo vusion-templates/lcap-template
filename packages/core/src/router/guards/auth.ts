@@ -17,7 +17,9 @@ export function findNoAuthView(routes) {
 
 const ROOT_PATH = '/';
 
-const getParentPath = (path) => path === ROOT_PATH ? null : path.substring(0, path.lastIndexOf('/')) || ROOT_PATH;
+const getParentPath = (path) => path === ROOT_PATH 
+  ? null 
+  : path.substring(0, path.lastIndexOf('/')) || ROOT_PATH;
 
 function generatePaths(str) {
     let parts = str.split('/');
@@ -56,7 +58,8 @@ export function filterAuthResources(resources) {
     return resources.filter((item) => isValidPath(item.resourceValue));
 }
 
-export const getAuthGuard = (router, routes, authResourcePaths, appConfig, baseResourcePaths) => async (to, from, next) => {
+// 没有被引用了
+const getAuthGuard = (router, routes, authResourcePaths, appConfig, baseResourcePaths) => async (to, from, next) => {
     function addAuthRoutes(resources) {
         if (Array.isArray(resources) && resources.length) {
             const userResourcePaths = (resources || []).map((resource) => resource?.resourceValue || resource?.ResourceValue);

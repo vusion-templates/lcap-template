@@ -16,7 +16,6 @@ import {
     ServicesPlugin,
     UtilsPlugin,
     initRouter,
-    microFrontend,
     filterRoutes,
     parsePath,
     getBasePath,
@@ -24,7 +23,7 @@ import {
     findNoAuthView,
 } from '@lcap/core-template';
 
-import { getTitleGuard } from './router';
+import { getTitleGuard, microFrontend } from './router';
 
 import VueI18n from 'vue-i18n';
 import App from './App.vue';

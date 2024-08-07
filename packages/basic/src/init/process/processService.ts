@@ -1,5 +1,5 @@
 import { initProcessService } from "../../apis";
-import authService from "../auth/authService";
+import { authService } from "../auth";
 
 let user;
 export default {

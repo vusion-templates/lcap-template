@@ -1,8 +1,7 @@
 import qs from "qs";
 
 import { initAuthService, initLowauthService } from '../../apis';
-import cookie from '../../utils/cookie';
-import { getBasePath } from '../../utils/url';
+import { getBasePath, cookie } from '../../utils';
 
 import Global from '../../global';
 

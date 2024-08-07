@@ -3,6 +3,7 @@
   "version": "1.4.0",
   "description": "",
   "main": "cjs/index.js",
+  "types": "typings/index.d.ts",
   "scripts": {
     "build:cjs": "tsc -p build/tsconfig.cjs.json",
     "build:umd": "rollup -c build/rollup.config.mjs",
@@ -11,13 +12,14 @@
     "zip": "npm pack",
     "prepublish": "npm run clean && npm run build:bundle && npm run test",
     "test": "jest --coverage",
-    "build": "npm run build:bundle && npm run zip",
-    "clean": "rm -rf dist && rm -rf cjs",
+    "build": "npm run clean && npm run build:bundle && npm run zip",
+    "clean": "rm -rf dist && rm -rf cjs && rm -rf typings",
     "deploy": "node scripts/deploy.js"
   },
   "files": [
     "cjs",
-    "dist"
+    "dist",
+    "typings"
   ],
   "keywords": [],
   "author": "",

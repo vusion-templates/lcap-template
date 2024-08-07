@@ -3,6 +3,10 @@
   "compilerOptions": {
     "module": "CommonJS",
     "declaration": true,
-    "outDir": "../cjs"
-  }
+    "declarationDir": "../typings",
+    "outDir": "../cjs",
+    "rootDir": "../src"
+  },
+  "include": ["../src"],
+  "exclude": ["../__tests__"]
 }

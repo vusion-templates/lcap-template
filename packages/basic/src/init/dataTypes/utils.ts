@@ -9,7 +9,7 @@ import {
 
 import Config from "../../config";
 
-import authService from "../auth/authService";
+import { authService } from "../auth";
 
 import { navigateToUserInfoPage } from "./wx";
 

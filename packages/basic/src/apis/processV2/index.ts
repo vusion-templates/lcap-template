@@ -1,6 +1,6 @@
 import merge from 'lodash/merge';
 
-import { createService } from "../../utils/create";
+import { createService } from "../../utils";
 import apiConfig from './api.config';
 import api from './api.json';
 

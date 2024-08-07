@@ -2,8 +2,7 @@ import { formatISO } from "date-fns";
 import moment from "moment";
 import momentTZ from "moment-timezone";
 
-import { getAppTimezone } from "../utils";
-import { safeNewDate } from '../utils';
+import { getAppTimezone, safeNewDate } from "../utils";
 import Config from "../../config";
 
 function tryJSONParse(str) {

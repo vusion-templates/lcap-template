@@ -183,6 +183,7 @@ function genConstructor(typeKey, definition, genInitFromSchema) {
       null,
       genInitFromSchema
     );
+    fn.name = 'NaslTypeConstructor';
     typeMap[typeKey] = fn;
     return fn;
   }

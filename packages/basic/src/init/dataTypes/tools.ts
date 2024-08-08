@@ -183,10 +183,12 @@ function genConstructor(typeKey, definition, genInitFromSchema) {
       null,
       genInitFromSchema
     );
+
     // fn设置name
     Object.defineProperty(fn, "name", {
-      value: 'NaslTypeConstructor',
+      value: "NaslTypeConstructor",
     });
+    
     typeMap[typeKey] = fn;
     return fn;
   }

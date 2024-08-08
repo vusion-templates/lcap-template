@@ -1,15 +1,14 @@
 {
   "name": "@lcap/core-template",
   "version": "1.4.0",
-  "description": "",
-  "main": "dist/index.js",
-  "module": "cjs/index.js",
+  "description": "Vue框架的基础库",
+  "module": "esm/index.js",
   "types": "typings/index.d.ts",
   "scripts": {
-    "clean": "rm -rf dist && rm -rf cjs",
-    "build:cjs": "tsc -p build/tsconfig.cjs.json",
-    "build:umd": "rollup -c build/rollup.config.mjs",
-    "build:bundle": "npm run build:cjs && npm run build:umd",
+    "clean": "rm -rf dist && rm -rf esm",
+    "build:types": "tsc -p build/tsconfig.type.json",
+    "build:rollup": "rollup -c build/rollup.config.mjs",
+    "build:bundle": "npm run build:rollup && npm run build:types",
     "zip": "npm pack",
     "build": "npm run clean && npm run build:bundle && npm run zip",
     "deploy": "node scripts/deploy.js"
@@ -19,7 +18,7 @@
   "license": "ISC",
   "files": [
     "dist",
-    "cjs",
+    "esm",
     "typings"
   ],
   "dependencies": {

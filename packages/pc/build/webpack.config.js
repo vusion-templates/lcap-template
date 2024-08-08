@@ -32,7 +32,6 @@ module.exports = {
         extensions: ['.vue', '.js', '.json'],
         alias: {
             '@': path.resolve(root, 'src'),
-            '@lcap/core-template': require.resolve('@lcap/core-template/dist/index.js'),
         },
     },
     externals: {

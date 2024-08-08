@@ -9,3 +9,8 @@ export {
   storage,
   cookie
 }
+
+// 判断是否是通过 genInitFromSchema 创建的对象
+export function isCreatedByGenInitFromSchema(obj){
+  return obj instanceof Object && obj.constructor.name === 'NaslTypeConstructor';
+}

@@ -181,6 +181,12 @@ function genConstructor(typeKey, definition, Vue) {
     }
     // eslint-disable-next-line no-new-func
     const fn = Function("Vue", "params", code).bind(null, Vue);
+
+    // fn设置name
+    Object.defineProperty(fn, "name", {
+      value: "NaslTypeConstructor",
+    });
+
     typeMap[typeKey] = fn;
     return fn;
   }

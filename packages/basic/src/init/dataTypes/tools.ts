@@ -1,8 +1,8 @@
 import { formatISO } from "date-fns";
-import momentTZ from "moment-timezone";
 import moment from "moment";
+import momentTZ from "moment-timezone";
 
-import { getAppTimezone } from "../utils/timezone";
+import { getAppTimezone, safeNewDate } from "../utils";
 import Config from "../../config";
 
 function tryJSONParse(str) {
@@ -587,7 +587,7 @@ export const toString = (
     // 日期时间处理
     if (typeKey === "nasl.core.Date") {
       str = momentTZ
-        .tz(new Date(variable), getAppTimezone(tz))
+        .tz(safeNewDate(variable), getAppTimezone(tz))
         .format("YYYY-MM-DD");
     } else if (typeKey === "nasl.core.Time") {
       const timeRegex = /^([01]?\d|2[0-3])(?::([0-5]?\d)(?::([0-5]?\d))?)?$/;
@@ -617,16 +617,16 @@ export const toString = (
           varArr.push(varItem || "00");
         });
         str = momentTZ
-          .tz(new Date("2022-01-01 " + varArr.join(":")), getAppTimezone(tz))
+          .tz(safeNewDate("2022-01-01 " + varArr.join(":")), getAppTimezone(tz))
           .format(formatArr.join(":"));
       } else {
         str = momentTZ
-          .tz(new Date(variable), getAppTimezone(tz))
+          .tz(safeNewDate(variable), getAppTimezone(tz))
           .format("HH:mm:ss");
       }
     } else if (typeKey === "nasl.core.DateTime") {
       str = momentTZ
-        .tz(new Date(variable), getAppTimezone(tz))
+        .tz(safeNewDate(variable), getAppTimezone(tz))
         .format("YYYY-MM-DD HH:mm:ss");
     }
     if (tabSize > 0) {
@@ -672,10 +672,12 @@ export const toString = (
     } else if (concept === "Enum") {
       if (Array.isArray(enumItems) && enumItems.length) {
         // 改为不严格判断，枚举值支持数字类型
-        const enumItem = enumItems.find(
-          (enumItem) => variable == enumItem.value
-        );
-        str = enumItem?.label?.value || enumItem?.label;
+        const enumItem = enumItems.find((enumItem) => variable == enumItem.value);
+        if (window.$i18n && window.$global?.i18nInfo?.enabled && enumItem?.label?.i18nKey) {
+          str = window.$i18n.t(enumItem.label.i18nKey);
+        } else {
+          str = enumItem?.label?.value || enumItem?.label;
+        }
       }
     } else if (["TypeAnnotation", "Structure", "Entity"].includes(concept)) {
       // 复合类型
@@ -870,7 +872,7 @@ function isValidDate(dateString, reg) {
     return false;
   }
   // 验证日期是否真实存在
-  const date = new Date(dateString);
+  const date = safeNewDate(dateString);
   if (date.toString() === "Invalid Date") {
     return false;
   }
@@ -902,7 +904,7 @@ export const fromString = (variable, typeKey) => {
   const { typeName } = typeDefinition || {};
   // 日期
   if (typeName === "DateTime" && isValidDate(variable, DateTimeReg)) {
-    const date = new Date(variable);
+    const date = safeNewDate(variable);
     const outputDate = formatISO(date, {
       format: "extended",
       // @ts-ignore 忽略吧，我也不知道为什么要传这个
@@ -910,10 +912,10 @@ export const fromString = (variable, typeKey) => {
     });
     return outputDate;
   } else if (typeName === "Date" && isValidDate(variable, DateReg)) {
-    return moment(new Date(variable)).format('YYYY-MM-DD');
+    return moment(safeNewDate(variable)).format("YYYY-MM-DD");
   } else if (typeName === "Time" && TimeReg.test(variable)) {
     // ???
-    return moment(new Date("2022-01-01 " + variable)).format("HH:mm:ss");
+    return moment(safeNewDate("2022-01-01 " + variable)).format("HH:mm:ss");
   }
   // 浮点数
   else if (

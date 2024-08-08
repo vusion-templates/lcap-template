@@ -6,12 +6,16 @@ import nodePolyfills from 'rollup-plugin-polyfill-node';
 
 export default {
 	input: 'src/index.ts',
-	output:  {
+	output:  [{
     file: 'dist/index.js',
     format: 'umd',
     name: 'LcapBasicUtils',
     sourcemap: true,
-  },
+  }, {
+    file: 'esm/index.js',
+    format: 'esm',
+    sourcemap: true,
+  }],
   plugins: [
     resolve({
       extensions: ['.ts', '.js', '.json'],

@@ -1,13 +1,15 @@
 import { Decimal } from "decimal.js";
 import CryptoJS from "crypto-js";
 
-import { initService as initConfigurationService } from "../../apis/configuration";
-import { initService as initIoService } from "../../apis/io";
-import { initService as initLowauthService } from "../../apis/lowauth";
+import { 
+  initConfigurationService, 
+  initIoService, 
+  initLowauthService 
+} from '../../apis';
 
 import Config from "../../config";
 
-import authService from "../auth/authService";
+import { authService } from "../auth";
 
 import { navigateToUserInfoPage } from "./wx";
 

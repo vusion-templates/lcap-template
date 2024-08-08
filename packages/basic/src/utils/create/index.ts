@@ -2,15 +2,15 @@ import axios from 'axios';
 import Service from 'request-pre';
 import { stringify } from 'qs';
 
-import { formatMicroFrontUrl } from "../../init/router/microFrontUrl"; // 微前端路由方法
+import Config from "../../config";
 
+import { formatMicroFrontUrl } from "../../init/router"; // 微前端路由方法
 import cookie from "../cookie";
+
 import { addConfigs, shortResponse } from "./add.configs";
 import { getFilenameFromContentDispositionHeader } from "./tools";
 import paramsSerializer from "./paramsSerializer";
-import { createMockServiceByData} from "./mockData.js";
-
-import Config from "../../config";
+import { createMockServiceByData } from "./mockData";
 
 const getData = (str)=> (new Function('return ' + str))();
 
@@ -59,65 +59,6 @@ const foramtCookie = (cookieStr) => {
   });
   return result;
 };
-
-/**
- * 目前主要测试的是 get 请求
- * 图片，文件，和文件流形式的下载
- * https://raw.githubusercontent.com/vusion/cloud-ui/master/src/assets/images/1.jpg
- * 支持 query 参数
- */
-function download(url) {
-    const { path, method, body = {}, headers = {}, query = {}, timeout } = url;
-
-    return axios({
-        url: path,
-        method,
-        params: query,
-        data: formatContentType(headers['Content-Type'], body),
-        responseType: 'blob',
-        timeout,
-    }).then((res) => {
-        // 包含 content-disposition， 从中解析名字，不包含 content-disposition 的获取请求地址的后缀
-        let effectiveFileName = res.request.getAllResponseHeaders().includes('content-disposition') ? getFilenameFromContentDispositionHeader(res.request.getResponseHeader('content-disposition')) : res.request.responseURL.split('/').pop();
-        const { data, status, statusText } = res;
-
-        // 通过UA判断是否是移动端
-        const mobilePattern = /mobile|mobi|wap|simulator|iphone|android/gi;
-        const isMobile = mobilePattern.test(navigator.userAgent);
-        if (!isMobile) {
-          effectiveFileName = decodeURIComponent(effectiveFileName).replace(/_\d{8,}\./, '.');
-          if (data && data.size === 0) {
-            return Promise.resolve({
-              data: {
-                code: status,
-                msg: statusText,
-              },
-            });
-          }
-        }
-
-        const downloadUrl = window.URL.createObjectURL(new Blob([data]));
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.setAttribute('download', effectiveFileName); // any other extension
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        return Promise.resolve({
-            data: {
-                code: status,
-                msg: statusText,
-            },
-        });
-    }).catch((err) =>
-        // 基于 AxiosError 的错误类型 https://github.com/axios/axios/blob/b7e954eba3911874575ed241ec2ec38ff8af21bb/index.d.ts#L85
-        Promise.resolve({
-            data: {
-                code: err.code,
-                msg: err.response.statusText,
-            },
-        }));
-}
 
 const requester = function (requestInfo) {
   const { url, config = {} } = requestInfo;
@@ -243,93 +184,97 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
     });
     serviceConfig = fixServiceConfig;
     const newApiSchemaMap = adjustPathWithSysPrefixPath(apiSchemaList);
+    if (window.preRequest) {
+      let resolve  = (requestInfo, preData) => {
+        const HttpRequest = {
+            requestURI: requestInfo.url.path,
+            remoteIp: '',
+            requestMethod: requestInfo.url.method,
+            body: JSON.stringify(requestInfo.url.body),
+            headers: requestInfo.url.headers,
+            querys: JSON.stringify(requestInfo.url.query),
+            cookies: foramtCookie(document.cookie),
+            requestInfo
+        };
+        return  window.preRequest && window.preRequest(HttpRequest, preData);
+      }
 
-    service.preConfig.set('preRequest',   {
-        resolve(requestInfo, preData) {
-          const HttpRequest = {
-              requestURI: requestInfo.url.path,
-              remoteIp: '',
-              requestMethod: requestInfo.url.method,
-              body: JSON.stringify(requestInfo.url.body),
-              headers: requestInfo.url.headers,
-              querys: JSON.stringify(requestInfo.url.query),
-              cookies: foramtCookie(document.cookie),
-              requestInfo
-          };
-          return  window.preRequest && window.preRequest(HttpRequest, preData);
-        }
-    });
-    serviceConfig.config.preRequest = true;
+        service.preConfig.set('preRequest',   {resolve});
+        serviceConfig.config.preRequest = true;
+    }
 
-    service.postConfig.set('postRequest', {
-        resolve(response, params, requestInfo) {
-            if (!response) {
-                return Promise.reject();
-            }
-            const status = 'success';
-            const { config } = requestInfo;
-            const serviceType = config?.serviceType;
-            if (serviceType && serviceType === 'external') {
-                return response;
-            }
-            const HttpResponse = {
-                status: response.status + '',
-                body: JSON.stringify(response.data),
-                headers: response.headers,
-                cookies: foramtCookie(document.cookie),
-            };
-            window.postRequest && window.postRequest(HttpResponse, requestInfo, status);
-            return response;
-        },
-    });
-    service.postConfig.set('postRequestError', {
-        reject(response, params, requestInfo) {
-            response.Code = response.code || response.status;
-            const status = 'error';
-            const err = response;
-            const { config } = requestInfo;
-            if (err === 'expired request') {
-                throw err;
-            }
-            if (!err.response) {
-                if (!config.noErrorTip) {
-                    Config.toast.error('系统错误，请查看日志！');
-                    return;
-                }
-            }
-            if (window.LcapMicro?.loginFn) {
-                if (err.Code === 401 && err.Message === 'token.is.invalid') {
-                    window.LcapMicro.loginFn();
-                    return;
-                }
-                if (err.Code === 'InvalidToken' && err.Message === 'Token is invalid') {
-                    window.LcapMicro.loginFn();
-                    return;
-                }
-            }
-            if (err.Code === 501 && err.Message === 'abort') {
-                throw Error('程序中止');
-            }
-            const HttpResponse = {
-                status: response.response.status + '',
-                body: JSON.stringify(response.response.data),
-                headers: response.response.headers,
-                cookies: foramtCookie(document.cookie),
-            };
-            window.postRequest && window.postRequest(HttpResponse, requestInfo, status);
-            throw err;
-        },
-    });
-    serviceConfig.config = {
-        ...serviceConfig.config,
-        priority: {
-            ...(serviceConfig.config.priority ? serviceConfig.config.priority : {}),
-            postRequest: 10,
-            postRequestError: 10,
-        },
-    };
-    serviceConfig.config.postRequest = true;
-    serviceConfig.config.postRequestError = true;
+    if (window.postRequest) {
+      service.postConfig.set('postRequest', {
+          resolve(response, params, requestInfo) {
+              if (!response) {
+                  return Promise.reject();
+              }
+              const status = 'success';
+              const { config } = requestInfo;
+              const serviceType = config?.serviceType;
+              if (serviceType && serviceType === 'external') {
+                  return response;
+              }
+              const HttpResponse = {
+                  status: response.status + '',
+                  body: JSON.stringify(response.data),
+                  headers: response.headers,
+                  cookies: foramtCookie(document.cookie),
+              };
+              window.postRequest && window.postRequest(HttpResponse, requestInfo, status);
+              return response;
+          },
+      });
+      service.postConfig.set('postRequestError', {
+          reject(response, params, requestInfo) {
+              response.Code = response.code || response.status;
+              const status = 'error';
+              const err = response;
+              const { config } = requestInfo;
+              if (err === 'expired request') {
+                  throw err;
+              }
+              if (!err.response) {
+                  if (!config.noErrorTip) {
+                      // instance.show('系统错误，请查看日志！');
+                      Config.toast.error('系统错误，请查看日志！');
+                      return;
+                  }
+              }
+              if (window.LcapMicro?.loginFn) {
+                  if (err.Code === 401 && err.Message === 'token.is.invalid') {
+                      window.LcapMicro.loginFn();
+                      return;
+                  }
+                  if (err.Code === 'InvalidToken' && err.Message === 'Token is invalid') {
+                      window.LcapMicro.loginFn();
+                      return;
+                  }
+              }
+              if (err.Code === 501 && err.Message === 'abort') {
+                  throw Error('程序中止');
+              }
+              const HttpResponse = {
+                  status: response.response.status + '',
+                  body: JSON.stringify(response.response.data),
+                  headers: response.response.headers,
+                  cookies: foramtCookie(document.cookie),
+              };
+              window.postRequest && window.postRequest(HttpResponse, requestInfo, status);
+              throw err;
+          },
+      });
+      serviceConfig.config = {
+          ...serviceConfig.config,
+          priority: {
+              ...(serviceConfig.config.priority ? serviceConfig.config.priority : {}),
+              postRequest: 10,
+              postRequestError: 10,
+          },
+      };
+      serviceConfig.config.postRequest = true;
+      serviceConfig.config.postRequestError = true;
+    }
 
     service.postConfig.set('lcapLocation', (response, params, requestInfo) => {
         const lcapLocation = response?.headers['lcap-location'];
@@ -362,3 +307,62 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
      }
     return mockInstance
 };
+
+/**
+ * 目前主要测试的是 get 请求
+ * 图片，文件，和文件流形式的下载
+ * https://raw.githubusercontent.com/vusion/cloud-ui/master/src/assets/images/1.jpg
+ * 支持 query 参数
+ */
+function download(url) {
+  const { path, method, body = {}, headers = {}, query = {}, timeout } = url;
+
+  return axios({
+      url: path,
+      method,
+      params: query,
+      data: formatContentType(headers['Content-Type'], body),
+      responseType: 'blob',
+      timeout,
+  }).then((res) => {
+      // 包含 content-disposition， 从中解析名字，不包含 content-disposition 的获取请求地址的后缀
+      let effectiveFileName = res.request.getAllResponseHeaders().includes('content-disposition') ? getFilenameFromContentDispositionHeader(res.request.getResponseHeader('content-disposition')) : res.request.responseURL.split('/').pop();
+      const { data, status, statusText } = res;
+
+      // 通过UA判断是否是移动端
+      const mobilePattern = /mobile|mobi|wap|simulator|iphone|android/gi;
+      const isMobile = mobilePattern.test(navigator.userAgent);
+      if (!isMobile) {
+        effectiveFileName = decodeURIComponent(effectiveFileName).replace(/_\d{8,}\./, '.');
+        if (data && data.size === 0) {
+          return Promise.resolve({
+            data: {
+              code: status,
+              msg: statusText,
+            },
+          });
+        }
+      }
+
+      const downloadUrl = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.setAttribute('download', effectiveFileName); // any other extension
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      return Promise.resolve({
+          data: {
+              code: status,
+              msg: statusText,
+          },
+      });
+  }).catch((err) =>
+      // 基于 AxiosError 的错误类型 https://github.com/axios/axios/blob/b7e954eba3911874575ed241ec2ec38ff8af21bb/index.d.ts#L85
+      Promise.resolve({
+          data: {
+              code: err.code,
+              msg: err.response.statusText,
+          },
+      }));
+}

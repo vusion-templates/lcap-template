@@ -61,53 +61,32 @@ import {
   typeDefinitionMap,
 } from "../dataTypes/tools";
 
-import { getAppTimezone, isValidTimezoneIANAString } from "./timezone";
 import {
   findAsync,
   mapAsync,
   filterAsync,
   findIndexAsync,
   sortAsync,
+  getAppTimezone,
+  isValidTimezoneIANAString,
+  safeNewDate,
+  naslDateToLocalDate, 
+  convertJSDateInTargetTimeZone
 } from "./helper";
 
 let enumsMap = {};
 let dataTypesMap = {}
 
-const safeNewDate = (dateStr) => {
-  try {
-      const res = new Date(dateStr.replaceAll('-', '/'));
-      if (['Invalid Date', 'Invalid time value', 'invalid date'].includes(res.toString())) {
-          return new Date(dateStr);
-      } else {
-          return res;
-      }
-  } catch (err) {
-      return new Date(dateStr);
-  }
-};
-
-function naslDateToLocalDate(date) {
-  const localTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const localDate = momentTZ.tz(date, "YYYY-MM-DD", localTZ);
-  return safeNewDate(localDate.format("YYYY-MM-DD HH:mm:ss"));
-}
-
-export function convertJSDateInTargetTimeZone(date, tz) {
-  return safeNewDate(
-    momentTZ.tz(safeNewDate(date), getAppTimezone(tz)).format("YYYY-MM-DD HH:mm:ss")
-  );
-}
-
 function toValue(date, typeKey) {
   if (!date) return date;
   if (typeKey === "format")
     return moment(date).format("YYYY-MM-DD"); // value 的真实格式
-  else if (typeKey === "json") return this.JsonSerialize(date);
+  else if (typeKey === "json") return utils.JsonSerialize(date);
   else if (typeKey === "timestamp") return date.getTime();
   else return date;
 }
 
-function isArrayInBounds(arr, index) {
+export function isArrayInBounds(arr, index) {
   if (!Array.isArray(arr)) {
     toastAndThrow("传入内容不是数组");
   }
@@ -122,30 +101,6 @@ function isArrayInBounds(arr, index) {
 }
 
 export const utils = {
-  // EnumItemToText(value, enumTypeAnnotation) {
-  //   const { typeName, typeNamespace } = enumTypeAnnotation || {};
-  //   if (typeName && typeNamespace) {
-  //     return toString(typeNamespace + "." + typeName, value) || "";
-  //   }
-  //   return "";
-  // },
-  // EnumItemToStructure(value, enumTypeAnnotation) {
-  //   const { typeName, typeNamespace } = enumTypeAnnotation || {};
-  //   if (typeName && typeNamespace) {
-  //     let isToNumber = false;
-  //     if (typeName === 'Long' && typeNamespace === 'nasl.core') {
-  //         isToNumber = true
-  //     }
-  //     return {
-  //       text: toString(typeNamespace + "." + typeName, value),
-  //       value: isToNumber ? +value : value,
-  //     }
-  //   }
-  //   return {
-  //     text: "",
-  //     value: ""
-  //   }
-  // },
   EnumItemToText(typeKey, value) {
     if (typeKey) {
       return toString(typeKey, value) || "";
@@ -204,10 +159,10 @@ export const utils = {
       }));
     }
   },
-  JsonSerialize(v, tz) {
+  JsonSerialize(v, tz?) {
     // 目前入参 v 的类型是 nasl.DateTime、nasl.Date、nasl.Time 时，都是 js 原生 string 类型
     // 只能使用 regex 粗略判断一下
-    if (this.isInputValidNaslDateTime(v)) {
+    if (utils.isInputValidNaslDateTime(v)) {
       // v3.3 老应用升级的场景，UTC 零时区，零时区展示上用 'Z'，后向兼容
       // v3.4 新应用，使用默认时区时选项，tz 为空
       if (!tz) {
@@ -639,7 +594,7 @@ export const utils = {
   },
   MapContains(map, key) {
     if (isObject(map)) {
-      return key in map;
+      return map.hasOwnProperty(key);
     }
     return false;
   },
@@ -759,7 +714,7 @@ export const utils = {
       arr.reverse();
     }
   },
-  ListSort(arr, callback, sort) {
+  ListSort(arr, callback?, sort?) {
     if (Array.isArray(arr)) {
       if (typeof callback === "function") {
         arr.sort((a, b) => {
@@ -846,16 +801,12 @@ export const utils = {
     }
   },
   CurrDate(tz) {
-    if (!tz) {
-      return this.CurrDate("global");
-    }
+    tz = tz || "global";
     const localDate = convertJSDateInTargetTimeZone(new Date(), tz);
     return moment(localDate).format("YYYY-MM-DD");
   },
   CurrTime(tz) {
-    if (!tz) {
-      return this.CurrTime("global");
-    }
+    tz = tz || "global";
     const localDate = convertJSDateInTargetTimeZone(new Date(), tz);
     return moment(localDate).format("HH:mm:ss");
   },
@@ -883,13 +834,13 @@ export const utils = {
     );
   },
   // 兼容性策略：老应用升级到 3.10，保持老行为不变
-  GetDateCountOld(dateStr, metric, tz) {
+  GetDateCountOld(dateStr, metric, tz?) {
     let date;
-    if (this.isInputValidNaslDateTime(dateStr) && !tz) {
+    if (utils.isInputValidNaslDateTime(dateStr) && !tz) {
       // v3.3 老应用升级的场景，使用全局配置（全局配置一般默认是‘用户时区’）
       // v3.4 新应用，使用默认时区时选项，tz 为空
       date = convertJSDateInTargetTimeZone(dateStr, getAppTimezone("global"));
-    } else if (this.isInputValidNaslDateTime(dateStr) && tz) {
+    } else if (utils.isInputValidNaslDateTime(dateStr) && tz) {
       // v3.4 新应用，指定了默认值之外的时区选项，必然有时区参数 tz
       date = convertJSDateInTargetTimeZone(dateStr, tz);
     } else {
@@ -942,13 +893,13 @@ export const utils = {
         return null;
     }
   },
-  GetDateCount(dateStr, metric, tz) {
+  GetDateCount(dateStr, metric, tz?) {
     let date;
-    if (this.isInputValidNaslDateTime(dateStr) && !tz) {
+    if (utils.isInputValidNaslDateTime(dateStr) && !tz) {
       // v3.3 老应用升级的场景，使用全局配置（全局配置一般默认是‘用户时区’）
       // v3.4 新应用，使用默认时区时选项，tz 为空
       date = convertJSDateInTargetTimeZone(dateStr, getAppTimezone("global")); // date : Date
-    } else if (this.isInputValidNaslDateTime(dateStr) && tz) {
+    } else if (utils.isInputValidNaslDateTime(dateStr) && tz) {
       // v3.4 新应用，指定了默认值之外的时区选项，必然有时区参数 tz
       date = convertJSDateInTargetTimeZone(dateStr, tz);
     } else {
@@ -986,14 +937,11 @@ export const utils = {
             const startOfMonth = new Date(moment(date).startOf('month').format('YYYY-MM-DD hh:mm:ss'));
             // 获取该天是周几
             const wod = startOfMonth.getDay(); // 假设返回 1- 7，确认下
-            console.log(wod)
 
             const daysOfFirstWeek = 7 - wod + 1;
             if (date.getDate() <= daysOfFirstWeek) {
               return 1;
             } else {
-              console.log((date.getDate() - daysOfFirstWeek)/7)
-              console.log( Math.ceil((date.getDate() - daysOfFirstWeek) / 7))
               return Math.ceil((date.getDate() - daysOfFirstWeek) / 7) + 1;
             }
           }
@@ -1045,7 +993,7 @@ export const utils = {
         addDate = addYears(date, amount);
         break;
     }
-    if (typeof dateString === "object" || this.isInputValidNaslDateTime(dateString)) {
+    if (typeof dateString === "object" || utils.isInputValidNaslDateTime(dateString)) {
       return format(addDate, "yyyy-MM-dd HH:mm:ss");
     } else {
       return format(addDate, "yyyy-MM-dd");
@@ -1056,7 +1004,7 @@ export const utils = {
         || (typeof inp === 'string' && /^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2})/.test(inp))
         || (typeof inp === 'string' && /^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2})/.test(inp));
 },
-  GetSpecificDaysOfWeek(startdatetr, enddatetr, arr, tz) {
+  GetSpecificDaysOfWeek(startdatetr, enddatetr, arr, tz?) {
     if (!startdatetr)
       toastAndThrow(`内置函数GetSpecificDaysOfWeek入参错误：startDate不能为空`);
     if (!enddatetr)
@@ -1069,7 +1017,7 @@ export const utils = {
 
     let startDate;
     let endDate;
-    if (this.isInputValidNaslDateTime(startdatetr) && !tz) {
+    if (utils.isInputValidNaslDateTime(startdatetr) && !tz) {
       // v3.3 老应用升级的场景，使用全局配置（全局配置一般默认是‘用户时区’）
       // v3.4 新应用，使用默认时区时选项，tz 为空
       startDate = convertJSDateInTargetTimeZone(
@@ -1080,7 +1028,7 @@ export const utils = {
         enddatetr,
         getAppTimezone("global")
       );
-    } else if (this.isInputValidNaslDateTime(startdatetr) && tz) {
+    } else if (utils.isInputValidNaslDateTime(startdatetr) && tz) {
       // v3.4 新应用，指定了默认值之外的时区选项，必然有时区参数 tz
       startDate = convertJSDateInTargetTimeZone(
         startdatetr,
@@ -1157,9 +1105,8 @@ export const utils = {
     if (!value) {
       return "-";
     }
-    if (!tz) {
-      return this.FormatDateTime(value, formatter, "global");
-    }
+
+    tz = tz || "global";
     const date = convertJSDateInTargetTimeZone(value, tz);
     return dateFormatter.format(date, formatter);
   },
@@ -1279,7 +1226,7 @@ export const utils = {
 
     return value;
   },
-  ToString(typeKey, value, tz) {
+  ToString(typeKey, value, tz?) {
     // v3.3 老应用升级的场景，使用全局配置（全局配置一般默认是‘用户时区’）
     // v3.4 新应用，使用默认时区时选项，tz 为空
     if (typeKey === "nasl.core.DateTime" && !tz) {
@@ -1659,3 +1606,5 @@ function initUtils(options: {
 export {
   initUtils,
 }
+
+export * from './helper';

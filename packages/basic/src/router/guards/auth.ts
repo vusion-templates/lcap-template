@@ -1,7 +1,7 @@
 import Global from "../../global";
 
 import { filterRoutes, parsePath } from "../../utils/route";
-import { getBasePath } from "../../utils/encodeUrl";
+import { getBasePath } from "../../utils";
 
 /**
  * 是否有无权限页面

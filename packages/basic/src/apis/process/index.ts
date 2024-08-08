@@ -1,4 +1,4 @@
-import { createService } from "../../utils/create";
+import { createService } from "../../utils";
 import api from './api.json';
 
 type Service<API> = {

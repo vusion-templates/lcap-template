@@ -1,5 +1,5 @@
 import pick from "lodash/pick";
-import { createLogicService } from "../../utils/create";
+import { createLogicService } from "../../utils";
 
 import Global from '../../global';
 

@@ -106,5 +106,3 @@ export const encodeUrl = function (url) {
 export function getBasePath() {
     return window.appInfo && window.appInfo.basePath ? window.appInfo.basePath : '';
 }
-
-export default encodeUrl;

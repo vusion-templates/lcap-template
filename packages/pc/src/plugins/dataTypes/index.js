@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { cookie, authService, genSortedTypeKey, genInitFromSchema, initIoService, initLowauthService } from '@lcap/core-template';
+import { cookie, genSortedTypeKey, genInitFromSchema, initIoService, initLowauthService } from '@lcap/core-template';
 
 export function getFrontendVariables(options) {
     const frontendVariables = {};

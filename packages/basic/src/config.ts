@@ -4,7 +4,8 @@ const Config = {
     show: (message, stack?) => void 0,
     error: (message, stack?) => void 0,
   },
-  utils: {},
+  utils: {
+  },
   router: {
     destination: (url) => void 0,
   },

@@ -1,4 +1,4 @@
-import { getBasePath } from '../../utils/encodeUrl';
+import { getBasePath } from '../../utils';
 // `${getBasePath()}/login`
 // `${getBasePath()}/noAuth`
 // `${getBasePath()}/notFound`

@@ -12,10 +12,10 @@ import {
     DataTypesPlugin,
     LogicsPlugin,
     RouterPlugin,
+    ProcessPlugin,
     ServicesPlugin,
     UtilsPlugin,
     initRouter,
-    microFrontend,
     filterRoutes,
     parsePath,
     getBasePath,
@@ -23,7 +23,7 @@ import {
     findNoAuthView,
 } from '@lcap/core-template';
 
-import { getTitleGuard } from './router';
+import { getTitleGuard, microFrontend } from './router';
 
 import VueI18n from 'vue-i18n';
 import App from './App.vue';
@@ -96,6 +96,7 @@ const init = (appConfig, platformConfig, routes, metaData) => {
     window.$i18n = i18n;
 
     Vue.use(LogicsPlugin, metaData);
+    Vue.use(ProcessPlugin);
     Vue.use(RouterPlugin);
     Vue.use(ServicesPlugin, metaData);
     Vue.use(AuthPlugin);

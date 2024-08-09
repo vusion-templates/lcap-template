@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "declaration": true,
+    "declarationDir": "../typings",
+    "emitDeclarationOnly": true,
+    "rootDir": "../src"
+  },
+  "include": ["../src"],
+  "exclude": ["../__tests__"]
+}

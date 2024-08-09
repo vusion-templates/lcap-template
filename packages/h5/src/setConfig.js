@@ -7,7 +7,7 @@ import { createRouter } from './router';
 
 // 设置core config
 setConfig({
-    Toast: {
+    toast: {
         show:
             Vue.prototype?.$toast?.show ||
             (() => {
@@ -21,10 +21,12 @@ setConfig({
     },
     setGlobal,
     getFrontendVariables,
-    destination,
-    createRouter,
-    utils: {
-        axiosInterceptors: [
+    router: {
+        destination,
+        createRouter,
+    },
+    axios: {
+        interceptors: [
             {
                 onSuccess(response) {
                     if (response.headers.authorization) {
@@ -36,6 +38,6 @@ setConfig({
                     return Promise.reject(error);
                 },
             },
-        ],
-    },
+        ]
+    }
 });

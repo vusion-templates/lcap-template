@@ -5,12 +5,11 @@
       "ESNext"
     ],
     "target": "es5",
-    "module": "commonjs",
+    "module": "ESNext",
+    "moduleResolution": "node",
     "rootDir": "src",
     "baseUrl": ".",
-    "outDir": "dist",
     "allowJs": true,
-    "declaration": true,
     "esModuleInterop": true,
     "resolveJsonModule": true
   },

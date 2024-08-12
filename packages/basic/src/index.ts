@@ -10,17 +10,7 @@ import {
   initProcessService,
 } from './apis'
 
-import {
-  initAuth,
-  initDataTypes,
-  initLogic,
-  initProcess,
-  initRouter,
-  initService,
-  initUtils,
-
-  downloadClick,
-} from './init'
+export * from './init'
 
 import {
   findNoAuthView,
@@ -39,20 +29,13 @@ export {
   initIoService,
   initLowauthService,
   initProcessService,
-  initAuth,
-  initDataTypes,
-  initLogic,
-  initProcess,
-  initRouter,
-  initService,
-  initUtils,
+
   findNoAuthView,
   filterAuthResources,
   microFrontend,
   userInfoGuard,
   Global,
   global,
-  downloadClick,
 };
 
 export * from './utils'

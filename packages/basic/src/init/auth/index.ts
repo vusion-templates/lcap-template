@@ -19,11 +19,11 @@ function initAuth(options: {
   authService.hasSub = function (subPath) {
     const currentPath = base + router.currentRoute.path;
     if (subPath[0] !== "/") subPath = "/" + subPath;
-    return this.has(currentPath + subPath);
+    return authService.has(currentPath + subPath);
   };
   authService.hasFullPath = function (path) {
     if (path[0] !== "/") path = "/" + path;
-    return this.has(base + path);
+    return authService.has(base + path);
   };
 
   /**

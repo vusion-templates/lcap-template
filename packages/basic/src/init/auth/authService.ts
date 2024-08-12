@@ -194,7 +194,7 @@ const Service: IService = {
     const sleep = (t) => new Promise((r) => setTimeout(r, t));
 
     if (window.appInfo.hasUserCenter) {
-      const logoutUrl = await this.getKeycloakLogoutUrl();
+      const logoutUrl = await Service.getKeycloakLogoutUrl();
       localStorage.setItem("logoutUrl", logoutUrl);
       if (logoutUrl) {
         window.location.href = logoutUrl;
@@ -211,7 +211,7 @@ const Service: IService = {
           });
       }
     } else {
-      const logoutUrl = await this.getKeycloakLogoutUrl();
+      const logoutUrl = await Service.getKeycloakLogoutUrl();
       localStorage.setItem("logoutUrl", logoutUrl);
       if (logoutUrl) {
         window.location.href = logoutUrl;
@@ -258,7 +258,7 @@ const Service: IService = {
    * 初始化权限服务
    */
   init(domainName) {
-    return this.getUserInfo().then(() => this.getUserResources(domainName));
+    return Service.getUserInfo().then(() => Service.getUserResources(domainName));
   },
   /**
    * 是否有权限

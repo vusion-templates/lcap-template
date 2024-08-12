@@ -200,4 +200,11 @@ function parseRequestDataType(root, _prop) {
 export { 
   initDataTypes,
   genInitFromSchema,
+  getFrontendVariables,
+  isLooseEqualFn,
+  resolveRequestData,
+  parseRequestDataType,
+  Utils,
 };
+
+export * as Tools from './tools';

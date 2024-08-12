@@ -39,6 +39,7 @@ function initAuth(options: {
 
 export { 
   initAuth,
+  authService,
 };
 
 export type {

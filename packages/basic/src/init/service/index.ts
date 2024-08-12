@@ -1,6 +1,6 @@
 import isPlainObject from 'lodash/isPlainObject';
 
-import { createService } from '../../utils/create';
+import { createService } from '../../utils';
 import Global from '../../global';
 
 let $services;

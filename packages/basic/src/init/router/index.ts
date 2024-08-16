@@ -17,6 +17,7 @@ function initRouter() {
         realUrl = await url();
       } else if(url?.chartAt(0) === "/") {
         $destination(url,target)
+        return;
       }else{
         realUrl = url;
       }

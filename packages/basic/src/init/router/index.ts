@@ -3,39 +3,39 @@ import {
   formatMicroFrontRouterPath,
 } from "./microFrontUrl";
 
-import Config from "../../config";
+import Config from '../../config';
 import Global from "../../global";
 
 function initRouter() {
-  function $destination(...args) {
-    Config.router?.destination?.call(this, ...args);
-  }
+    function $destination(...args) {
+      Config.router?.destination?.call(this, ...args);
+    };
 
-  async function $link(url, target = "_self") {
-    let realUrl;
-    if (typeof url === "function") {
-      realUrl = await url();
-    } else if (url?.chartAt(0) === "/") {
-      $destination(url, target);
-    } else {
-      realUrl = url;
-    }
-    downloadClick(realUrl, target);
-  }
+    async function $link (url, target = "_self") {
+      let realUrl;
+      if (typeof url === "function") {
+        realUrl = await url();
+      } else if(url?.chartAt(0) === "/") {
+        $destination(url,target)
+      }else{
+        realUrl = url;
+      }
+      downloadClick(realUrl, target);
+    };
 
-  Global.prototype.$destination = function (...args) {
-    $destination.call(this, ...args);
-  };
-  Global.prototype.$link = $link;
-  Global.prototype.$formatMicroFrontUrl = formatMicroFrontUrl;
-  Global.prototype.$formatMicroFrontRouterPath = formatMicroFrontRouterPath;
+    Global.prototype.$destination = function (...args) {
+      $destination.call(this, ...args);
+    };
+    Global.prototype.$link = $link;
+    Global.prototype.$formatMicroFrontUrl = formatMicroFrontUrl;
+    Global.prototype.$formatMicroFrontRouterPath = formatMicroFrontRouterPath;
 
-  return {
-    formatMicroFrontUrl: formatMicroFrontUrl,
-    formatMicroFrontRouterPath: formatMicroFrontRouterPath,
-    link: $link,
-    destination: $destination,
-  };
+    return {
+      formatMicroFrontUrl: formatMicroFrontUrl,
+      formatMicroFrontRouterPath: formatMicroFrontRouterPath,
+      link: $link,
+      destination: $destination,
+    };
 }
 
 function downloadClick(realUrl, target) {
@@ -49,4 +49,7 @@ function downloadClick(realUrl, target) {
   }, 500);
 }
 
-export { initRouter, downloadClick };
+export { 
+  initRouter, 
+  downloadClick 
+};

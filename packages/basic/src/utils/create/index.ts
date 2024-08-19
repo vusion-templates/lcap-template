@@ -162,6 +162,9 @@ function genBaseOptions(requestInfo) {
 
 const requester = function (requestInfo) {
   const { url, config = {} } = requestInfo;
+  if (config?.serviceType === 'sse') {
+    return sseRequester(requestInfo);
+  }
   if (config.download) {
     return download(url);
   }
@@ -191,7 +194,7 @@ const sseRequester = function (requestInfo) {
 
   const controller = new AbortController(); 
   
-  const { body } = requestInfo;
+  const { body } = url;
   const { onMessage, onClose, onError } = body;
   delete body.onMessage;
   delete body.onClose;
@@ -213,11 +216,13 @@ const sseRequester = function (requestInfo) {
 
   
   return Promise.resolve({
-    __close: close,
+    data: {
+      __close: close,
+    }
   });
 };
 const service = new Service(requester);
-const sseService = new Service(sseRequester);
+// const sseService = new Service(sseRequester);
 
 // 调整请求路径
 const adjustPathWithSysPrefixPath = (apiSchemaList) => {
@@ -308,22 +313,6 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
           return  window.preRequest && window.preRequest(HttpRequest, preData);
         }
     });
-    // TODO
-    sseService.preConfig.set('preRequest',   {
-      resolve(requestInfo, preData) {
-        const HttpRequest = {
-            requestURI: requestInfo.url.path,
-            remoteIp: '',
-            requestMethod: requestInfo.url.method,
-            body: JSON.stringify(requestInfo.url.body),
-            headers: requestInfo.url.headers,
-            querys: JSON.stringify(requestInfo.url.query),
-            cookies: foramtCookie(document.cookie),
-            requestInfo
-        };
-        return  window.preRequest && window.preRequest(HttpRequest, preData);
-      }
-    });
     serviceConfig.config.preRequest = true;
 
     service.postConfig.set('postRequest', {
@@ -386,67 +375,6 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
         },
     });
 
-    // TODO
-    sseService.postConfig.set('postRequest', {
-      resolve(response, params, requestInfo) {
-          if (!response) {
-              return Promise.reject();
-          }
-          const status = 'success';
-          const { config } = requestInfo;
-          const serviceType = config?.serviceType;
-          if (serviceType && serviceType === 'external') {
-              return response;
-          }
-          const HttpResponse = {
-              status: response.status + '',
-              body: JSON.stringify(response.data),
-              headers: response.headers,
-              cookies: foramtCookie(document.cookie),
-          };
-          window.postRequest && window.postRequest(HttpResponse, requestInfo, status);
-          return response;
-      },
-    });
-    sseService.postConfig.set('postRequestError', {
-        reject(response, params, requestInfo) {
-            response.Code = response.code || response.status;
-            const status = 'error';
-            const err = response;
-            const { config } = requestInfo;
-            if (err === 'expired request') {
-                throw err;
-            }
-            if (!err.response) {
-                if (!config.noErrorTip) {
-                    Config.toast.error('系统错误，请查看日志！');
-                    return;
-                }
-            }
-            if (window.LcapMicro?.loginFn) {
-                if (err.Code === 401 && err.Message === 'token.is.invalid') {
-                    window.LcapMicro.loginFn();
-                    return;
-                }
-                if (err.Code === 'InvalidToken' && err.Message === 'Token is invalid') {
-                    window.LcapMicro.loginFn();
-                    return;
-                }
-            }
-            if (err.Code === 501 && err.Message === 'abort') {
-                throw Error('程序中止');
-            }
-            const HttpResponse = {
-                status: response.response.status + '',
-                body: JSON.stringify(response.response.data),
-                headers: response.response.headers,
-                cookies: foramtCookie(document.cookie),
-            };
-            window.postRequest && window.postRequest(HttpResponse, requestInfo, status);
-            throw err;
-        },
-    });
-
     serviceConfig.config = {
         ...serviceConfig.config,
         priority: {
@@ -465,14 +393,6 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
         }
         return response;
     });
-    // TODO
-    sseService.postConfig.set('lcapLocation', (response, params, requestInfo) => {
-      const lcapLocation = response?.headers['lcap-location'];
-      if (lcapLocation) {
-          location.href = lcapLocation;
-      }
-      return response;
-    });
 
     serviceConfig.config = {
         ...serviceConfig.config,
@@ -483,31 +403,19 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
     };
     serviceConfig.config.lcapLocation = true;
     service.postConfig.set('shortResponse', shortResponse);
-    // TODO
-    sseService.postConfig.set('shortResponse', shortResponse);
-    // let logicsInstance=  service.generator(normalApiSchemaMap, dynamicServices, serviceConfig);
-    let logicsInstance= {};
-    let sseInstance = sseService.generator(sseApiSchemaMap, dynamicServices, serviceConfig);
+    let logicsInstance=  service.generator(newApiSchemaMap, dynamicServices, serviceConfig);
     let mockInstance ={}
     if (window.appInfo.isPreviewFe) {
-      const allLogicData = {
-        ...logicsInstance,
-        ...sseInstance
-      }
       if(window?.allMockData?.mock){
           console.log('window?.allMockData?.mock===>')
           let mockApiList =JSON.parse(window?.allMockData?.mock).map(v=>v.name)
           JSON.parse(window?.allMockData?.mock).map(v=>{
             createMockServiceByData(v.name, getData(v.mockData), mockInstance)
           })
-          Object.keys(allLogicData).map(apiName => !mockInstance[apiName] && (mockInstance[apiName]= allLogicData[apiName]))
+          Object.keys(logicsInstance).map(apiName => !mockInstance[apiName] && (mockInstance[apiName]= logicsInstance[apiName]))
       }
      }else{
-        mockInstance= {
-          ...logicsInstance,
-          ...sseInstance
-        }
+        mockInstance= logicsInstance;
      }
-     console.log('mockInstance===>+++',mockInstance)
     return mockInstance
 };

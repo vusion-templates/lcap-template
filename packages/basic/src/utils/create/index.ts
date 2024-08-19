@@ -201,28 +201,27 @@ const sseRequester = function (requestInfo) {
   delete body.onError;
   
   const options = genBaseOptions(requestInfo);
-
-  fetchEventSource(url, {
-      ...options,
-      signal: controller.signal,
-      onmessage: onMessage,
-      onclose: onClose,
-      onerror: onError,
-  });
+  
 
   function close() {
     controller.abort();
   }
 
-  
-  return Promise.resolve({
-    data: {
-      __close: close,
+  return fetchEventSource(url, {
+    ...options,
+    signal: controller.signal,
+    onmessage: onMessage,
+    onclose: onClose,
+    onerror: onError,
+  }).then(() => {
+    return {
+      data: {
+        __close: close,
+      }
     }
   });
 };
 const service = new Service(requester);
-// const sseService = new Service(sseRequester);
 
 // 调整请求路径
 const adjustPathWithSysPrefixPath = (apiSchemaList) => {

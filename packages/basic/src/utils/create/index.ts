@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Service from 'request-pre';
+import { fetchEventSource } from '@microsoft/fetch-event-source';
 import { stringify } from 'qs';
 
 import { formatMicroFrontUrl } from "../../init/router/microFrontUrl"; // 微前端路由方法
@@ -119,7 +120,7 @@ function download(url) {
         }));
 }
 
-const requester = function (requestInfo) {
+function genBaseOptions(requestInfo) {
   const { url, config = {} } = requestInfo;
   const { method, body = {}, headers = {}, query = {} } = url;
   const path = formatMicroFrontUrl(url.path);
@@ -135,9 +136,6 @@ const requester = function (requestInfo) {
   // 用户本地时区信息，传递给后端
   headers.TimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  if (config.download) {
-    return download(url);
-  }
   let data;
   const method2 = method.toUpperCase();
   if (
@@ -148,14 +146,7 @@ const requester = function (requestInfo) {
     data = formatContentType(headers["Content-Type"], body);
   }
 
-  if (Config.axios?.interceptors?.length) {
-    Config.axios?.interceptors.forEach((interceptor) => {
-      const { onSuccess, onError } = interceptor;
-      axios.interceptors.response.use(onSuccess, onError);
-    });
-  }
-
-  const options = {
+  return  {
     params: query,
     paramsSerializer,
     baseURL,
@@ -167,7 +158,22 @@ const requester = function (requestInfo) {
     xsrfCookieName: "csrfToken",
     xsrfHeaderName: "x-csrf-token",
   }
+}
 
+const requester = function (requestInfo) {
+  const { url, config = {} } = requestInfo;
+  if (config.download) {
+    return download(url);
+  }
+
+  if (Config.axios?.interceptors?.length) {
+    Config.axios?.interceptors.forEach((interceptor) => {
+      const { onSuccess, onError } = interceptor;
+      axios.interceptors.response.use(onSuccess, onError);
+    });
+  }
+
+  const options = genBaseOptions(requestInfo);
   if (typeof window.axiosOptionsSetup === 'function') {
     window.axiosOptionsSetup(options);
   }
@@ -176,7 +182,42 @@ const requester = function (requestInfo) {
   
   return req;
 };
+
+const sseRequester = function (requestInfo) {
+  const { url, config = {} } = requestInfo;
+  if (config.download) {
+    return download(url);
+  }
+
+  const controller = new AbortController(); 
+  
+  const { body } = requestInfo;
+  const { onMessage, onClose, onError } = body;
+  delete body.onMessage;
+  delete body.onClose;
+  delete body.onError;
+  
+  const options = genBaseOptions(requestInfo);
+
+  fetchEventSource(url, {
+      ...options,
+      signal: controller.signal,
+      onmessage: onMessage,
+      onclose: onClose,
+      onerror: onError,
+  });
+
+  function close() {
+    controller.abort();
+  }
+
+  
+  return Promise.resolve({
+    __close: close,
+  });
+};
 const service = new Service(requester);
+const sseService = new Service(sseRequester);
 
 // 调整请求路径
 const adjustPathWithSysPrefixPath = (apiSchemaList) => {
@@ -243,7 +284,15 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
     });
     serviceConfig = fixServiceConfig;
     const newApiSchemaMap = adjustPathWithSysPrefixPath(apiSchemaList);
-
+    const normalApiSchemaMap = {};
+    const sseApiSchemaMap = {};
+    Object.entries(newApiSchemaMap).forEach(([key, value]) => {
+      if ((value as any)?.config?.serviceType === 'sse') {
+        sseApiSchemaMap[key] = value;
+      } else {
+        normalApiSchemaMap[key] = value;
+      }
+    })
     service.preConfig.set('preRequest',   {
         resolve(requestInfo, preData) {
           const HttpRequest = {
@@ -258,6 +307,22 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
           };
           return  window.preRequest && window.preRequest(HttpRequest, preData);
         }
+    });
+    // TODO
+    sseService.preConfig.set('preRequest',   {
+      resolve(requestInfo, preData) {
+        const HttpRequest = {
+            requestURI: requestInfo.url.path,
+            remoteIp: '',
+            requestMethod: requestInfo.url.method,
+            body: JSON.stringify(requestInfo.url.body),
+            headers: requestInfo.url.headers,
+            querys: JSON.stringify(requestInfo.url.query),
+            cookies: foramtCookie(document.cookie),
+            requestInfo
+        };
+        return  window.preRequest && window.preRequest(HttpRequest, preData);
+      }
     });
     serviceConfig.config.preRequest = true;
 
@@ -320,6 +385,68 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
             throw err;
         },
     });
+
+    // TODO
+    sseService.postConfig.set('postRequest', {
+      resolve(response, params, requestInfo) {
+          if (!response) {
+              return Promise.reject();
+          }
+          const status = 'success';
+          const { config } = requestInfo;
+          const serviceType = config?.serviceType;
+          if (serviceType && serviceType === 'external') {
+              return response;
+          }
+          const HttpResponse = {
+              status: response.status + '',
+              body: JSON.stringify(response.data),
+              headers: response.headers,
+              cookies: foramtCookie(document.cookie),
+          };
+          window.postRequest && window.postRequest(HttpResponse, requestInfo, status);
+          return response;
+      },
+    });
+    sseService.postConfig.set('postRequestError', {
+        reject(response, params, requestInfo) {
+            response.Code = response.code || response.status;
+            const status = 'error';
+            const err = response;
+            const { config } = requestInfo;
+            if (err === 'expired request') {
+                throw err;
+            }
+            if (!err.response) {
+                if (!config.noErrorTip) {
+                    Config.toast.error('系统错误，请查看日志！');
+                    return;
+                }
+            }
+            if (window.LcapMicro?.loginFn) {
+                if (err.Code === 401 && err.Message === 'token.is.invalid') {
+                    window.LcapMicro.loginFn();
+                    return;
+                }
+                if (err.Code === 'InvalidToken' && err.Message === 'Token is invalid') {
+                    window.LcapMicro.loginFn();
+                    return;
+                }
+            }
+            if (err.Code === 501 && err.Message === 'abort') {
+                throw Error('程序中止');
+            }
+            const HttpResponse = {
+                status: response.response.status + '',
+                body: JSON.stringify(response.response.data),
+                headers: response.response.headers,
+                cookies: foramtCookie(document.cookie),
+            };
+            window.postRequest && window.postRequest(HttpResponse, requestInfo, status);
+            throw err;
+        },
+    });
+
     serviceConfig.config = {
         ...serviceConfig.config,
         priority: {
@@ -338,6 +465,15 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
         }
         return response;
     });
+    // TODO
+    sseService.postConfig.set('lcapLocation', (response, params, requestInfo) => {
+      const lcapLocation = response?.headers['lcap-location'];
+      if (lcapLocation) {
+          location.href = lcapLocation;
+      }
+      return response;
+    });
+
     serviceConfig.config = {
         ...serviceConfig.config,
         priority: {
@@ -347,18 +483,31 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
     };
     serviceConfig.config.lcapLocation = true;
     service.postConfig.set('shortResponse', shortResponse);
-    let logicsInstance=  service.generator(newApiSchemaMap, dynamicServices, serviceConfig);
+    // TODO
+    sseService.postConfig.set('shortResponse', shortResponse);
+    // let logicsInstance=  service.generator(normalApiSchemaMap, dynamicServices, serviceConfig);
+    let logicsInstance= {};
+    let sseInstance = sseService.generator(sseApiSchemaMap, dynamicServices, serviceConfig);
     let mockInstance ={}
     if (window.appInfo.isPreviewFe) {
-        if(window?.allMockData?.mock){
-            let mockApiList =JSON.parse(window?.allMockData?.mock).map(v=>v.name)
-            JSON.parse(window?.allMockData?.mock).map(v=>{
-             createMockServiceByData(v.name, getData(v.mockData), mockInstance)
-            })
-            Object.keys(logicsInstance).map(apiName => !mockInstance[apiName] && (mockInstance[apiName]= logicsInstance[apiName]))
-        }
+      const allLogicData = {
+        ...logicsInstance,
+        ...sseInstance
+      }
+      if(window?.allMockData?.mock){
+          console.log('window?.allMockData?.mock===>')
+          let mockApiList =JSON.parse(window?.allMockData?.mock).map(v=>v.name)
+          JSON.parse(window?.allMockData?.mock).map(v=>{
+            createMockServiceByData(v.name, getData(v.mockData), mockInstance)
+          })
+          Object.keys(allLogicData).map(apiName => !mockInstance[apiName] && (mockInstance[apiName]= allLogicData[apiName]))
+      }
      }else{
-        mockInstance= logicsInstance
+        mockInstance= {
+          ...logicsInstance,
+          ...sseInstance
+        }
      }
+     console.log('mockInstance===>+++',mockInstance)
     return mockInstance
 };

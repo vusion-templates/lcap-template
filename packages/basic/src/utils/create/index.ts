@@ -13,6 +13,7 @@ import { createMockServiceByData} from "./mockData.js";
 
 import Config from "../../config";
 
+const MAX_RETRY_TIME = 10;
 const getData = (str)=> (new Function('return ' + str))();
 
 const formatContentType = function (contentType, data) {
@@ -120,6 +121,11 @@ function download(url) {
         }));
 }
 
+function formatCallConnectorPath(path: string, connectionName: string): string {
+  const [prefix, connectorName, ...rt] = path?.split('/')?.filter(i => i);
+  return `/${prefix}/${connectorName}/${connectionName}/${rt.join('/')}`
+}
+
 function genBaseOptions(requestInfo) {
   const { url, config = {} } = requestInfo;
   const { method, body = {}, headers = {}, query = {} } = url;
@@ -162,6 +168,11 @@ function genBaseOptions(requestInfo) {
 
 const requester = function (requestInfo) {
   const { url, config = {} } = requestInfo;
+  // 如果参数中存在 connectionName 则认为请求来自于 CallConnector
+  const connectionName = config?.connectionName;
+  if (connectionName && url) {
+    url.path = formatCallConnectorPath(url.path, connectionName);
+  }
   if (config?.serviceType === 'sse') {
     return sseRequester(requestInfo);
   }
@@ -206,14 +217,21 @@ const sseRequester = function (requestInfo) {
   function close() {
     controller.abort();
   }
-
-  return fetchEventSource(url, {
+  let retryTimer = config?.retryTime || MAX_RETRY_TIME;
+  return fetchEventSource(url?.path, {
     ...options,
     signal: controller.signal,
+    openWhenHidden: true, // 当窗口被隐藏时，阻止再次发送请求
     onmessage: onMessage,
     onclose: onClose,
-    onerror: onError,
-  }).then(() => {
+    onerror: (e) => {
+      if (retryTimer-- > 0) {
+        onError(e);
+        return;
+      }
+      close();
+    },
+  }).finally(() => {
     return {
       data: {
         __close: close,

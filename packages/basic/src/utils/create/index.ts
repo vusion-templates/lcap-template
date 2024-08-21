@@ -14,6 +14,8 @@ import { createMockServiceByData} from "./mockData.js";
 import Config from "../../config";
 
 const MAX_RETRY_TIME = 10;
+export const EventStreamContentType = 'text/event-stream';
+
 const getData = (str)=> (new Function('return ' + str))();
 
 const formatContentType = function (contentType, data) {
@@ -217,19 +219,27 @@ const sseRequester = function (requestInfo) {
   function close() {
     controller.abort();
   }
-  let retryTimer = config?.retryTime || MAX_RETRY_TIME;
+  let retryTimer = (config?.retryTime || MAX_RETRY_TIME) - 1;
   return fetchEventSource(url?.path, {
     ...options,
     signal: controller.signal,
     openWhenHidden: true, // 当窗口被隐藏时，阻止再次发送请求
     onmessage: onMessage,
     onclose: onClose,
+    onopen: async (response) => {
+        if (retryTimer === 0) {
+          close();
+        }
+        const contentType = response.headers.get('content-type');
+        if (!(contentType === null || contentType === void 0 ? void 0 : contentType.startsWith(EventStreamContentType))) {
+            throw new Error(`Expected content-type to be ${EventStreamContentType}, Actual: ${contentType}`);
+        }
+    },
     onerror: (e) => {
       if (retryTimer-- > 0) {
-        onError(e);
         return;
       }
-      close();
+      onError(e);
     },
   }).finally(() => {
     return {
@@ -355,6 +365,9 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
     });
     service.postConfig.set('postRequestError', {
         reject(response, params, requestInfo) {
+            if (requestInfo?.config?.serviceType === 'sse') {
+              throw Error('远端调用异常');
+            }
             response.Code = response.code || response.status;
             const status = 'error';
             const err = response;

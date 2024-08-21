@@ -144,14 +144,7 @@ const requester = function (requestInfo) {
     data = formatContentType(headers["Content-Type"], body);
   }
 
-  if (Config.utils?.axiosInterceptors?.length) {
-    Config.utils?.axiosInterceptors.forEach((interceptor) => {
-      const { onSuccess, onError } = interceptor;
-      axios.interceptors.response.use(onSuccess, onError);
-    });
-  }
-
-  const req = axios({
+  const options = {
     params: query,
     paramsSerializer,
     baseURL,
@@ -159,10 +152,20 @@ const requester = function (requestInfo) {
     url: path,
     data,
     headers,
-    withCredentials: !baseURL,
+    withCredentials: config.withCredentials || !baseURL,
     xsrfCookieName: "csrfToken",
     xsrfHeaderName: "x-csrf-token",
-  });
+    onUploadProgress: typeof config.onUploadProgress === 'function' ? config.onUploadProgress : () => {},
+    onDownloadProgress: typeof config.onDownloadProgress === 'function' ? config.onDownloadProgress : () => {},
+  };
+
+  // 自定义请求信息
+  if (typeof Config.configureRequest === "function") {
+    Config.configureRequest(options, axios);
+  }
+
+  const req = axios(options);
+
   return req;
 };
 const service = new Service(requester);

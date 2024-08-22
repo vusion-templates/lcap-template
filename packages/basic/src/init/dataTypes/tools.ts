@@ -47,6 +47,9 @@ export function genSortedTypeKey(typeAnnotation) {
       typeKeyArr.push(childTypeArgs.join(", "));
     }
     typeKeyArr.push("}");
+  } else if (typeKind === 'function') {
+    typeNamespace && typeKeyArr.push(typeNamespace);
+    typeKeyArr.push('.Function');
   } else {
     const typeArr = [];
     typeNamespace && typeArr.push(typeNamespace);
@@ -407,6 +410,11 @@ const isTypeMatch = (typeKey, value) => {
         (isDefNumber(typeKey) && typeStr !== "[object Number]") ||
         (isDefString(typeKey) && typeStr !== "[object String]")
       ) {
+        isMatch = false;
+      }
+    } else {
+      // ide 中目前无法构造出 Function 类型的数据结构，因此不做匹配
+      if (typeKey === "nasl.core.Function") {
         isMatch = false;
       }
     }

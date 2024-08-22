@@ -225,7 +225,7 @@ const sseRequester = function (requestInfo) {
   }
   
   let retryTimer = (config?.retryTime || MAX_RETRY_TIME) - 1;
-  return fetchEventSource(url?.path, {
+  fetchEventSource(url?.path, {
     ...options,
     body: JSON.stringify(body),
     signal: controller.signal,
@@ -247,7 +247,9 @@ const sseRequester = function (requestInfo) {
       }
       onError(e);
     },
-  }).finally(() => {
+  });
+
+  return Promise.resolve(() => {
     return {
       data: {
         __close: close,
@@ -322,15 +324,6 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
     });
     serviceConfig = fixServiceConfig;
     const newApiSchemaMap = adjustPathWithSysPrefixPath(apiSchemaList);
-    const normalApiSchemaMap = {};
-    const sseApiSchemaMap = {};
-    Object.entries(newApiSchemaMap).forEach(([key, value]) => {
-      if ((value as any)?.config?.serviceType === 'sse') {
-        sseApiSchemaMap[key] = value;
-      } else {
-        normalApiSchemaMap[key] = value;
-      }
-    })
     service.preConfig.set('preRequest',   {
         resolve(requestInfo, preData) {
           const HttpRequest = {
@@ -352,6 +345,12 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
         resolve(response, params, requestInfo) {
             if (!response) {
                 return Promise.reject();
+            }
+            if (requestInfo?.config?.serviceType === 'sse') {
+              if (response instanceof Function) {
+                return response();
+              }
+              return response;
             }
             const status = 'success';
             const { config } = requestInfo;
@@ -423,7 +422,7 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
     serviceConfig.config.postRequestError = true;
 
     service.postConfig.set('lcapLocation', (response, params, requestInfo) => {
-        const lcapLocation = response?.headers['lcap-location'];
+        const lcapLocation = response?.headers?.['lcap-location'];
         if (lcapLocation) {
             location.href = lcapLocation;
         }
@@ -443,7 +442,6 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
     let mockInstance ={}
     if (window.appInfo.isPreviewFe) {
       if(window?.allMockData?.mock){
-          console.log('window?.allMockData?.mock===>')
           let mockApiList =JSON.parse(window?.allMockData?.mock).map(v=>v.name)
           JSON.parse(window?.allMockData?.mock).map(v=>{
             createMockServiceByData(v.name, getData(v.mockData), mockInstance)

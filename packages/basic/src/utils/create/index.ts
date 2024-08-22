@@ -222,6 +222,7 @@ const sseRequester = function (requestInfo) {
   let retryTimer = (config?.retryTime || MAX_RETRY_TIME) - 1;
   return fetchEventSource(url?.path, {
     ...options,
+    body: JSON.stringify(body),
     signal: controller.signal,
     openWhenHidden: true, // 当窗口被隐藏时，阻止再次发送请求
     onmessage: onMessage,

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Service from 'request-pre';
-import { fetchEventSource } from '@microsoft/fetch-event-source';
+import { fetchEventSource, EventSourceMessage } from '@microsoft/fetch-event-source';
 import { stringify } from 'qs';
 
 import { formatMicroFrontUrl } from "../../init/router/microFrontUrl"; // 微前端路由方法
@@ -219,13 +219,18 @@ const sseRequester = function (requestInfo) {
   function close() {
     controller.abort();
   }
+
+  function formatMessage(m: EventSourceMessage) {
+    return onMessage(m.data);
+  }
+  
   let retryTimer = (config?.retryTime || MAX_RETRY_TIME) - 1;
   return fetchEventSource(url?.path, {
     ...options,
     body: JSON.stringify(body),
     signal: controller.signal,
     openWhenHidden: true, // 当窗口被隐藏时，阻止再次发送请求
-    onmessage: onMessage,
+    onmessage: formatMessage,
     onclose: onClose,
     onopen: async (response) => {
         if (retryTimer === 0) {

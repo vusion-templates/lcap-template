@@ -124,8 +124,8 @@ function download(url) {
 }
 
 function formatCallConnectorPath(path: string, connectionName: string): string {
-  const [prefix, connectorName, ...rt] = path?.split('/')?.filter(i => i);
-  return `/${prefix}/${connectorName}/${connectionName}/${rt.join('/')}`
+  const [prefix1, prefix2, connectorName, ...rt] = path?.split('/')?.filter(i => i);
+  return `/${prefix1}/${prefix2}/${connectorName}/${connectionName}/${rt.join('/')}`
 }
 
 function genBaseOptions(requestInfo) {

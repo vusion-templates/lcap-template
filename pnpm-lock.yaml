@@ -263,6 +263,9 @@ importers:
       '@lcap/core-template':
         specifier: workspace:*
         version: link:../core
+      '@vue/composition-api':
+        specifier: ^1.7.2
+        version: 1.7.2(vue@2.6.12)
       '@vusion/utils':
         specifier: ^0.4.10
         version: 0.4.11
@@ -1699,6 +1702,11 @@ packages:
 
   '@vue/component-compiler-utils@3.3.0':
     resolution: {integrity: sha512-97sfH2mYNU+2PzGrmK2haqffDpVASuib9/w2/noxiFi31Z54hW+q3izKQXXQZSNhtiUpAI36uSuYepeBe4wpHQ==}
+
+  '@vue/composition-api@1.7.2':
+    resolution: {integrity: sha512-M8jm9J/laYrYT02665HkZ5l2fWTK4dcVg3BsDHm/pfz+MjDYwX+9FUaZyGwEyXEDonQYRCo0H7aLgdklcIELjw==}
+    peerDependencies:
+      vue: '>= 2.5 < 2.7'
 
   '@vusion/categories-db@0.1.2':
     resolution: {integrity: sha512-shtOVcH/uvFxuzK2Cd9qtJ2kdAvO5NPgFkY39VAJSVELuGmP6wWYXOLSm/yV15bLJxWjNbyB81XP2vRLMfwwGg==}
@@ -7823,6 +7831,10 @@ snapshots:
       - velocityjs
       - walrus
       - whiskers
+
+  '@vue/composition-api@1.7.2(vue@2.6.12)':
+    dependencies:
+      vue: 2.6.12
 
   '@vusion/categories-db@0.1.2': {}
 

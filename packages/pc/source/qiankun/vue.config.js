@@ -15,6 +15,7 @@ module.exports = {
         }
     },
     lintOnSave: false,
+    runtimeCompiler: true,
     chainWebpack: (config) => {
         config.module.rule('fonts').use('url-loader').loader('url-loader').options({}).end();
         config.module.rule('images').use('url-loader').loader('url-loader').options({}).end();

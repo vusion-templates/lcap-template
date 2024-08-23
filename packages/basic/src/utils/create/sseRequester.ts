@@ -39,7 +39,7 @@ export const sseRequester = function (requestInfo) {
           close();
         }
         const contentType = response.headers.get('content-type');
-        if (!contentType?.startsWith?.(EventStreamContentType)) {
+        if (contentType !== EventStreamContentType) {
             throw new Error(`Expected content-type to be ${EventStreamContentType}, Actual: ${contentType}`);
         }
     },
@@ -49,6 +49,7 @@ export const sseRequester = function (requestInfo) {
     },
   }).catch(e => {
     // catch err
+    console.error(e);
   });
 
   return Promise.resolve({

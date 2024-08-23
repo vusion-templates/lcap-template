@@ -121,9 +121,8 @@ function download(url) {
 }
 
 function formatCallConnectorPath(path: string, connectionName: string): string {
-  if (!path) return;
   // /api/connectors/connector1/namespace1/getA
-  const pathItemList = path.split('/').filter(i => i);
+  const pathItemList = (path || '').split('/').filter(i => i);
   if (pathItemList.length < 3) {
     throw Error('unexpected path when use CallConnector')
   }

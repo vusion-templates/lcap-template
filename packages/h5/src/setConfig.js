@@ -23,19 +23,44 @@ setConfig({
     getFrontendVariables,
     destination,
     createRouter,
-    utils: {
-        axiosInterceptors: [
-            {
-                onSuccess(response) {
-                    if (response.headers.authorization) {
-                        response.data.authorization = response.headers.authorization;
-                    }
-                    return response;
-                },
-                onError(error) {
-                    return Promise.reject(error);
-                },
+    utils: {},
+    configureRequest(options, axios) {
+        axios.interceptors.response.use(
+            function onSuccess(response) {
+                if (response.headers.authorization) {
+                    response.data.authorization = response.headers.authorization;
+                }
+                return response;
             },
-        ],
+            function onError(error) {
+                return Promise.reject(error);
+            }
+        );
+
+        /**
+         * options配置参考
+         * https://axios-http.com/zh/docs/req_config
+         */
+
+        // 修改请求baseURL
+        // options.baseURL = 'https://some-domain.com/api';
+
+        // 增加额外的请求头
+        // options.headers = {
+        //     ...(options.headers || {}),
+        //     key1: 'value1',
+        // }
+
+        // 增加额外的请求参数（带在请求链接上）
+        // options.params = {
+        //     ...(options.params || {}),
+        //     key2: 'value2',
+        // };
+
+        // 增加额外的请求参数（带在请求体上）
+        // options.data = {
+        //     ...(options.data || {}),
+        //     key3: 'value3',
+        // }
     },
 });

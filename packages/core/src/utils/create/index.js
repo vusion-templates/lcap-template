@@ -160,9 +160,11 @@ export function genBaseOptions(requestInfo) {
     url: path,
     data,
     headers,
-    withCredentials: !baseURL,
+    withCredentials: config.withCredentials || !baseURL,
     xsrfCookieName: "csrfToken",
     xsrfHeaderName: "x-csrf-token",
+    onUploadProgress: typeof config.onUploadProgress === 'function' ? config.onUploadProgress : () => {},
+    onDownloadProgress: typeof config.onDownloadProgress === 'function' ? config.onDownloadProgress : () => {},
   }
 }
 
@@ -196,6 +198,11 @@ const requester = function (requestInfo) {
 
   if (typeof window.axiosOptionsSetup === 'function') {
     window.axiosOptionsSetup(options);
+  };
+
+  // 自定义请求信息
+  if (typeof Config.configureRequest === "function") {
+    Config.configureRequest(options, axios);
   }
 
   const req = axios(options);

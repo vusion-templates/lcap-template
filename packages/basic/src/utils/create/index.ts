@@ -1,6 +1,5 @@
 import axios from 'axios';
 import Service from 'request-pre';
-import { fetchEventSource, EventSourceMessage } from '@microsoft/fetch-event-source';
 import { stringify } from 'qs';
 
 import { formatMicroFrontUrl } from "../../init/router/microFrontUrl"; // 微前端路由方法
@@ -10,11 +9,9 @@ import { addConfigs, shortResponse } from "./add.configs";
 import { getFilenameFromContentDispositionHeader } from "./tools";
 import paramsSerializer from "./paramsSerializer";
 import { createMockServiceByData} from "./mockData.js";
+import { sseRequester } from './sseCreator';
 
 import Config from "../../config";
-
-const MAX_RETRY_TIME = 10;
-export const EventStreamContentType = 'text/event-stream';
 
 const getData = (str)=> (new Function('return ' + str))();
 
@@ -128,7 +125,7 @@ function formatCallConnectorPath(path: string, connectionName: string): string {
   return `/${prefix1}/${prefix2}/${connectorName}/${connectionName}/${rt.join('/')}`
 }
 
-function genBaseOptions(requestInfo) {
+export function genBaseOptions(requestInfo) {
   const { url, config = {} } = requestInfo;
   const { method, body = {}, headers = {}, query = {} } = url;
   const path = formatMicroFrontUrl(url.path);
@@ -175,11 +172,11 @@ const requester = function (requestInfo) {
   if (connectionName && url) {
     url.path = formatCallConnectorPath(url.path, connectionName);
   }
-  if (config?.serviceType === 'sse') {
-    return sseRequester(requestInfo);
-  }
   if (config.download) {
     return download(url);
+  }
+  if (config?.serviceType === 'sse') {
+    return sseRequester(requestInfo);
   }
 
   if (Config.axios?.interceptors?.length) {
@@ -199,62 +196,7 @@ const requester = function (requestInfo) {
   return req;
 };
 
-const sseRequester = function (requestInfo) {
-  const { url, config = {} } = requestInfo;
-  if (config.download) {
-    return download(url);
-  }
 
-  const controller = new AbortController(); 
-  
-  const { body } = url;
-  const { onMessage, onClose, onError, ...rest } = body;
-  body.onMessage = undefined;
-  body.onClose = undefined;
-  body.onError = undefined;
-  
-  const options = genBaseOptions(requestInfo);
-  
-
-  function close() {
-    controller.abort();
-  }
-
-  function formatMessage(m: EventSourceMessage) {
-    return onMessage(m.data);
-  }
-  
-  let retryTimer = (config?.retryTime || MAX_RETRY_TIME) - 1;
-  fetchEventSource(url?.path, {
-    ...options,
-    body: JSON.stringify(rest),
-    signal: controller.signal,
-    openWhenHidden: true, // 当窗口被隐藏时，阻止再次发送请求
-    onmessage: formatMessage,
-    onclose: onClose,
-    onopen: async (response) => {
-        if (retryTimer === 0) {
-          close();
-        }
-        const contentType = response.headers.get('content-type');
-        if (!(contentType === null || contentType === undefined ? undefined : contentType.startsWith(EventStreamContentType))) {
-            throw new Error(`Expected content-type to be ${EventStreamContentType}, Actual: ${contentType}`);
-        }
-    },
-    onerror: (e) => {
-      if (retryTimer-- > 0) {
-        return;
-      }
-      onError(e);
-    },
-  });
-
-  return Promise.resolve({
-    data: {
-      __close: close,
-    }
-  });
-};
 const service = new Service(requester);
 
 // 调整请求路径

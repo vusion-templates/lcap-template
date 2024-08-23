@@ -1,6 +1,6 @@
 import { fetchEventSource, EventSourceMessage } from '@microsoft/fetch-event-source';
 import { genBaseOptions } from './index';
-export const MAX_RETRY_TIME = 10;
+export const MAX_RETRY_TIME = 0;
 export const EventStreamContentType = 'text/event-stream';
 
 export const sseRequester = function (requestInfo) {
@@ -22,10 +22,10 @@ export const sseRequester = function (requestInfo) {
   }
 
   function formatMessage(m: EventSourceMessage) {
-    return onMessage(m.data);
+    return onMessage?.(m.data);
   }
   
-  let leftRetries = (config?.retryTimes ?? MAX_RETRY_TIME) - 1;
+  let leftRetries = (body?.retryTimes ?? MAX_RETRY_TIME) - 1;
   fetchEventSource(url?.path, {
     ...options,
     body: JSON.stringify(rest),
@@ -43,10 +43,7 @@ export const sseRequester = function (requestInfo) {
         }
     },
     onerror: (e) => {
-      if (leftRetries-- > 0) {
-        return;
-      }
-      onError(e);
+      onError?.(e);
     },
   });
 

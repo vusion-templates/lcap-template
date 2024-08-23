@@ -25,7 +25,7 @@ export const sseRequester = function (requestInfo) {
     return onMessage?.(m.data);
   }
   
-  let leftRetries = (body?.retryTimes ?? MAX_RETRY_TIME) - 1;
+  let leftRetries = Math.max((body?.retryTimes ?? MAX_RETRY_TIME) - 1, 0);
   fetchEventSource(url?.path, {
     ...options,
     body: JSON.stringify(rest),

@@ -9,7 +9,7 @@ import { addConfigs, shortResponse } from "./add.configs";
 import { getFilenameFromContentDispositionHeader } from "./tools";
 import paramsSerializer from "./paramsSerializer";
 import { createMockServiceByData} from "./mockData.js";
-import { sseRequester } from './sseCreator';
+import { sseRequester } from './sseRequester';
 
 import Config from "../../config";
 
@@ -121,7 +121,9 @@ function download(url) {
 }
 
 function formatCallConnectorPath(path: string, connectionName: string): string {
-  const [prefix1, prefix2, connectorName, ...rt] = path?.split('/')?.filter(i => i);
+  if (!path) return;
+  // /api/connectors/connector1/namespace1/getA
+  const [prefix1, prefix2, connectorName, ...rt] = path.split('/').filter(i => i);
   return `/${prefix1}/${prefix2}/${connectorName}/${connectionName}/${rt.join('/')}`
 }
 
@@ -167,6 +169,9 @@ export function genBaseOptions(requestInfo) {
 
 const requester = function (requestInfo) {
   const { url, config = {} } = requestInfo;
+  if (!url?.path) {
+    throw Error('unexpected url path as', url?.path);
+  }
   // 如果参数中存在 connectionName 则认为请求来自于 CallConnector
   const connectionName = config?.connectionName;
   if (connectionName && url) {

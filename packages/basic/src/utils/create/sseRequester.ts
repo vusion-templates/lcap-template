@@ -1,7 +1,8 @@
 import { fetchEventSource, EventSourceMessage } from '@microsoft/fetch-event-source';
 import { genBaseOptions } from './index';
-export const MAX_RETRY_TIME = 0;
-export const EventStreamContentType = 'text/event-stream';
+
+const MAX_RETRY_TIME = 0;
+const EventStreamContentType = 'text/event-stream';
 
 export const sseRequester = function (requestInfo) {
   const { url, config = {} } = requestInfo;
@@ -26,7 +27,7 @@ export const sseRequester = function (requestInfo) {
   }
   
   let leftRetries = Math.max((body?.retryTimes ?? MAX_RETRY_TIME) - 1, 0);
-  fetchEventSource(url?.path, {
+  fetchEventSource(url.path, {
     ...options,
     body: JSON.stringify(rest),
     signal: controller.signal,
@@ -34,15 +35,16 @@ export const sseRequester = function (requestInfo) {
     onmessage: formatMessage,
     onclose: onClose,
     onopen: async (response) => {
-        if (leftRetries > 0) {
+        if (leftRetries < 0) {
           close();
         }
         const contentType = response.headers.get('content-type');
-        if (!(contentType === null || contentType === undefined ? undefined : contentType.startsWith(EventStreamContentType))) {
+        if (!contentType?.startsWith?.(EventStreamContentType)) {
             throw new Error(`Expected content-type to be ${EventStreamContentType}, Actual: ${contentType}`);
         }
     },
     onerror: (e) => {
+      leftRetries --;
       onError?.(e);
     },
   });

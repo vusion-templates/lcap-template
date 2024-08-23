@@ -379,11 +379,11 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
     let mockInstance ={}
     if (window.appInfo.isPreviewFe) {
       if(window?.allMockData?.mock){
-          let mockApiList =JSON.parse(window?.allMockData?.mock).map(v=>v.name)
-          JSON.parse(window?.allMockData?.mock).map(v=>{
-            createMockServiceByData(v.name, getData(v.mockData), mockInstance)
-          })
-          Object.keys(logicsInstance).map(apiName => !mockInstance[apiName] && (mockInstance[apiName]= logicsInstance[apiName]))
+        let mockApiList =JSON.parse(window?.allMockData?.mock).map(v=>v.name)
+        JSON.parse(window?.allMockData?.mock).map(v=>{
+         createMockServiceByData(v.name, getData(v.mockData), mockInstance)
+        })
+        Object.keys(logicsInstance).map(apiName => !mockInstance[apiName] && (mockInstance[apiName]= logicsInstance[apiName]))
       }
      }else{
         mockInstance= logicsInstance;

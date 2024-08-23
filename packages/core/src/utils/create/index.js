@@ -7,6 +7,7 @@ import { addConfigs, shortResponse } from "./add.configs";
 import { getFilenameFromContentDispositionHeader } from "./tools";
 import paramsSerializer from "./paramsSerializer";
 import { formatMicroFrontUrl } from "../../plugins/router/microFrontUrl"; // 微前端路由方法
+import { sseRequester } from './sseRequester';
 
 import Config from '../../config';
 import { createMockServiceByData} from "./mockData.js";
@@ -115,7 +116,17 @@ function download(url) {
         }));
 }
 
-const requester = function (requestInfo) {
+function formatCallConnectorPath(path, connectionName) {
+  // /api/connectors/connector1/namespace1/getA
+  const pathItemList = (path || '').split('/').filter(i => i);
+  if (pathItemList.length < 3) {
+    throw Error('unexpected path when use CallConnector')
+  }
+  const [prefix1, prefix2, connectorName, ...rt] = pathItemList;
+  return `/${prefix1}/${prefix2}/${connectorName}/${connectionName}/${rt.join('/')}`
+}
+
+export function genBaseOptions(requestInfo) {
   const { url, config = {} } = requestInfo;
   const { method, body = {}, headers = {}, query = {} } = url;
   const path = formatMicroFrontUrl(url.path);
@@ -131,9 +142,6 @@ const requester = function (requestInfo) {
   // 用户本地时区信息，传递给后端
   headers.TimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  if (config.download) {
-    return download(url);
-  }
   let data;
   const method2 = method.toUpperCase();
   if (
@@ -144,14 +152,7 @@ const requester = function (requestInfo) {
     data = formatContentType(headers["Content-Type"], body);
   }
 
-  if (Config.utils?.axiosInterceptors?.length) {
-    Config.utils?.axiosInterceptors.forEach((interceptor) => {
-      const { onSuccess, onError } = interceptor;
-      axios.interceptors.response.use(onSuccess, onError);
-    });
-  }
-
-  const options = {
+  return {
     params: query,
     paramsSerializer,
     baseURL,
@@ -163,6 +164,35 @@ const requester = function (requestInfo) {
     xsrfCookieName: "csrfToken",
     xsrfHeaderName: "x-csrf-token",
   }
+}
+
+const requester = function (requestInfo) {
+  const { url, config = {} } = requestInfo;
+  if (!url?.path) {
+    throw Error('unexpected url path as', url?.path);
+  }
+  
+  // 如果参数中存在 connectionName 则认为请求来自于 CallConnector
+  const connectionName = config?.connectionName;
+  if (connectionName && url) {
+    url.path = formatCallConnectorPath(url.path, connectionName);
+  }
+  if (config.download) {
+    return download(url);
+  }
+
+  if (config?.serviceType === 'sse') {
+    return sseRequester(requestInfo);
+  }
+
+  if (Config.axios?.interceptors?.length) {
+    Config.axios?.interceptors.forEach((interceptor) => {
+      const { onSuccess, onError } = interceptor;
+      axios.interceptors.response.use(onSuccess, onError);
+    });
+  }
+
+  const options = genBaseOptions(requestInfo);
 
   if (typeof window.axiosOptionsSetup === 'function') {
     window.axiosOptionsSetup(options);
@@ -263,6 +293,9 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
                 if (!response) {
                     return Promise.reject();
                 }
+                if (requestInfo?.config?.serviceType === 'sse') {
+                  return response;
+                }
                 const status = 'success';
                 const { config } = requestInfo;
                 const serviceType = config?.serviceType;
@@ -281,6 +314,10 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
         });
         service.postConfig.set('postRequestError', {
             reject(response, params, requestInfo) {
+                if (requestInfo?.config?.serviceType === 'sse') {
+                  throw Error('远端调用异常');
+                }
+
                 response.Code = response.code || response.status;
                 const status = 'error';
                 const err = response;
@@ -330,7 +367,7 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
         serviceConfig.config.postRequestError = true;
     }
     service.postConfig.set('lcapLocation', (response, params, requestInfo) => {
-        const lcapLocation = response?.headers['lcap-location'];
+        const lcapLocation = response?.headers?.['lcap-location'];
         if (lcapLocation) {
             location.href = lcapLocation;
         }

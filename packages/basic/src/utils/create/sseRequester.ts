@@ -47,6 +47,8 @@ export const sseRequester = function (requestInfo) {
       leftRetries --;
       onError?.(e);
     },
+  }).catch(e => {
+    // catch err
   });
 
   return Promise.resolve({

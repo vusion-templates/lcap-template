@@ -396,7 +396,7 @@ const isTypeMatch = (typeKey, value) => {
   const isValuePrimitive = isValPrimitive(value); // 类型字符串
   const typeStr = Object.prototype.toString.call(value);
   const { concept } = typeAnnotation || {};
-  let isMatch =
+  let isMatch = 
     isPrimitive === isValuePrimitive ||
     (concept === "Enum" && typeStr === "[object String]");
   // 大类型匹配的基础上继续深入判断
@@ -467,6 +467,11 @@ export const genInitData = (typeKey, defaultValue, parentLevel?) => {
   }
   if (level > 2 && [undefined, null].includes(parsedValue)) {
     return;
+  }
+  
+  // nasl.interface下的类型无法通过构造器构造，因此直接返回
+  if (typeKey?.startsWith?.('nasl.interface.')) {
+    return parsedValue;
   }
   const isTypeMatched =
     parsedValue === undefined || isTypeMatch(typeKey, parsedValue);

@@ -15,9 +15,6 @@ export const getBaseHeaders = () => {
     return headers;
 };
 
-let userInfoPromise = null;
-let userResourcesPromise = null;
-
 export default {
   _map: undefined,
   authService: undefined,
@@ -28,44 +25,47 @@ export default {
     window.authService = this.authService;
   },
   getUserInfo() {
-    if (!userInfoPromise) {
-      if (window.appInfo.hasUserCenter) {
-        userInfoPromise = this.lowauthInitService.GetUser({
-          headers: getBaseHeaders(),
-          config: {
-            noErrorTip: true,
-          },
-        });
-      } else {
-        userInfoPromise = this.authService.GetUser({
-          headers: getBaseHeaders(),
-          config: {
-            noErrorTip: true,
-          },
-        });
-      }
-      userInfoPromise = userInfoPromise
-        .then((result) => {
-          const userInfo = result?.Data;
-          if (!userInfo?.UserId && userInfo?.userId) {
-            userInfo.UserId = userInfo.userId;
-            userInfo.UserName = userInfo.userName;
-          }
-          const $global = Vue.prototype.$global || {};
-          const frontendVariables =
-            Vue.prototype.$global.frontendVariables || {};
-          frontendVariables.userInfo = userInfo;
-          $global.userInfo = userInfo;
-          return userInfo;
-        })
-        .catch((e) => {
-          userInfoPromise = null;
-          throw e;
-        });
+    let userInfoPromise = null;
+
+    if (window.appInfo.hasUserCenter) {
+      userInfoPromise = this.lowauthInitService.GetUser({
+        headers: getBaseHeaders(),
+        config: {
+          noErrorTip: true,
+        },
+      });
+    } else {
+      userInfoPromise = this.authService.GetUser({
+        headers: getBaseHeaders(),
+        config: {
+          noErrorTip: true,
+        },
+      });
     }
+
+    userInfoPromise = userInfoPromise
+      .then((result) => {
+        const userInfo = result?.Data;
+        if (!userInfo?.UserId && userInfo?.userId) {
+          userInfo.UserId = userInfo.userId;
+          userInfo.UserName = userInfo.userName;
+        }
+        const $global = Vue.prototype.$global || {};
+        const frontendVariables =
+          Vue.prototype.$global.frontendVariables || {};
+        frontendVariables.userInfo = userInfo;
+        $global.userInfo = userInfo;
+        return userInfo;
+      })
+      .catch((e) => {
+        console.error("获取用户信息失败", e)
+        throw e;
+      });
+    
     return userInfoPromise;
   },
   getUserResources(DomainName) {
+    let userResourcesPromise = null;
     if (window.appInfo.hasAuth) {
       userResourcesPromise = this.lowauthInitService
         .GetUserResources({

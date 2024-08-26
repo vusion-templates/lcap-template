@@ -243,11 +243,15 @@ export const utils = {
       if (trail === true) {
         return res;
       } else {
-        const lastStr = res[res.length - 1];
-        if (lastStr.length === 0) {
-          res.pop();
+        if (res.length > 0) {
+          const lastStr = res[res.length - 1];
+          if (lastStr.length === 0) {
+            res.pop();
+          }
+          return res;
+        } else {
+          return [];
         }
-        return res;
       }
     }
     return [];

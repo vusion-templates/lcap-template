@@ -17,9 +17,9 @@ describe('Split 函数', () => {
 
     test('Split 函数 舍弃末尾空串', () => {
         expect(codewaveUtils.Split('', '.', false))
-        .toEqual([]);
+            .toEqual([]);
         expect(codewaveUtils.Split('', '', false))
-        .toEqual([]);
+            .toEqual([]);
         expect(codewaveUtils.Split('1.', '.', false))
             .toEqual(['1']);
         expect(codewaveUtils.Split('1..', '.', false))

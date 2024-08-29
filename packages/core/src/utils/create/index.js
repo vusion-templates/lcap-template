@@ -100,6 +100,7 @@ function download(url) {
         document.body.appendChild(link);
         link.click();
         link.remove();
+        window.URL.revokeObjectURL(downloadUrl);
         return Promise.resolve({
             data: {
                 code: status,

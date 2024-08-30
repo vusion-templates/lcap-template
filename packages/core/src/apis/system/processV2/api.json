@@ -154,5 +154,25 @@
             "path": "/api/system/processV2/getTaskInfo",
             "method": "post"
         }
+    },
+
+
+    "getTaskInstanceList": {
+        "url": {
+            "path": "/api/system/processV2/getTaskInstanceList",
+            "method": "post"
+        }
+    },
+    "getProcessInstanceList": {
+        "url": {
+            "path": "/api/system/processV2/getProcessInstanceList",
+            "method": "post"
+        }
+    },
+    "addTaskComment": {
+        "url": {
+            "path": "/api/system/processV2/addTaskComment",
+            "method": "post"
+        }
     }
 }

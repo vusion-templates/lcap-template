@@ -23,7 +23,7 @@ export const sseRequester = function (requestInfo) {
   }
 
   function formatMessage(m) {
-    return onMessage?.(m.data);
+    return onMessage?.(m.data, m.event);
   }
   
   let leftRetries = Math.max((body?.retryTimes ?? MAX_RETRY_TIME) - 1, 0);

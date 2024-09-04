@@ -167,6 +167,18 @@
             "method": "post"
         }
     },
+    "getMyCCTasks": {
+        "url": {
+            "path": "/api/processV2/getMyCCTasks",
+            "method": "post"
+        }
+    },
+    "viewCCTask": {
+        "url": {
+            "path": "/api/processV2/viewCCTask",
+            "method": "post"
+        }
+    },
 
 
     "getTaskInstanceList": {

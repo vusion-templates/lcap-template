@@ -1,7 +1,7 @@
 import { Decimal } from 'decimal.js';
 import CryptoJS from 'crypto-js';
 import { initService as configurationInitService } from '../../apis/configuration';
-import { initService as logService } from '../../apis/log';
+import { initService as logInitService } from '../../apis/log';
 import {
   initApplicationConstructor,
   genInitData,
@@ -260,12 +260,15 @@ export default {
        * @param {*} body 
        */
       async logReport(body) {
-        await logService()
-        .logReport({
-          body,
-        })
-        .then((res) => Promise.resolve(res))
-        .catch((err) => Promise.resolve(err));
+        try {
+          const logService = logInitService();
+          const res = await logService.logReport({
+            body,
+          });
+          return res;
+        } catch (err) {
+          return err;
+        }
       },
     };
     const $global = Config.setGlobal($g);

@@ -2,10 +2,13 @@ const upload = require('lcap/lib/upload');
 const fs = require('fs-extra');
 const path = require('path');
 const glob = require('glob');
+const getDeployConfig = require('./getDeployConfig');
 
 function deploy(options = {}) {
   const { root, dest, name, version, platform, username, password } = options;
   const source = path.resolve(root, dest);
+
+  const defaultConfig = getDeployConfig(options);
 
   if (!fs.statSync(source).isDirectory()) {
     console.error(`dest: '${dest}' is not a directory`);
@@ -38,9 +41,9 @@ function deploy(options = {}) {
   });
 
   return upload(formFiles, {
-    platform: platform,
-    username: username,
-    password: password,
+    platform: platform || defaultConfig.platform,
+    username: username || defaultConfig.username,
+    password: password || defaultConfig.password,
   })
     .then(() => {
       console.log(`上传成功`);

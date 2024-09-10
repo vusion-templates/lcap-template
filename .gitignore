@@ -32,3 +32,5 @@ umd/
 cjs/
 
 coverage/
+
+lcap.deploy.json

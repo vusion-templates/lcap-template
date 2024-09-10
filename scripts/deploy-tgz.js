@@ -1,6 +1,7 @@
 const upload = require('lcap/lib/upload');
 const fs = require('fs');
 const path = require('path');
+const getDeployConfig = require('./getDeployConfig');
 
 /**
  * 
@@ -15,6 +16,7 @@ const path = require('path');
  */
 function deployTgz(options = {}) {
   const { root, name, version, platform, username, password } = options;
+  const defaultConfig = getDeployConfig(options);
 
   const target = name.replace("@", "").replace("/", "-") + "-" + version + ".tgz";
   const targetPath = path.resolve(root, target);
@@ -48,9 +50,9 @@ function deployTgz(options = {}) {
   }];
 
   return upload(formFiles, {
-    platform: platform,
-    username: username,
-    password: password,
+    platform: platform || defaultConfig.platform,
+    username: username || defaultConfig.username,
+    password: password || defaultConfig.password,
   })
     .then(() => {
       console.log(`上传成功`);

@@ -71,7 +71,7 @@ function download(url) {
     const { path, method, body = {}, headers = {}, query = {}, timeout } = url;
 
     return axios({
-        url: path,
+        url: formatMicroFrontUrl(path),
         method,
         params: query,
         data: formatContentType(headers['Content-Type'], body),

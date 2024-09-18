@@ -3,7 +3,7 @@ import Service from 'request-pre';
 import { stringify } from 'qs';
 
 import cookie from "../cookie";
-import { addConfigs, shortResponse } from "./add.configs";
+import { addConfigs } from "./add.configs";
 import { getFilenameFromContentDispositionHeader } from "./tools";
 import paramsSerializer from "./paramsSerializer";
 import { formatMicroFrontUrl } from "../../plugins/router/microFrontUrl"; // 微前端路由方法
@@ -211,18 +211,18 @@ export const createService = function createService(apiSchemaList, serviceConfig
     serviceConfig = fixServiceConfig;
     const newApiSchemaMap = adjustPathWithSysPrefixPath(apiSchemaList);
     let logicsInstance = service.generator(newApiSchemaMap, dynamicServices, serviceConfig);
-    let mockInstance ={}
+    let mockInstance = {}
 
-      if (window.appInfo.isPreviewFe) {
-        if(window?.allMockData?.mock){
-            JSON.parse(window?.allMockData?.mock).map(v=>{
-             createMockServiceByData(v.name, getData(v.mockData), mockInstance)
-            })
-            createMockServiceByData('GetUser', {}, mockInstance)
-            createMockServiceByData('GetUserResources', {}, mockInstance)
-            Object.keys(logicsInstance).map(apiName => !mockInstance[apiName] && (mockInstance[apiName]= logicsInstance[apiName]))
-        }
-     }else{
+    if (window.appInfo.isPreviewFe) {
+      if(window?.allMockData?.mock){
+          JSON.parse(window?.allMockData?.mock).map(v=>{
+            createMockServiceByData(v.name, getData(v.mockData), mockInstance)
+          })
+          createMockServiceByData('GetUser', {}, mockInstance)
+          createMockServiceByData('GetUserResources', {}, mockInstance)
+          Object.keys(logicsInstance).map(apiName => !mockInstance[apiName] && (mockInstance[apiName]= logicsInstance[apiName]))
+      }
+     } else {
         mockInstance = logicsInstance
      }
      return mockInstance
@@ -232,103 +232,111 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
     const fixServiceConfig = serviceConfig || {};
     fixServiceConfig.config = fixServiceConfig.config || {};
     Object.assign(fixServiceConfig.config, {
-        // httpCode: true,
-        // httpError: true,
         shortResponse: true,
         concept: 'Logic',
     });
     serviceConfig = fixServiceConfig;
     const newApiSchemaMap = adjustPathWithSysPrefixPath(apiSchemaList);
-    if (window.preRequest) {
-      let resolve  = (requestInfo, preData) => {
-        const HttpRequest = {
-            requestURI: requestInfo.url.path,
-            remoteIp: '',
-            requestMethod: requestInfo.url.method,
-            body: JSON.stringify(requestInfo.url.body),
-            headers: requestInfo.url.headers,
-            querys: JSON.stringify(requestInfo.url.query),
-            cookies: foramtCookie(document.cookie),
-            requestInfo
-        };
-        return  window.preRequest && window.preRequest(HttpRequest, preData);
-      }
 
-        service.preConfig.set('preRequest',   {resolve});
-        serviceConfig.config.preRequest = true;
+    if (window.preRequest) {
+      // preRequest
+      service.preConfig.set('preRequest', {
+        resolve(requestInfo, preData) {
+          const HttpRequest = {
+              requestURI: requestInfo.url.path,
+              remoteIp: '',
+              requestMethod: requestInfo.url.method,
+              body: JSON.stringify(requestInfo.url.body),
+              headers: requestInfo.url.headers,
+              querys: JSON.stringify(requestInfo.url.query),
+              cookies: foramtCookie(document.cookie),
+              requestInfo
+          };
+          return window.preRequest && window.preRequest(HttpRequest, preData);
+        }
+      });
+      // 开启 preRequest
+      serviceConfig.config.preRequest = true;
     }
+
     if (window.postRequest) {
-        service.postConfig.set('postRequest', {
-            resolve(response, params, requestInfo) {
-                if (!response) {
-                    return Promise.reject();
-                }
-                const status = 'success';
-                const { config } = requestInfo;
-                const serviceType = config?.serviceType;
-                if (serviceType && serviceType === 'external') {
-                    return response;
-                }
-                const HttpResponse = {
-                    status: response.status + '',
-                    body: JSON.stringify(response.data),
-                    headers: response.headers,
-                    cookies: foramtCookie(document.cookie),
-                };
-                window.postRequest && window.postRequest(HttpResponse, requestInfo, status);
-                return response;
-            },
-        });
-        service.postConfig.set('postRequestError', {
-            reject(response, params, requestInfo) {
-                response.Code = response.code || response.status;
-                const status = 'error';
-                const err = response;
-                const { config } = requestInfo;
-                if (err === 'expired request') {
-                    throw err;
-                }
-                if (!err.response) {
-                    if (!config.noErrorTip) {
-                        // instance.show('系统错误，请查看日志！');
-                        Config.Toast.error('系统错误，请查看日志！');
-                        return;
-                    }
-                }
-                if (window.LcapMicro?.loginFn) {
-                    if (err.Code === 401 && err.Message === 'token.is.invalid') {
-                        window.LcapMicro.loginFn();
-                        return;
-                    }
-                    if (err.Code === 'InvalidToken' && err.Message === 'Token is invalid') {
-                        window.LcapMicro.loginFn();
-                        return;
-                    }
-                }
-                if (err.Code === 501 && err.Message === 'abort') {
-                    throw Error('程序中止');
-                }
-                const HttpResponse = {
-                    status: response.response.status + '',
-                    body: JSON.stringify(response.response.data),
-                    headers: response.response.headers,
-                    cookies: foramtCookie(document.cookie),
-                };
-                window.postRequest && window.postRequest(HttpResponse, requestInfo, status);
-                throw err;
-            },
-        });
-        serviceConfig.config = {
-            ...serviceConfig.config,
-            priority: {
-                ...(serviceConfig.config.priority ? serviceConfig.config.priority : {}),
-                postRequest: 10,
-                postRequestError: 10,
-            },
-        };
-        serviceConfig.config.postRequest = true;
-        serviceConfig.config.postRequestError = true;
+      // postRequest
+      service.postConfig.set('postRequest', {
+          resolve(response, params, requestInfo) {
+              if (!response) {
+                  return Promise.reject();
+              }
+              const status = 'success';
+              const { config } = requestInfo;
+              const serviceType = config?.serviceType;
+              if (serviceType && serviceType === 'external') {
+                  return response;
+              }
+              const HttpResponse = {
+                  status: response.status + '',
+                  body: JSON.stringify(response.data),
+                  headers: response.headers,
+                  cookies: foramtCookie(document.cookie),
+              };
+              window.postRequest && window.postRequest(HttpResponse, requestInfo, status);
+              return response;
+          },
+      });
+      // postRequestError
+      service.postConfig.set('postRequestError', {
+          reject(response, params, requestInfo) {
+              response.Code = response.code || response.status;
+              const status = 'error';
+              const err = response;
+              const { config } = requestInfo;
+              if (err === 'expired request') {
+                  throw err;
+              }
+              if (!err.response) {
+                  if (!config.noErrorTip) {
+                      // instance.show('系统错误，请查看日志！');
+                      Config.Toast.error('系统错误，请查看日志！');
+                      return;
+                  }
+              }
+              if (window.LcapMicro?.loginFn) {
+                  if (err.Code === 401 && err.Message === 'token.is.invalid') {
+                      window.LcapMicro.loginFn();
+                      return;
+                  }
+                  if (err.Code === 'InvalidToken' && err.Message === 'Token is invalid') {
+                      window.LcapMicro.loginFn();
+                      return;
+                  }
+              }
+              if (err.Code === 501 && err.Message === 'abort') {
+                  throw Error('程序中止');
+              }
+              const HttpResponse = {
+                  status: response.response.status + '',
+                  body: JSON.stringify(response.response.data),
+                  headers: response.response.headers,
+                  cookies: foramtCookie(document.cookie),
+              };
+              window.postRequest && window.postRequest(HttpResponse, requestInfo, status);
+              throw err;
+          },
+      });
+
+      serviceConfig.config = {
+          ...serviceConfig.config,
+          priority: {
+              ...(serviceConfig.config.priority ? serviceConfig.config.priority : {}),
+              postRequest: 10,
+              postRequestError: 10,
+          },
+      };
+      // 开启 postRequest 和 postRequestError
+      serviceConfig.config.postRequest = true;
+      serviceConfig.config.postRequestError = true;
     }
+
+    // lcapLocation
     service.postConfig.set('lcapLocation', (response, params, requestInfo) => {
         const lcapLocation = response?.headers['lcap-location'];
         if (lcapLocation) {
@@ -336,6 +344,7 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
         }
         return response;
     });
+
     serviceConfig.config = {
         ...serviceConfig.config,
         priority: {
@@ -344,7 +353,12 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
         },
     };
     serviceConfig.config.lcapLocation = true;
-    service.postConfig.set('shortResponse', shortResponse);
+
+    // shortResponse
+    service.postConfig.set('shortResponse', function (response, params, requestInfo) {
+      return response.data?.Data !== undefined ? response.data?.Data : response.data;
+    });
+
     let logicsInstance=  service.generator(newApiSchemaMap, dynamicServices, serviceConfig);
     let mockInstance ={}
     if (window.appInfo.isPreviewFe) {

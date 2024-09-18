@@ -197,6 +197,9 @@ export default {
           path: { configKey: finalConfigKey },
           query,
         });
+
+        // 兼容新接口返回
+
         return res;
       },
       async getCurrentIp() {

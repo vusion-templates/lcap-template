@@ -20,6 +20,7 @@ import {
     filterAuthResources,
     findNoAuthView,
     initRouter,
+    createService,
 } from '@lcap/core-template';
 
 import { getTitleGuard } from './router';
@@ -42,6 +43,7 @@ Vue.prototype.$sleep = function () {
     });
 };
 
+window._lcapCreateService = createService;
 window.appVue = Vue;
 window.Vue = Vue;
 window.LcapInstall = install;

@@ -35,6 +35,9 @@ export default {
             let realUrl;
             if (typeof url === 'function') {
                 realUrl = await url();
+            }else if(url?.charAt(0) === '/'){
+                Config.destination.call(this, url,target);
+                return;
             } else {
                 realUrl = url;
             }

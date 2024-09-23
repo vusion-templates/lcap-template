@@ -15,7 +15,7 @@ function initRouter() {
       let realUrl;
       if (typeof url === "function") {
         realUrl = await url();
-      } else if(url?.chartAt(0) === "/") {
+      } else if(url?.charAt(0) === "/") {
         $destination(url,target)
         return;
       }else{

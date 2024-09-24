@@ -684,7 +684,7 @@ export const toString = (
         ) {
           str = $i18n.t(enumItem.label.i18nKey);
         } else {
-          str = enumItem?.label?.value || enumItem?.label;
+          str = enumItem?.label?.value || '';
         }
       }
     } else if (["TypeAnnotation", "Structure", "Entity"].includes(concept)) {

@@ -6,7 +6,6 @@ import {
   subDays,
   addMonths,
   format,
-  formatRFC3339,
   isValid,
   differenceInYears,
   differenceInQuarters,
@@ -71,6 +70,14 @@ let enumsMap = {};
 let dataTypesMap = {}
 
 export const safeNewDate = (dateStr) => {
+  // 如果输入是字符串形式的时间戳，则先转换为时间戳
+  if (typeof dateStr === 'string' && /^\d+$/.test(dateStr)) {
+    const date = new Date(parseInt(dateStr, 10));
+    if (!isNaN(date.getTime())) {
+      return date;
+    }
+  }
+  
   try {
       const res = new Date(dateStr.replaceAll('-', '/'));
       if (['Invalid Date', 'Invalid time value', 'invalid date'].includes(res.toString())) {
@@ -226,13 +233,13 @@ export const utils = {
       // v3.3 老应用升级的场景，UTC 零时区，零时区展示上用 'Z'，后向兼容
       // v3.4 新应用，使用默认时区时选项，tz 为空
       if (!tz) {
-        const d = momentTZ.tz(v, "UTC").format("YYYY-MM-DDTHH:mm:ss.SSS") + "Z";
+        const d = momentTZ.tz(v, "UTC").format("YYYY-MM-DDTHH:mm:ss.SSSZ");
         return JSON.stringify(d);
       }
       // 新应用，设置为零时区，零时区展示上用 'Z'，后向兼容.
       if (tz === "UTC") {
         // TODO: 想用 "+00:00" 展示零时区
-        const d = momentTZ.tz(v, "UTC").format("YYYY-MM-DDTHH:mm:ss.SSS") + "Z";
+        const d = momentTZ.tz(v, "UTC").format("YYYY-MM-DDTHH:mm:ss.SSSZ");
         return JSON.stringify(d);
       }
       // 新应用，设置为其他时区
@@ -1097,7 +1104,7 @@ export const utils = {
         break;
     }
     if (typeof dateString === "object" || this.isInputValidNaslDateTime(dateString)) {
-      return format(addDate, "yyyy-MM-dd HH:mm:ss");
+      return format(addDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
     } else {
       return format(addDate, "yyyy-MM-dd");
     }
@@ -1165,7 +1172,7 @@ export const utils = {
     );
     if (typeof startdatetr === "object" || startdatetr.includes("T")) {
       return filtereddate.map((date) =>
-        moment(date).format("YYYY-MM-DD HH:mm:ss")
+        moment(date).format("YYYY-MM-DDTHH:mm:ss.SSSZ")
       );
     } else {
       return filtereddate.map((date) => moment(date).format("YYYY-MM-DD"));
@@ -1300,7 +1307,7 @@ export const utils = {
   Convert(value, typeAnnotation) {
     if (typeAnnotation && typeAnnotation.typeKind === "primitive") {
       if (typeAnnotation.typeName === "DateTime")
-        return formatRFC3339(safeNewDate(value));
+        return format(safeNewDate(value), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
       else if (typeAnnotation.typeName === "Date")
         return format(safeNewDate(value), "yyyy-MM-dd");
       else if (typeAnnotation.typeName === "Time") {

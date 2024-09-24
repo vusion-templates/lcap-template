@@ -1,8 +1,9 @@
-import { formatISO } from "date-fns";
+import { format } from "date-fns";
 import momentTZ from "moment-timezone";
 import moment from "moment";
 
 import { getAppTimezone } from "../utils/timezone";
+import { safeNewDate } from '../utils';
 import Config from "../../config";
 
 function tryJSONParse(str) {
@@ -592,7 +593,7 @@ export const toString = (
     // 日期时间处理
     if (typeKey === "nasl.core.Date") {
       str = momentTZ
-        .tz(new Date(variable), getAppTimezone(tz))
+        .tz(safeNewDate(variable), getAppTimezone(tz))
         .format("YYYY-MM-DD");
     } else if (typeKey === "nasl.core.Time") {
       const timeRegex = /^([01]?\d|2[0-3])(?::([0-5]?\d)(?::([0-5]?\d))?)?$/;
@@ -622,17 +623,17 @@ export const toString = (
           varArr.push(varItem || "00");
         });
         str = momentTZ
-          .tz(new Date("2022-01-01 " + varArr.join(":")), getAppTimezone(tz))
+          .tz(safeNewDate("2022-01-01 " + varArr.join(":")), getAppTimezone(tz))
           .format(formatArr.join(":"));
       } else {
         str = momentTZ
-          .tz(new Date(variable), getAppTimezone(tz))
+          .tz(safeNewDate(variable), getAppTimezone(tz))
           .format("HH:mm:ss");
       }
     } else if (typeKey === "nasl.core.DateTime") {
       str = momentTZ
-        .tz(new Date(variable), getAppTimezone(tz))
-        .format("YYYY-MM-DD HH:mm:ss");
+        .tz(safeNewDate(variable), getAppTimezone(tz))
+        .format("YYYY-MM-DDTHH:mm:ss.SSSZ");
     }
     if (tabSize > 0) {
       if (["nasl.core.String", "nasl.core.Text"].includes(typeKey)) {
@@ -875,7 +876,7 @@ function isValidDate(dateString, reg) {
     return false;
   }
   // 验证日期是否真实存在
-  const date = new Date(dateString);
+  const date = safeNewDate(dateString);
   if (date.toString() === "Invalid Date") {
     return false;
   }
@@ -906,19 +907,15 @@ export const fromString = (variable, typeKey) => {
   const isPrimitive = isDefPrimitive(typeKey);
   const { typeName } = typeDefinition || {};
   // 日期
-  if (typeName === "DateTime" && isValidDate(variable, DateTimeReg)) {
-    const date = new Date(variable);
-    const outputDate = formatISO(date, {
-      format: "extended",
-      // @ts-ignore 忽略吧，我也不知道为什么要传这个
-      fractionDigits: 3,
-    });
+  if (typeName === "DateTime") {
+    const date = safeNewDate(variable);
+    const outputDate = format(date, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
     return outputDate;
-  } else if (typeName === "Date" && isValidDate(variable, DateReg)) {
-    return moment(new Date(variable)).format('YYYY-MM-DD');
+  } else if (typeName === "Date") {
+    return moment(safeNewDate(variable)).format('YYYY-MM-DD');
   } else if (typeName === "Time" && TimeReg.test(variable)) {
     // ???
-    return moment(new Date("2022-01-01 " + variable)).format("HH:mm:ss");
+    return moment(safeNewDate("2022-01-01 " + variable)).format("HH:mm:ss");
   }
   // 浮点数
   else if (

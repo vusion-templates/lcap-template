@@ -23,6 +23,9 @@ importers:
 
   packages/basic:
     dependencies:
+      '@microsoft/fetch-event-source':
+        specifier: ^2.0.1
+        version: 2.0.1
       axios:
         specifier: ^0.21.2
         version: 0.21.4
@@ -93,6 +96,9 @@ importers:
 
   packages/core:
     dependencies:
+      '@microsoft/fetch-event-source':
+        specifier: ^2.0.1
+        version: 2.0.1
       axios:
         specifier: ^0.21.2
         version: 0.21.4
@@ -1224,6 +1230,9 @@ packages:
 
   '@leichtgewicht/ip-codec@2.0.5':
     resolution: {integrity: sha512-Vo+PSpZG2/fmgmiNzYK9qWRh8h/CHrwD0mo1h1DzL4yzHNSfWYujGTYsWGreD000gcgmZ7K4Ys6Tx9TxtsKdDw==}
+
+  '@microsoft/fetch-event-source@2.0.1':
+    resolution: {integrity: sha512-W6CLUJ2eBMw3Rec70qrsEW0jOm/3twwJv21mrmj2yORiaVmVYGS4sSS5yUwvQc1ZlDLYGPnClVWmUUMagKNsfA==}
 
   '@mole-inc/bin-wrapper@8.0.1':
     resolution: {integrity: sha512-sTGoeZnjI8N4KS+sW2AN95gDBErhAguvkw/tWdCjeM8bvxpz5lqrnd0vOJABA1A+Ic3zED7PYoLP/RANLgVotA==}
@@ -7303,6 +7312,8 @@ snapshots:
       tslib: 2.6.3
 
   '@leichtgewicht/ip-codec@2.0.5': {}
+
+  '@microsoft/fetch-event-source@2.0.1': {}
 
   '@mole-inc/bin-wrapper@8.0.1':
     dependencies:

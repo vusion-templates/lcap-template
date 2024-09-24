@@ -15,7 +15,10 @@ function initRouter() {
       let realUrl;
       if (typeof url === "function") {
         realUrl = await url();
-      } else {
+      } else if(url?.charAt(0) === "/") {
+        $destination(url,target)
+        return;
+      }else{
         realUrl = url;
       }
       downloadClick(realUrl, target);

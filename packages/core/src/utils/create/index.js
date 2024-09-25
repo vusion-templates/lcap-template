@@ -174,7 +174,7 @@ const requester = function (requestInfo) {
   if (!url?.path) {
     throw Error('unexpected url path as', url?.path);
   }
-  
+
   // 如果参数中存在 connectionName 则认为请求来自于 CallConnector
   const connectionName = config?.connectionName;
   if (connectionName && url) {
@@ -316,7 +316,19 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
                     headers: response.headers,
                     cookies: foramtCookie(document.cookie),
                 };
-                window.postRequest && window.postRequest(HttpResponse, requestInfo, status);
+                let event = {
+                  response: HttpResponse, requestInfo, status,
+                  ...HttpResponse
+                }
+                window.postRequest && window.postRequest(event);
+                let body = event?.body || event?.response?.body
+                try {
+                  response.data  =  JSON.parse(body)
+                } catch (error) {
+                  response.data = body
+                }
+                response.headers = event?.headers || event?.response?.headers
+                response.cookie = event?.cookies || event?.response?.cookies
                 return response;
             },
         });

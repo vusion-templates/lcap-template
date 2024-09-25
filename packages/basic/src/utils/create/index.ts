@@ -200,7 +200,7 @@ const requester = function (requestInfo) {
   }
 
   const req = axios(options);
-
+  
   return req;
 };
 
@@ -310,9 +310,7 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
                   headers: response.headers,
                   cookies: foramtCookie(document.cookie),
               };
-              window.postRequest && window.postRequest({
-                response: HttpResponse, requestInfo, status
-              });
+              window.postRequest && window.postRequest(HttpResponse, requestInfo, status);
               return response;
           },
       });

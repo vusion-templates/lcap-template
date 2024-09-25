@@ -315,14 +315,13 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
                 ...HttpResponse
               }
               window.postRequest && window.postRequest(event);
-              let body = event?.body || event?.response?.body
+              let body =  event?.response?.body || event?.body
               try {
                 response.data  =  JSON.parse(body)
               } catch (error) {
                 response.data = body
               }
-              response.headers = event?.headers || event?.response?.headers
-              response.cookie = event?.cookies || event?.response?.cookies
+              response.headers = event?.response?.headers || event?.headers
               return response;
           },
       });

@@ -61,42 +61,21 @@ import {
   typeDefinitionMap,
 } from "../dataTypes/tools";
 
-import { getAppTimezone, isValidTimezoneIANAString } from "./timezone";
 import {
   findAsync,
   mapAsync,
   filterAsync,
   findIndexAsync,
   sortAsync,
+  safeNewDate,
+  getAppTimezone, 
+  isValidTimezoneIANAString,
+  naslDateToLocalDate,
+  convertJSDateInTargetTimeZone,
 } from "./helper";
 
 let enumsMap = {};
 let dataTypesMap = {}
-
-const safeNewDate = (dateStr) => {
-  try {
-      const res = new Date(dateStr.replaceAll('-', '/'));
-      if (['Invalid Date', 'Invalid time value', 'invalid date'].includes(res.toString())) {
-          return new Date(dateStr);
-      } else {
-          return res;
-      }
-  } catch (err) {
-      return new Date(dateStr);
-  }
-};
-
-function naslDateToLocalDate(date) {
-  const localTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const localDate = momentTZ.tz(date, "YYYY-MM-DD", localTZ);
-  return safeNewDate(localDate.format("YYYY-MM-DD HH:mm:ss"));
-}
-
-export function convertJSDateInTargetTimeZone(date, tz) {
-  return safeNewDate(
-    momentTZ.tz(safeNewDate(date), getAppTimezone(tz)).format("YYYY-MM-DD HH:mm:ss")
-  );
-}
 
 function toValue(date, typeKey) {
   if (!date) return date;
@@ -643,7 +622,7 @@ export const utils = {
   },
   MapContains(map, key) {
     if (isObject(map)) {
-      return key in map;
+      return map.hasOwnProperty(key);
     }
     return false;
   },
@@ -1663,3 +1642,5 @@ function initUtils(options: {
 export {
   initUtils,
 }
+
+export * from './helper';

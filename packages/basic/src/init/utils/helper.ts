@@ -81,9 +81,22 @@ export function isValidTimezoneIANAString(timezoneString) {
 export function naslDateToLocalDate(date) {
   const localTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const localDate = momentTZ.tz(date, 'YYYY-MM-DD', localTZ);
-  return new Date(localDate.format('YYYY-MM-DD HH:mm:ss'));
+  return safeNewDate(localDate.format('YYYY-MM-DD HH:mm:ss'));
 }
 
 export function convertJSDateInTargetTimeZone(date, tz) {
-  return new Date(momentTZ.tz(date, getAppTimezone(tz)).format('YYYY-MM-DD HH:mm:ss.SSS'));
+  return safeNewDate(momentTZ.tz(safeNewDate(date), getAppTimezone(tz)).format('YYYY-MM-DD HH:mm:ss'));
 }
+
+export const safeNewDate = (dateStr) => {
+  try {
+      const res = new Date(dateStr.replaceAll('-', '/'));
+      if (['Invalid Date', 'Invalid time value', 'invalid date'].includes(res.toString())) {
+          return new Date(dateStr);
+      } else {
+          return res;
+      }
+  } catch (err) {
+      return new Date(dateStr);
+  }
+};

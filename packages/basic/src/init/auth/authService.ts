@@ -1,11 +1,7 @@
 import qs from "qs";
 
-import { initService as authInitService } from '../../apis/auth';
-import { initService as lowauthInitService } from '../../apis/lowauth';
-
-import cookie from '../../utils/cookie';
-import { getBasePath } from '../../utils/encodeUrl';
-
+import { initAuthService, initLowauthService } from '../../apis';
+import { getBasePath, cookie  } from '../../utils';
 import Global from '../../global';
 
 export const getBaseHeaders = () => {
@@ -55,8 +51,8 @@ let lowauthService;
 
 const Service: IService = {
   start() {
-    authService = authInitService();
-    lowauthService = lowauthInitService();
+    authService = initAuthService();
+    lowauthService = initLowauthService();
     window.authService = authService;
   },
   getUserInfo() {

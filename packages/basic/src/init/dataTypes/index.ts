@@ -1,4 +1,4 @@
-import { porcessPorts } from "../process/processService";
+import { processPorts } from "../process";
 
 import Config from "../../config";
 import Global from "../../global";
@@ -31,8 +31,8 @@ function initDataTypes(options) {
     ...(Config.utils || {}),
   };
 
-  Object.keys(porcessPorts).forEach((service) => {
-    $global[service] = porcessPorts[service];
+  Object.keys(processPorts).forEach((service) => {
+    $global[service] = processPorts[service];
   });
   window.$global = $global;
 
@@ -200,4 +200,11 @@ function parseRequestDataType(root, _prop) {
 export { 
   initDataTypes,
   genInitFromSchema,
+  getFrontendVariables,
+  isLooseEqualFn,
+  resolveRequestData,
+  parseRequestDataType,
+  Utils,
 };
+
+export * as Tools from './tools';

@@ -8,7 +8,7 @@ import cookie from "../cookie";
 import { addConfigs, shortResponse } from "./add.configs";
 import { getFilenameFromContentDispositionHeader } from "./tools";
 import paramsSerializer from "./paramsSerializer";
-import { createMockServiceByData} from "./mockData.js";
+import { createMockServiceByData} from "./mockData";
 import { sseRequester } from './sseRequester';
 
 import Config from "../../config";
@@ -71,7 +71,7 @@ function download(url) {
     const { path, method, body = {}, headers = {}, query = {}, timeout } = url;
 
     return axios({
-        url: path,
+        url: formatMicroFrontUrl(path),
         method,
         params: query,
         data: formatContentType(headers['Content-Type'], body),
@@ -200,7 +200,7 @@ const requester = function (requestInfo) {
   }
 
   const req = axios(options);
-  
+
   return req;
 };
 
@@ -272,7 +272,9 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
     });
     serviceConfig = fixServiceConfig;
     const newApiSchemaMap = adjustPathWithSysPrefixPath(apiSchemaList);
-    service.preConfig.set('preRequest',   {
+
+    if (window.preRequest) {
+      service.preConfig.set('preRequest', {
         resolve(requestInfo, preData) {
           const HttpRequest = {
               requestURI: requestInfo.url.path,
@@ -284,87 +286,95 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
               cookies: foramtCookie(document.cookie),
               requestInfo
           };
-          return  window.preRequest && window.preRequest(HttpRequest, preData);
+          return window.preRequest && window.preRequest(HttpRequest, preData);
         }
-    });
-    serviceConfig.config.preRequest = true;
+      });
+      serviceConfig.config.preRequest = true;
+    }
 
-    service.postConfig.set('postRequest', {
-        resolve(response, params, requestInfo) {
-            if (!response) {
-                return Promise.reject();
-            }
-            if (requestInfo?.config?.serviceType === 'sse') {
+    if (window.postRequest) {
+      service.postConfig.set('postRequest', {
+          resolve(response, params, requestInfo) {
+              if (!response) {
+                  return Promise.reject();
+              }
+              const status = 'success';
+              const { config } = requestInfo;
+              const serviceType = config?.serviceType;
+              if (serviceType && serviceType === 'external') {
+                  return response;
+              }
+              const HttpResponse = {
+                  status: response.status + '',
+                  body: JSON.stringify(response.data),
+                  headers: response.headers,
+                  cookies: foramtCookie(document.cookie),
+              };
+              let event = {
+                response: HttpResponse, requestInfo, status,
+                ...HttpResponse
+              }
+              window.postRequest && window.postRequest(event);
+              let body =  event?.response?.body || event?.body
+              try {
+                response.data  =  JSON.parse(body)
+              } catch (error) {
+                response.data = body
+              }
+              response.headers = event?.response?.headers || event?.headers
               return response;
-            }
-            const status = 'success';
-            const { config } = requestInfo;
-            const serviceType = config?.serviceType;
-            if (serviceType && serviceType === 'external') {
-                return response;
-            }
-            const HttpResponse = {
-                status: response.status + '',
-                body: JSON.stringify(response.data),
-                headers: response.headers,
-                cookies: foramtCookie(document.cookie),
-            };
-            window.postRequest && window.postRequest(HttpResponse, requestInfo, status);
-            return response;
-        },
-    });
-    service.postConfig.set('postRequestError', {
-        reject(response, params, requestInfo) {
-            if (requestInfo?.config?.serviceType === 'sse') {
-              throw Error('远端调用异常');
-            }
-            response.Code = response.code || response.status;
-            const status = 'error';
-            const err = response;
-            const { config } = requestInfo;
-            if (err === 'expired request') {
-                throw err;
-            }
-            if (!err.response) {
-                if (!config.noErrorTip) {
-                    Config.toast.error('系统错误，请查看日志！');
-                    return;
-                }
-            }
-            if (window.LcapMicro?.loginFn) {
-                if (err.Code === 401 && err.Message === 'token.is.invalid') {
-                    window.LcapMicro.loginFn();
-                    return;
-                }
-                if (err.Code === 'InvalidToken' && err.Message === 'Token is invalid') {
-                    window.LcapMicro.loginFn();
-                    return;
-                }
-            }
-            if (err.Code === 501 && err.Message === 'abort') {
-                throw Error('程序中止');
-            }
-            const HttpResponse = {
-                status: response.response.status + '',
-                body: JSON.stringify(response.response.data),
-                headers: response.response.headers,
-                cookies: foramtCookie(document.cookie),
-            };
-            window.postRequest && window.postRequest(HttpResponse, requestInfo, status);
-            throw err;
-        },
-    });
-
-    serviceConfig.config = {
-        ...serviceConfig.config,
-        priority: {
-            ...(serviceConfig.config.priority ? serviceConfig.config.priority : {}),
-            postRequest: 10,
-            postRequestError: 10,
-        },
-    };
-    serviceConfig.config.postRequest = true;
-    serviceConfig.config.postRequestError = true;
+          },
+      });
+      service.postConfig.set('postRequestError', {
+          reject(response, params, requestInfo) {
+              response.Code = response.code || response.status;
+              const status = 'error';
+              const err = response;
+              const { config } = requestInfo;
+              if (err === 'expired request') {
+                  throw err;
+              }
+              if (!err.response) {
+                  if (!config.noErrorTip) {
+                      // instance.show('系统错误，请查看日志！');
+                      Config.toast.error('系统错误，请查看日志！');
+                      return;
+                  }
+              }
+              if (window.LcapMicro?.loginFn) {
+                  if (err.Code === 401 && err.Message === 'token.is.invalid') {
+                      window.LcapMicro.loginFn();
+                      return;
+                  }
+                  if (err.Code === 'InvalidToken' && err.Message === 'Token is invalid') {
+                      window.LcapMicro.loginFn();
+                      return;
+                  }
+              }
+              if (err.Code === 501 && err.Message === 'abort') {
+                  throw Error('程序中止');
+              }
+              const HttpResponse = {
+                  status: response.response.status + '',
+                  body: JSON.stringify(response.response.data),
+                  headers: response.response.headers,
+                  cookies: foramtCookie(document.cookie),
+              };
+              window.postRequest && window.postRequest(HttpResponse, requestInfo, status);
+              throw err;
+          },
+      });
+      serviceConfig.config = {
+          ...serviceConfig.config,
+          priority: {
+              ...(serviceConfig.config.priority ? serviceConfig.config.priority : {}),
+              postRequest: 10,
+              postRequestError: 10,
+          },
+      };
+      serviceConfig.config.postRequest = true;
+      serviceConfig.config.postRequestError = true;
+    }
 
     service.postConfig.set('lcapLocation', (response, params, requestInfo) => {
         const lcapLocation = response?.headers?.['lcap-location'];

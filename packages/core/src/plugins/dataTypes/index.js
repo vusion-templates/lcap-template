@@ -1,6 +1,7 @@
 import { Decimal } from 'decimal.js';
 import CryptoJS from 'crypto-js';
 import { initService as configurationInitService } from '../../apis/configuration';
+import { initService as logInitService } from '../../apis/log';
 import {
   initApplicationConstructor,
   genInitData,
@@ -253,6 +254,21 @@ export default {
           }
           return value;
         });
+      },
+      /**
+       * 上报日志信息
+       * @param {*} body 
+       */
+      async logReport(body) {
+        try {
+          const logService = logInitService();
+          const res = await logService.logReport({
+            body,
+          });
+          return res;
+        } catch (err) {
+          return err;
+        }
       },
     };
     const $global = Config.setGlobal($g);

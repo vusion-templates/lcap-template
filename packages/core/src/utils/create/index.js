@@ -70,7 +70,7 @@ function download(url) {
     const { path, method, body = {}, headers = {}, query = {}, timeout } = url;
 
     return axios({
-        url: path,
+        url: formatMicroFrontUrl(path),
         method,
         params: query,
         data: formatContentType(headers['Content-Type'], body),
@@ -174,7 +174,7 @@ const requester = function (requestInfo) {
   if (!url?.path) {
     throw Error('unexpected url path as', url?.path);
   }
-  
+
   // 如果参数中存在 connectionName 则认为请求来自于 CallConnector
   const connectionName = config?.connectionName;
   if (connectionName && url) {
@@ -316,7 +316,18 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
                     headers: response.headers,
                     cookies: foramtCookie(document.cookie),
                 };
-                window.postRequest && window.postRequest(HttpResponse, requestInfo, status);
+                let event = {
+                  response: HttpResponse, requestInfo, status,
+                  ...HttpResponse
+                }
+                window.postRequest && window.postRequest(event);
+                let body =  event?.response?.body || event?.body
+                try {
+                  response.data  =  JSON.parse(body)
+                } catch (error) {
+                  response.data = body
+                }
+                response.headers = event?.response?.headers || event?.headers
                 return response;
             },
         });

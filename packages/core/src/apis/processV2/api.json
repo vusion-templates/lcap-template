@@ -166,5 +166,37 @@
             "path": "/api/processV2/getTaskInfo",
             "method": "post"
         }
+    },
+    "getMyCCTasks": {
+        "url": {
+            "path": "/api/processV2/getMyCCTasks",
+            "method": "post"
+        }
+    },
+    "viewCCTask": {
+        "url": {
+            "path": "/api/processV2/viewCCTask",
+            "method": "post"
+        }
+    },
+
+
+    "getTaskInstanceList": {
+        "url": {
+            "path": "/api/system/processV2/getTaskInstanceList",
+            "method": "post"
+        }
+    },
+    "getProcessInstanceList": {
+        "url": {
+            "path": "/api/system/processV2/getProcessInstanceList",
+            "method": "post"
+        }
+    },
+    "addTaskComment": {
+        "url": {
+            "path": "/api/system/processV2/addTaskComment",
+            "method": "post"
+        }
     }
 }

@@ -200,7 +200,7 @@ const requester = function (requestInfo) {
   }
 
   const req = axios(options);
-  
+
   return req;
 };
 
@@ -310,7 +310,19 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
                   headers: response.headers,
                   cookies: foramtCookie(document.cookie),
               };
-              window.postRequest && window.postRequest(HttpResponse, requestInfo, status);
+              let event = {
+                response: HttpResponse, requestInfo, status,
+                ...HttpResponse
+              }
+              window.postRequest && window.postRequest(event);
+              let body = event?.body || event?.response?.body
+              try {
+                response.data  =  JSON.parse(body)
+              } catch (error) {
+                response.data = body
+              }
+              response.headers = event?.headers || event?.response?.headers
+              response.cookie = event?.cookies || event?.response?.cookies
               return response;
           },
       });

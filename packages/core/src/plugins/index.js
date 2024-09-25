@@ -4,6 +4,7 @@ import LogicsPlugin from './logic';
 import RouterPlugin from './router';
 import ServicesPlugin from './service';
 import UtilsPlugin from './utils';
+import ProcessPlugin from './process';
 
 export {
     AuthPlugin,
@@ -12,4 +13,5 @@ export {
     RouterPlugin,
     ServicesPlugin,
     UtilsPlugin,
+    ProcessPlugin,
 };

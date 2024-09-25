@@ -17,12 +17,7 @@ export function downloadClick(realUrl, target) {
 
 export default {
     install(Vue, options = {}) {
-        /**
-         * 流程接口注册
-         */
-        Vue.prototype.$process = processService;
-        Vue.prototype.$processV2 = processV2Service();
-        Vue.prototype.$systemProcessV2 = systemProcessV2Service();
+
 
         Vue.prototype.$formatMicroFrontUrl = formatMicroFrontUrl;
         Vue.prototype.$formatMicroFrontRouterPath = formatMicroFrontRouterPath;

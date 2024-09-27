@@ -1,3 +1,5 @@
+import { encodeUrl } from "./utils";
+
 // 差异性配置，由H5、PC端启动时 传入覆盖
 const Config = {
   toast: {
@@ -6,7 +8,13 @@ const Config = {
   },
   utils: {},
   router: {
-    destination: (url) => void 0,
+    destination: (url: string, target: string) => {
+      if (target === "_self") {
+        location.href = encodeUrl(url);
+      } else {
+        window.open(encodeUrl(url), target);
+      }
+    },
   },
   axios: {
     interceptors: []

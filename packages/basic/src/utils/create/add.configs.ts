@@ -42,6 +42,7 @@ export function shortResponse(response, params, requestInfo) {
     }
     if (data?.Message !== undefined) {
         data.message = data.Message;
+        data.msg = data.Message;
     }
 
 

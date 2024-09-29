@@ -5,7 +5,7 @@ import { stringify } from 'qs';
 import { formatMicroFrontUrl } from "../../init/router/microFrontUrl"; // 微前端路由方法
 
 import cookie from "../cookie";
-import { addConfigs, shortResponse } from "./add.configs";
+import { addConfigs } from "./add.configs";
 import { getFilenameFromContentDispositionHeader } from "./tools";
 import paramsSerializer from "./paramsSerializer";
 import { createMockServiceByData} from "./mockData";
@@ -392,7 +392,11 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
         },
     };
     serviceConfig.config.lcapLocation = true;
-    service.postConfig.set('shortResponse', shortResponse);
+    // shortResponse
+    service.postConfig.set('shortResponse', function (response, params, requestInfo) {
+      return response.data?.Data !== undefined ? response.data?.Data : response.data;
+    });
+    
     let logicsInstance=  service.generator(newApiSchemaMap, dynamicServices, serviceConfig);
     let mockInstance ={}
     if (window.appInfo.isPreviewFe) {

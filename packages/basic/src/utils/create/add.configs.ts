@@ -31,10 +31,14 @@ export function httpCode(response, params, requestInfo) {
 }
 
 export function shortResponse(response, params, requestInfo) {
-    if (requestInfo.config?.concept === 'Logic') {
-        return response.data?.Data !== undefined ? response.data?.Data : response.data;
+    const data = response?.data;
+
+    // 新接口格式
+    if (data?.Data) {
+        return data.Data;
     }
-    return response.data;
+
+    return data;
 }
 
 export const httpError = {

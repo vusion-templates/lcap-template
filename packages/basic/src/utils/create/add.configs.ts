@@ -33,10 +33,17 @@ export function httpCode(response, params, requestInfo) {
 export function shortResponse(response, params, requestInfo) {
     const data = response?.data;
 
-    // 新接口格式
-    if (data?.Data) {
-        return data.Data;
+    // 兼容新Code、Data、Message
+    if (data?.Code !== undefined) {
+        data.code = data.Code;
     }
+    if (data?.Data !== undefined) {
+        data.data = data.Data;
+    }
+    if (data?.Message !== undefined) {
+        data.message = data.Message;
+    }
+
 
     return data;
 }

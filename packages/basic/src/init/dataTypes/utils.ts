@@ -177,12 +177,12 @@ export async function getCustomConfig(configKey = "") {
     path: { configKey: finalConfigKey },
     query,
   });
-  return res;
+  return res?.data || res;
 }
 
 export async function getCurrentIp() {
   const res = await initConfigurationService().getCurrentIp();
-  return res;
+  return res?.data || res;
 }
 
 export function getUserLanguage() {

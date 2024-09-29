@@ -198,11 +198,11 @@ export default {
           query,
         });
 
-        return res;
+        return res?.data || res;
       },
       async getCurrentIp() {
         const res = await configurationInitService().getCurrentIp();
-        return res;
+        return res?.data || res;
       },
       getUserLanguage() {
         return navigator.language || navigator.userLanguage;

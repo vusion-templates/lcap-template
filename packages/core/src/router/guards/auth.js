@@ -54,6 +54,7 @@ export function filterAuthResources(resources) {
     return resources.filter((item) => isValidPath(item.resourceValue));
 }
 
+// 这个函数用不到了，后续在ide端事件中代码块实现了
 export const getAuthGuard = (router, routes, authResourcePaths, appConfig, baseResourcePaths) => async (to, from, next) => {
     function addAuthRoutes(resources) {
         if (Array.isArray(resources) && resources.length) {

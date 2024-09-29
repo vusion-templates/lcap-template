@@ -74,7 +74,14 @@ const Service: IService = {
       }
       userInfoPromise = userInfoPromise
         .then((result) => {
-          const userInfo = result?.Data;
+          // 兼容新的返回格式
+          let userInfo;
+          if (result?.data?.Data) {
+            userInfo = result.data.Data;
+          } else {
+            userInfo = result?.Data;
+          }
+
           if (!userInfo?.UserId && userInfo?.userId) {
             userInfo.UserId = userInfo.userId;
             userInfo.UserName = userInfo.userName;
@@ -106,11 +113,14 @@ const Service: IService = {
           },
         })
         .then((result) => {
+          // 兼容新的返回格式
+          const data = result?.data || result;
+
           let resources = [];
           // 初始化权限项
           _map = new Map();
-          if (Array.isArray(result)) {
-            resources = result.filter(
+          if (Array.isArray(data)) {
+            resources = data.filter(
               (resource) => resource?.resourceType === "ui"
             );
             resources.forEach((resource) =>

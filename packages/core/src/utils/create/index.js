@@ -300,42 +300,44 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
     if (window.postRequest) {
       // postRequest
       service.postConfig.set('postRequest', {
-          resolve(response, params, requestInfo) {
-              if (!response) {
-                  return Promise.reject();
-              }
-              const status = 'success';
-              const { config } = requestInfo;
-              const serviceType = config?.serviceType;
-              if (serviceType && serviceType === 'external') {
-                  return response;
-              }
-              const HttpResponse = {
-                status: response.status + '',
-                body: JSON.stringify(response.data),
-                headers: response.headers,
-                cookies: foramtCookie(document.cookie),
-              };
-              let event = {
-                response: HttpResponse, requestInfo, status,
-                ...HttpResponse
-              }
-              window.postRequest && window.postRequest(event);
-              let body = event?.body || event?.response?.body
-              try {
-                response.data  =  JSON.parse(body)
-              } catch (error) {
-                response.data = body
-              }
-              response.headers = event?.headers || event?.response?.headers
-              response.cookie = event?.cookies || event?.response?.cookies
-
+        resolve(response, params, requestInfo) {
+          if (!response) {
+              return Promise.reject();
+          }
+          const status = 'success';
+          const { config } = requestInfo;
+          const serviceType = config?.serviceType;
+          if (serviceType && serviceType === 'external') {
               return response;
-          },
+          }
+          const HttpResponse = {
+              status: response.status + '',
+              body: JSON.stringify(response.data),
+              headers: response.headers,
+              cookies: foramtCookie(document.cookie),
+          };
+          let event = {
+            response: HttpResponse, requestInfo, status,
+            ...HttpResponse
+          }
+          window.postRequest && window.postRequest(event);
+          let body =  event?.response?.body || event?.body
+          try {
+            response.data  =  JSON.parse(body)
+          } catch (error) {
+            response.data = body
+          }
+          response.headers = event?.response?.headers || event?.headers
+          return response;
+        },
       });
       // postRequestError
       service.postConfig.set('postRequestError', {
           reject(response, params, requestInfo) {
+              if (requestInfo?.config?.serviceType === 'sse') {
+                throw Error('远端调用异常');
+              }
+              
               response.Code = response.code || response.status;
               const status = 'error';
               const err = response;

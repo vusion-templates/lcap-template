@@ -3,15 +3,16 @@ import { utils as codewaveUtils } from '@/plugins/utils/index.js';
 
 
 describe('日期时间计数函数', () => {
-    test('给皇上和QA修历法咯 新历法', () => {
+    test('给皇上修历法咯 新历法', () => {
         expect(codewaveUtils.GetDateCount('2024-06-01', 'week-month')).toBe(1);
         expect(codewaveUtils.GetDateCount('2024-06-02', 'week-month')).toBe(1);
         expect(codewaveUtils.GetDateCount('2024-06-03', 'week-month')).toBe(2);
         expect(codewaveUtils.GetDateCount('2024-06-24', 'week-month')).toBe(5);
         expect(codewaveUtils.GetDateCount('2024-06-30', 'week-month')).toBe(5);
+        expect(codewaveUtils.GetDateCount('2024-09-30', 'week-month')).toBe(6);
     });
 
-    test('给皇上和QA修历法咯 旧历法', () => {
+    test('给皇上修历法咯 旧历法', () => {
         expect(codewaveUtils.GetDateCountOld('2024-06-01', 'week-month')).toBe(1);
         expect(codewaveUtils.GetDateCountOld('2024-06-02', 'week-month')).toBe(2);
         expect(codewaveUtils.GetDateCountOld('2024-06-03', 'week-month')).toBe(2);

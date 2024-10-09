@@ -27,4 +27,9 @@ describe('Split 函数', () => {
         expect(codewaveUtils.Split('1', '.', false))
             .toEqual(['1']);
     });
+
+    test('Split 换行处理', () => {
+        expect(codewaveUtils.Split('aaa\nbbb\nccc', '\n', false))
+            .toEqual(['aaa', 'bbb', 'ccc']);
+    });
 });

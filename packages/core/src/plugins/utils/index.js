@@ -1036,15 +1036,13 @@ export const utils = {
             // 构造 date 所在月的第一天
             const startOfMonth = new Date(moment(date).startOf('month').format('YYYY-MM-DD hh:mm:ss'));
             // 获取该天是周几
-            const wod = startOfMonth.getDay(); // 假设返回 1- 7，确认下
-            console.log(wod)
+            let wod = startOfMonth.getDay(); // 以为返回 1-7，实际返回 0-6；0 是星期天
+            wod = wod === 0 ? 7 : wod;
 
             const daysOfFirstWeek = 7 - wod + 1;
             if (date.getDate() <= daysOfFirstWeek) {
               return 1;
             } else {
-              console.log((date.getDate() - daysOfFirstWeek)/7)
-              console.log( Math.ceil((date.getDate() - daysOfFirstWeek) / 7))
               return Math.ceil((date.getDate() - daysOfFirstWeek) / 7) + 1;
             }
           }

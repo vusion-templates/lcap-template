@@ -1,4 +1,4 @@
-# lcap-template 
+# lcap-template
 > 低代码应用模板
 
 ## 项目结构

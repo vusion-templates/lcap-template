@@ -9,7 +9,7 @@ for (const project of projects) {
   console.log(`Built ${project.name}`)
 }
 
-execSync(`rm -rf $ ${miniRootDir}/.temp`)
+execSync(`rm -rf ${miniRootDir}/.temp`)
 
 for (const project of projects) {
   console.log(`Packaging ${project.name}...`)

@@ -47,7 +47,7 @@ export function setGlobal($global) {
             // 修改当前语言名称
             $global.i18nInfo.localeName = this.getI18nList().find((item) => item.id === newLocale)?.name;
             // 调用UI库更新当前语言
-            appVM.$i18n.locale = newLocale;
+            //appVM.$i18n.locale = newLocale;
             // 调用UI库更新当前语言
             window.Vue.prototype.$CloudUILang = newLocale;
             // 重新加载页面

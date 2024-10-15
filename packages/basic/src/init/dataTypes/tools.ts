@@ -632,7 +632,7 @@ export const toString = (
     } else if (typeKey === "nasl.core.DateTime") {
       str = momentTZ
         .tz(safeNewDate(variable), getAppTimezone(tz))
-        .format("YYYY-MM-DDTHH:mm:ss.SSSZ");
+        .format("YYYY-MM-DD HH:mm:ss");
     }
     if (tabSize > 0) {
       if (["nasl.core.String", "nasl.core.Text"].includes(typeKey)) {

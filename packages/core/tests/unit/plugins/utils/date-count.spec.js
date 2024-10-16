@@ -51,10 +51,10 @@ describe('日期时间计数函数', () => {
         const d2 = new Date('2023-09-24T01:01:56.000Z');
 
         expect(codewaveUtils.GetSpecificDaysOfWeek(d1, d2, [1, 7, 8], 'Asia/Shanghai'))
-            .toEqual(['2023-09-18 00:00:00', '2023-09-24 00:00:00']); // 上海时间是 18 号到 24 号
+            .toEqual(['2023-09-18T00:00:00.000+08:00', '2023-09-24T00:00:00.000+08:00']); // 上海时间是 18 号到 24 号
 
         expect(codewaveUtils.GetSpecificDaysOfWeek(d1, d2, [1, 7, 8], 'America/New_York'))
-            .toEqual(['2023-09-17 00:00:00', '2023-09-18 00:00:00']); // 纽约时间是 17 号到 23 号
+            .toEqual(['2023-09-17T00:00:00.000+08:00', '2023-09-18T00:00:00.000+08:00']); // 纽约时间是 17 号到 23 号
     });
 
     test('GetSpecificDaysOfWeek，DateTime 类型，有时区信息 2，字符串输入', () => {
@@ -62,9 +62,9 @@ describe('日期时间计数函数', () => {
         const d2 = '2023-09-24T01:01:56.000Z';
 
         expect(codewaveUtils.GetSpecificDaysOfWeek(d1, d2, [1, 7, 8], 'Asia/Shanghai'))
-            .toEqual(['2023-09-18 00:00:00', '2023-09-24 00:00:00']); // 上海时间是 18 号到 24 号
+            .toEqual(['2023-09-18T00:00:00.000+08:00', '2023-09-24T00:00:00.000+08:00']); // 上海时间是 18 号到 24 号
 
         expect(codewaveUtils.GetSpecificDaysOfWeek(d1, d2, [1, 7, 8], 'America/New_York'))
-            .toEqual(['2023-09-17 00:00:00', '2023-09-18 00:00:00']); // 纽约时间是 17 号到 23 号
+            .toEqual(['2023-09-17T00:00:00.000+08:00', '2023-09-18T00:00:00.000+08:00']); // 纽约时间是 17 号到 23 号
     });
 });

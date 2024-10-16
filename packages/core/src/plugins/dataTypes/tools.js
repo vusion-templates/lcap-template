@@ -1,4 +1,4 @@
-import { formatISO } from "date-fns";
+import { format } from "date-fns";
 import { getAppTimezone } from "../utils/timezone";
 import { safeNewDate } from '../utils';
 const momentTZ = require("moment-timezone");
@@ -911,14 +911,11 @@ export const fromString = (variable, typeKey) => {
   const isPrimitive = isDefPrimitive(typeKey);
   const { typeName } = typeDefinition || {};
   // 日期
-  if (typeName === "DateTime" && isValidDate(variable, DateTimeReg)) {
+  if (typeName === "DateTime") {
     const date = safeNewDate(variable);
-    const outputDate = formatISO(date, {
-      format: "extended",
-      fractionDigits: 3,
-    });
+    const outputDate = format(date, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
     return outputDate;
-  } else if (typeName === "Date" && isValidDate(variable, DateReg)) {
+  } else if (typeName === "Date") {
     return moment(safeNewDate(variable)).format("YYYY-MM-DD");
   } else if (typeName === "Time" && TimeReg.test(variable)) {
     // ???

@@ -89,6 +89,14 @@ export function convertJSDateInTargetTimeZone(date, tz) {
 }
 
 export const safeNewDate = (dateStr) => {
+  // 如果输入是字符串形式的时间戳，则先转换为时间戳
+  if (typeof dateStr === 'string' && /^\d+$/.test(dateStr)) {
+    const date = new Date(parseInt(dateStr, 10));
+    if (!isNaN(date.getTime())) {
+      return date;
+    }
+  }
+  
   try {
       const res = new Date(dateStr.replaceAll('-', '/'));
       if (['Invalid Date', 'Invalid time value', 'invalid date'].includes(res.toString())) {

@@ -6,7 +6,6 @@ import {
   subDays,
   addMonths,
   format,
-  formatRFC3339,
   isValid,
   differenceInYears,
   differenceInQuarters,
@@ -71,6 +70,14 @@ let enumsMap = {};
 let dataTypesMap = {}
 
 export const safeNewDate = (dateStr) => {
+  // 如果输入是字符串形式的时间戳，则先转换为时间戳
+  if (typeof dateStr === 'string' && /^\d+$/.test(dateStr)) {
+    const date = new Date(parseInt(dateStr, 10));
+    if (!isNaN(date.getTime())) {
+      return date;
+    }
+  }
+  
   try {
       const res = new Date(dateStr.replaceAll('-', '/'));
       if (['Invalid Date', 'Invalid time value', 'invalid date'].includes(res.toString())) {
@@ -226,13 +233,13 @@ export const utils = {
       // v3.3 老应用升级的场景，UTC 零时区，零时区展示上用 'Z'，后向兼容
       // v3.4 新应用，使用默认时区时选项，tz 为空
       if (!tz) {
-        const d = momentTZ.tz(v, "UTC").format("YYYY-MM-DDTHH:mm:ss.SSS") + "Z";
+        const d = momentTZ.tz(v, "UTC").format("YYYY-MM-DDTHH:mm:ss.SSSZ");
         return JSON.stringify(d);
       }
       // 新应用，设置为零时区，零时区展示上用 'Z'，后向兼容.
       if (tz === "UTC") {
         // TODO: 想用 "+00:00" 展示零时区
-        const d = momentTZ.tz(v, "UTC").format("YYYY-MM-DDTHH:mm:ss.SSS") + "Z";
+        const d = momentTZ.tz(v, "UTC").format("YYYY-MM-DDTHH:mm:ss.SSSZ");
         return JSON.stringify(d);
       }
       // 新应用，设置为其他时区
@@ -463,38 +470,6 @@ export const utils = {
   ListReverse(arr) {
     if (Array.isArray(arr)) {
       arr.reverse();
-    }
-  },
-  ListSort(arr, callback, sort) {
-    if (Array.isArray(arr)) {
-      if (typeof callback === "function") {
-        arr.sort((a, b) => {
-          const valueA = callback(a);
-          const valueB = callback(b);
-          if (
-            Number.isNaN(valueA) ||
-            Number.isNaN(valueB) ||
-            typeof valueA === "undefined" ||
-            typeof valueB === "undefined" ||
-            valueA === null ||
-            valueB === null
-          ) {
-            return 1;
-          } else {
-            if (valueA >= valueB) {
-              if (sort) {
-                return 1;
-              }
-              return -1;
-            } else {
-              if (sort) {
-                return -1;
-              }
-              return 1;
-            }
-          }
-        });
-      }
     }
   },
   async ListSortAsync(arr, callback, sort) {
@@ -1036,15 +1011,13 @@ export const utils = {
             // 构造 date 所在月的第一天
             const startOfMonth = new Date(moment(date).startOf('month').format('YYYY-MM-DD hh:mm:ss'));
             // 获取该天是周几
-            const wod = startOfMonth.getDay(); // 假设返回 1- 7，确认下
-            console.log(wod)
+            let wod = startOfMonth.getDay(); // 以为返回 1-7，实际返回 0-6；0 是星期天
+            wod = wod === 0 ? 7 : wod;
 
             const daysOfFirstWeek = 7 - wod + 1;
             if (date.getDate() <= daysOfFirstWeek) {
               return 1;
             } else {
-              console.log((date.getDate() - daysOfFirstWeek)/7)
-              console.log( Math.ceil((date.getDate() - daysOfFirstWeek) / 7))
               return Math.ceil((date.getDate() - daysOfFirstWeek) / 7) + 1;
             }
           }
@@ -1097,7 +1070,7 @@ export const utils = {
         break;
     }
     if (typeof dateString === "object" || this.isInputValidNaslDateTime(dateString)) {
-      return format(addDate, "yyyy-MM-dd HH:mm:ss");
+      return format(addDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
     } else {
       return format(addDate, "yyyy-MM-dd");
     }
@@ -1165,7 +1138,7 @@ export const utils = {
     );
     if (typeof startdatetr === "object" || startdatetr.includes("T")) {
       return filtereddate.map((date) =>
-        moment(date).format("YYYY-MM-DD HH:mm:ss")
+        moment(date).format("YYYY-MM-DDTHH:mm:ss.SSSZ")
       );
     } else {
       return filtereddate.map((date) => moment(date).format("YYYY-MM-DD"));
@@ -1300,7 +1273,7 @@ export const utils = {
   Convert(value, typeAnnotation) {
     if (typeAnnotation && typeAnnotation.typeKind === "primitive") {
       if (typeAnnotation.typeName === "DateTime")
-        return formatRFC3339(safeNewDate(value));
+        return format(safeNewDate(value), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
       else if (typeAnnotation.typeName === "Date")
         return format(safeNewDate(value), "yyyy-MM-dd");
       else if (typeAnnotation.typeName === "Time") {

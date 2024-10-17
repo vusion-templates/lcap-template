@@ -23,21 +23,30 @@ const formatContentType = function (contentType, data) {
   return map[contentType] ? map[contentType](data) : data;
 };
 
-const parseCookie = (str) =>
-  str
+const parseCookie = (str) => {
+  if (typeof str !== "string") {
+    return {};
+  }
+
+  return str
     .split(";")
     .map((v) => v.split("="))
     .reduce((acc, v) => {
-      const getValue = s =>{
+      const getValue = (s) =>{
         try {
-          return decodeURIComponent(s.trim())
+          return decodeURIComponent(s?.trim())
         } catch (error) {
-          return s.trim()
+          return s?.trim()
         }
       }
-      acc[getValue(v[0])] = getValue(v[1]);
+      // 有key才保留
+      if (getValue(v[0])) {
+        acc[getValue(v[0])] = getValue(v[1]);
+      }
+
       return acc;
     }, {});
+}
 
 const foramtCookie = (cookieStr) => {
   const result = {};
@@ -348,7 +357,8 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
                     if (!config.noErrorTip) {
                         // instance.show('系统错误，请查看日志！');
                         Config.Toast.error('系统错误，请查看日志！');
-                        return;
+                        // 得抛错，否则会走成功回调，然后shortResponse会报错
+                        throw err;
                     }
                 }
                 if (window.LcapMicro?.loginFn) {

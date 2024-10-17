@@ -392,10 +392,10 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
         },
     };
     serviceConfig.config.lcapLocation = true;
-    // shortResponse
-    service.postConfig.set('shortResponse', function (response, params, requestInfo) {
-      return response.data?.Data !== undefined ? response.data?.Data : response.data;
-    });
+    // shortResponse 不能加，因为复用了同一个service
+    // service.postConfig.set('shortResponse', function (response, params, requestInfo) {
+    //   return response.data?.Data !== undefined ? response.data?.Data : response.data;
+    // });
     
     let logicsInstance=  service.generator(newApiSchemaMap, dynamicServices, serviceConfig);
     let mockInstance ={}

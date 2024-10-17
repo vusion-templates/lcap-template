@@ -3,7 +3,7 @@ import Service from 'request-pre';
 import { stringify } from 'qs';
 
 import cookie from "../cookie";
-import { addConfigs, shortResponse } from "./add.configs";
+import { addConfigs } from "./add.configs";
 import { getFilenameFromContentDispositionHeader } from "./tools";
 import paramsSerializer from "./paramsSerializer";
 import { formatMicroFrontUrl } from "../../plugins/router/microFrontUrl"; // 微前端路由方法

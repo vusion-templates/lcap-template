@@ -472,38 +472,6 @@ export const utils = {
       arr.reverse();
     }
   },
-  ListSort(arr, callback, sort) {
-    if (Array.isArray(arr)) {
-      if (typeof callback === "function") {
-        arr.sort((a, b) => {
-          const valueA = callback(a);
-          const valueB = callback(b);
-          if (
-            Number.isNaN(valueA) ||
-            Number.isNaN(valueB) ||
-            typeof valueA === "undefined" ||
-            typeof valueB === "undefined" ||
-            valueA === null ||
-            valueB === null
-          ) {
-            return 1;
-          } else {
-            if (valueA >= valueB) {
-              if (sort) {
-                return 1;
-              }
-              return -1;
-            } else {
-              if (sort) {
-                return -1;
-              }
-              return 1;
-            }
-          }
-        });
-      }
-    }
-  },
   async ListSortAsync(arr, callback, sort) {
     const sortRule = (valueA, valueB) => {
       if (

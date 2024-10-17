@@ -64,6 +64,7 @@ import {
   filterAsync,
   findIndexAsync,
   sortAsync,
+  sortRule
 } from "./helper";
 
 let enumsMap = {};
@@ -467,42 +468,6 @@ export const utils = {
           nullRemoved[0]
         );
   },
-  ListReverse(arr) {
-    if (Array.isArray(arr)) {
-      arr.reverse();
-    }
-  },
-  async ListSortAsync(arr, callback, sort) {
-    const sortRule = (valueA, valueB) => {
-      if (
-        Number.isNaN(valueA) ||
-        Number.isNaN(valueB) ||
-        typeof valueA === "undefined" ||
-        typeof valueB === "undefined" ||
-        valueA === null ||
-        valueB === null
-      ) {
-        return 1;
-      } else {
-        if (valueA >= valueB) {
-          if (sort) {
-            return 1;
-          }
-          return -1;
-        } else {
-          if (sort) {
-            return -1;
-          }
-          return 1;
-        }
-      }
-    };
-    if (Array.isArray(arr)) {
-      if (typeof callback === "function") {
-        return await sortAsync(arr, sortRule)(callback);
-      }
-    }
-  },
   ListFind(arr, by) {
     if (Array.isArray(arr)) {
       if (typeof by === "function") {
@@ -784,38 +749,37 @@ export const utils = {
     if (Array.isArray(arr)) {
       arr.reverse();
     }
+    return arr;
   },
-  ListSort(arr, callback, sort) {
+  ListSort(arr, ...callback) {
     if (Array.isArray(arr)) {
-      if (typeof callback === "function") {
-        arr.sort((a, b) => {
-          const valueA = callback(a);
-          const valueB = callback(b);
-          if (
-            Number.isNaN(valueA) ||
-            Number.isNaN(valueB) ||
-            typeof valueA === "undefined" ||
-            typeof valueB === "undefined" ||
-            valueA === null ||
-            valueB === null
-          ) {
-            return 1;
-          } else {
-            if (valueA >= valueB) {
-              if (sort) {
-                return 1;
-              }
-              return -1;
-            } else {
-              if (sort) {
-                return -1;
-              }
-              return 1;
-            }
-          }
+      if (Array.isArray(callback)) {
+        callback.forEach((cb) => {
+          const cbBy = (item) => cb(item).by;
+          const sort = cb().asc;
+          arr.sort((a, b) => {
+            const valueA = cbBy(a);
+            const valueB = cbBy(b);
+            return sortRule(valueA, valueB, sort);
+          });
         });
       }
     }
+    return arr;
+  },
+  async ListSortAsync(arr, ...callback) {
+    if (Array.isArray(arr)) {
+      if (Array.isArray(callback)) {
+        let newArr = arr;
+        for (const cb of callback) {
+          const cbBy = async (item) => (await cb(item)).by;
+          const sort = (await cb()).asc;
+          newArr = await sortAsync(newArr, sortRule)(cbBy, sort);
+        }
+        return newArr;
+      }
+    }
+    return arr;
   },
   ListFindAll(arr, callback) {
     if (Array.isArray(arr)) {
@@ -838,6 +802,7 @@ export const utils = {
         i++;
       }
     }
+    return arr;
   },
   // 随着 PageOf 失效，可删除
   ListSliceToPageOf(arr, page, size) {

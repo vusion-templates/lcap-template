@@ -3,7 +3,7 @@ import Service from 'request-pre';
 import { stringify } from 'qs';
 
 import cookie from "../cookie";
-import { addConfigs } from "./add.configs";
+import { addConfigs, shortResponse } from "./add.configs";
 import { getFilenameFromContentDispositionHeader } from "./tools";
 import paramsSerializer from "./paramsSerializer";
 import { formatMicroFrontUrl } from "../../plugins/router/microFrontUrl"; // 微前端路由方法
@@ -417,10 +417,11 @@ export const createLogicService = function createLogicService(apiSchemaList, ser
     };
     serviceConfig.config.lcapLocation = true;
 
-    // shortResponse
-    service.postConfig.set('shortResponse', function (response, params, requestInfo) {
-      return response.data?.Data !== undefined ? response.data?.Data : response.data;
-    });
+    // shortResponse 不能加，因为复用了同一个service
+    // service.postConfig.set('shortResponse', function (response, params, requestInfo) {
+    //   const data = response.data?.Data !== undefined ? response.data?.Data : response.data;
+    //   return data;
+    // });
 
     let logicsInstance=  service.generator(newApiSchemaMap, dynamicServices, serviceConfig);
     let mockInstance ={}

@@ -113,14 +113,59 @@ const init = (appConfig, platformConfig, routes, metaData) => {
     Vue.prototype.logined = true;
 
     // 全局catch error，主要来处理中止组件,的错误不想暴露给用户，其余的还是在控制台提示出来
-    Vue.config.errorHandler = (err, vm, info) => {
-        if (err.name === 'Error' && err.message === '程序中止') {
-            console.warn('程序中止');
+    Vue.config.errorHandler = (error, vm, info) => {
+        if (appConfig.env === 'dev') {
+            // 创建错误元素并添加到页面
+            const errorDiv = document.createElement('div');
+            errorDiv.style.display = 'none'; // 默认隐藏，只有在有错误时才显示
+
+            // 创建 h2 元素
+            const h2 = document.createElement('h2');
+            h2.textContent = 'An error occurred:';
+            errorDiv.appendChild(h2);
+
+            const close = document.createElement('div');
+            close.textContent = '关闭';
+            close.style.position = 'fixed';
+            close.style.top = '20px';
+            close.style.right = '20px';
+            close.style.cursor = 'pointer';
+            close.onclick = () => errorDiv.style.display = 'none';
+            errorDiv.appendChild(close);
+
+            // 创建 pre 元素用于显示 error?.message
+            const preMessage = document.createElement('pre');
+            preMessage.textContent = error?.message;
+            errorDiv.appendChild(preMessage);
+
+            // 创建 pre 元素用于显示 error?.stack
+            const preStack = document.createElement('pre');
+            preStack.textContent = error?.stack;
+            errorDiv.appendChild(preStack);
+
+            errorDiv.style.display = 'block';
+            errorDiv.style.position = 'fixed';
+            errorDiv.style.top = 0;
+            errorDiv.style.bottom = 0;
+            errorDiv.style.left = 0;
+            errorDiv.style.right = 0;
+            errorDiv.style.maxWidth = '100%';
+            errorDiv.style.width = '100%';
+            errorDiv.style.padding = '16px';
+            errorDiv.style.boxSizing = 'border-box';
+            errorDiv.style.backgroundColor = 'white';
+            errorDiv.style.zIndex = 1000; // 确保错误元素在最上层
+
+            document.body.appendChild(errorDiv);
         } else {
-            // err，错误对象
-            // vm，发生错误的组件实例
-            // info，Vue特定的错误信息，例如错误发生的生命周期、错误发生的事件
-            console.error(err);
+            if (error.name === 'Error' && error.message === '程序中止') {
+                console.warn('程序中止');
+            } else {
+                // err，错误对象
+                // vm，发生错误的组件实例
+                // info，Vue特定的错误信息，例如错误发生的生命周期、错误发生的事件
+                console.error(error);
+            }
         }
     };
     if (!window?.$toast) {

@@ -798,6 +798,12 @@ export const utils = {
     }
     return result;
   },
+  ListRepeat(item, length) {
+    if (typeof length !== "number") {
+      return [];
+    }
+    return Array(length).fill(item);
+  },
   ListSort(arr, callback, sort) {
     if (Array.isArray(arr)) {
       if (typeof callback === "function") {

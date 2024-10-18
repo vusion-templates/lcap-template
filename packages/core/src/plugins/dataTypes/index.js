@@ -7,7 +7,7 @@ import {
   genInitData,
   isInstanceOf,
 } from "./tools";
-import { porcessPorts } from "../router/processService";
+import { porcessPorts } from "../process/processService";
 
 import Config from '../../config'
 import authService from '../auth/authService';
@@ -197,11 +197,12 @@ export default {
           path: { configKey: finalConfigKey },
           query,
         });
-        return res;
+
+        return res?.data || res;
       },
       async getCurrentIp() {
         const res = await configurationInitService().getCurrentIp();
-        return res;
+        return res?.data || res;
       },
       getUserLanguage() {
         return navigator.language || navigator.userLanguage;

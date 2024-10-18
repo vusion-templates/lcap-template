@@ -343,6 +343,15 @@ importers:
         specifier: ^5.10.0
         version: 5.10.0
 
+  packages/request-pre:
+    devDependencies:
+      '@types/node':
+        specifier: ^20.11.16
+        version: 20.11.24
+      typescript:
+        specifier: ^5.3.3
+        version: 5.3.3
+
 packages:
 
   '@ampproject/remapping@2.2.1':

@@ -14,6 +14,7 @@ import {
     RouterPlugin,
     ServicesPlugin,
     UtilsPlugin,
+    ProcessPlugin,
     initRouter,
     microFrontend,
     filterRoutes,
@@ -103,6 +104,7 @@ const init = (appConfig, platformConfig, routes, metaData) => {
     Vue.use(AuthPlugin);
     Vue.use(UtilsPlugin, metaData);
     Vue.use(DataTypesPlugin, { ...metaData, i18nInfo: appConfig.i18nInfo });
+    Vue.use(ProcessPlugin);
 
     // 已经获取过权限接口
     Vue.prototype.hasLoadedAuth = false;

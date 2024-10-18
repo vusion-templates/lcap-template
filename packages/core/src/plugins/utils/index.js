@@ -497,6 +497,7 @@ export const utils = {
         return await sortAsync(arr, sortRule)(callback);
       }
     }
+    return arr;
   },
   ListFind(arr, by) {
     if (Array.isArray(arr)) {
@@ -781,6 +782,22 @@ export const utils = {
     }
     return arr;
   },
+  ListRange(start, end, step) {
+    if (step === 0) {
+      return [];
+    }
+    const result = [];
+    if (step > 0) {
+      for (let i = start; i < end; i += step) {
+        result.push(i);
+      }
+    } else {
+      for (let i = start; i > end; i += step) {
+        result.push(i);
+      }
+    }
+    return result;
+  },
   ListSort(arr, callback, sort) {
     if (Array.isArray(arr)) {
       if (typeof callback === "function") {
@@ -812,6 +829,7 @@ export const utils = {
         });
       }
     }
+    return arr;
   },
   ListFindAll(arr, callback) {
     if (Array.isArray(arr)) {

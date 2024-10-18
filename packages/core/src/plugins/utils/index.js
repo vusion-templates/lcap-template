@@ -751,35 +751,59 @@ export const utils = {
     }
     return arr;
   },
-  ListSort(arr, ...callback) {
-    if (Array.isArray(arr)) {
-      if (Array.isArray(callback)) {
-        callback.forEach((cb) => {
-          const cbBy = (item) => cb(item).by;
-          const sort = cb().asc;
-          arr.sort((a, b) => {
-            const valueA = cbBy(a);
-            const valueB = cbBy(b);
-            return sortRule(valueA, valueB, sort);
-          });
-        });
-      }
-    }
-    return arr;
-  },
-  async ListSortAsync(arr, ...callback) {
-    if (Array.isArray(arr)) {
-      if (Array.isArray(callback)) {
-        let newArr = arr;
-        for (const cb of callback) {
-          const cbBy = async (item) => (await cb(item)).by;
-          const sort = (await cb()).asc;
-          newArr = await sortAsync(newArr, sortRule)(cbBy, sort);
+  ListSort(arr, ...callbacks) {
+    if (!Array.isArray(arr) || !Array.isArray(callbacks)) return arr;
+    return arr.sort((a, b) => {
+      if (typeof a === "object" && typeof b === "object") {
+        for (let cb of callbacks) {
+          const { by: valueA, asc } = cb(a);
+          const { by: valueB } = cb(b);
+          if (valueA !== valueB) {
+            return sortRule(valueA, valueB, asc);
+          }
         }
-        return newArr;
+        return 0;
+      } else {
+        const cb = callbacks[callbacks.length - 1];
+        const { by: valueA, asc } = cb(a);
+        const { by: valueB } = cb(b);
+        if (valueA !== valueB) {
+          return sortRule(valueA, valueB, asc);
+        }
+        return 0;
       }
-    }
-    return arr;
+    });
+  },
+  async ListSortAsync(arr, ...callbacks) {
+    if (!Array.isArray(arr) || !Array.isArray(callbacks)) return arr;
+
+    const list = await Promise.all(
+      arr.map(async (item) => {
+        const criteria = await Promise.all(callbacks.map((cb) => cb(item)));
+        return { item, criteria };
+      })
+    );
+
+    list.sort((a, b) => {
+      if (typeof a?.item === "object" && typeof b?.item === "object") {
+        for (let i = 0; i < callbacks.length; i++) {
+          const { by: byA, asc: ascA } = a.criteria[i];
+          const { by: byB } = b.criteria[i];
+          if (byA !== byB) {
+            return sortRule(byA, byB, ascA);
+          }
+        }
+        return 0;
+      } else {
+        const index = callbacks.length - 1;
+        const { by: byA, asc: ascA } = a.criteria[index];
+        const { by: byB } = b.criteria[index];
+        if (byA !== byB) {
+          return sortRule(byA, byB, ascA);
+        }
+      }
+    });
+    return list.map(({ item }) => item);
   },
   ListFindAll(arr, callback) {
     if (Array.isArray(arr)) {

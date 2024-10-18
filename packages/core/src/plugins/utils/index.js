@@ -467,11 +467,6 @@ export const utils = {
           nullRemoved[0]
         );
   },
-  ListReverse(arr) {
-    if (Array.isArray(arr)) {
-      arr.reverse();
-    }
-  },
   async ListSortAsync(arr, callback, sort) {
     const sortRule = (valueA, valueB) => {
       if (
@@ -784,6 +779,7 @@ export const utils = {
     if (Array.isArray(arr)) {
       arr.reverse();
     }
+    return arr;
   },
   ListSort(arr, callback, sort) {
     if (Array.isArray(arr)) {
@@ -838,6 +834,7 @@ export const utils = {
         i++;
       }
     }
+    return arr;
   },
   // 随着 PageOf 失效，可删除
   ListSliceToPageOf(arr, page, size) {

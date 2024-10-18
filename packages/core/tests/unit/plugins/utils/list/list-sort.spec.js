@@ -17,7 +17,7 @@ const descCallback = [
 
 const multiCallback = [...ascCallback, ...descCallback];
 
-describe("List sort functions", () => {
+describe("ListSort functions", () => {
   const testNumberArr = [-1, -1, 0, -5, 2, 3];
   const ascNumberArr = [-5, -1, -1, 0, 2, 3];
   const descNumberArr = [3, 2, 0, -1, -1, -5];
@@ -342,5 +342,42 @@ describe("List sort functions", () => {
       expect(expectedArr).toEqual(JSON.stringify(sortedArr));
     }
   );
+});
 
+describe("ListSortAsync functions", () => {
+  const testNumberArr = [-1, -1, 0, -5, 2, 3];
+  const ascNumberArr = [-5, -1, -1, 0, 2, 3];
+  const descNumberArr = [3, 2, 0, -1, -1, -5];
+
+  const ascCallback = [
+    async (item) => {
+      return { by: item, asc: true };
+    },
+  ];
+
+  const descCallback = [
+    async (item) => {
+      return { by: item, asc: false };
+    },
+  ];
+
+  const multiCallback = [...ascCallback, ...descCallback];
+
+  test("List sort integers", async () => {
+    // 测试点 1，升序
+    {
+      const sortedArr = await u.ListSortAsync(testNumberArr, ...ascCallback);
+      expect(JSON.stringify(ascNumberArr)).toEqual(JSON.stringify(sortedArr));
+    }
+    // 测试点 2，降序
+    {
+      const sortedArr = await u.ListSortAsync(testNumberArr, ...descCallback);
+      expect(JSON.stringify(descNumberArr)).toEqual(JSON.stringify(sortedArr));
+    }
+    // 测试点 3，先升序，再降序
+    {
+      const sortedArr = await u.ListSortAsync(testNumberArr, ...multiCallback);
+      expect(JSON.stringify(descNumberArr)).toEqual(JSON.stringify(sortedArr));
+    }
+  });
 });
